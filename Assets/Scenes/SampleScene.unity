@@ -178,8 +178,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: BUILD YOUR NEXT HOUSE!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cd8dce808c67df2418653e0000035033, type: 2}
-  m_sharedMaterial: {fileID: -868759307985960795, guid: cd8dce808c67df2418653e0000035033, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d4c295c2a3d27044f8df8d53fe0b06d2, type: 2}
+  m_sharedMaterial: {fileID: -8051053311293122675, guid: d4c295c2a3d27044f8df8d53fe0b06d2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -203,7 +203,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 58.15
+  m_fontSize: 71.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -571,12 +571,12 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: c748d14f2e9644ba8b31f0cfb95e1e01, type: 3}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -786,7 +786,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 5032f44f8cff014489309515e8c0800c, type: 3}
+  m_Texture: {fileID: 2800000, guid: d472651bae8b7a94b81a12defecc0810, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -927,13 +927,14 @@ MonoBehaviour:
   card3: {fileID: 859206918}
   card4: {fileID: 1028414433}
   cardRect: {fileID: 722020898}
-  Text: 
+  Text: BUILD YOUR NEXT HOUSE!
   TextHigh: 0
   title: {fileID: 227988337}
-  BackgroundMusic: {fileID: 0}
+  BackgroundMusic: {fileID: 8300000, guid: c748d14f2e9644ba8b31f0cfb95e1e01, type: 3}
   bgMusic: {fileID: 722977836}
   CTA: []
   endCard: {fileID: 0}
+  _baseTitlePosY: 747
 --- !u!1 &1629977680
 GameObject:
   m_ObjectHideFlags: 0

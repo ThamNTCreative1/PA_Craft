@@ -38,8 +38,8 @@ public class LunaController : MonoBehaviour
     [SerializeField] private RectTransform cardRect;
 
     [Header("--- Title Text ---")]
-    [LunaPlaygroundField("Text")] public string Text;
-    [LunaPlaygroundField("Text High")] public float TextHigh;
+    [LunaPlaygroundField("Text")] public string Text = "BUILD YOUR NEXT HOUSE!";
+    [LunaPlaygroundField("Text High")] public float TextHigh = 0f;
     [SerializeField] private TextMeshProUGUI title;
 
     [Header("--- Audio ---")]
@@ -52,34 +52,40 @@ public class LunaController : MonoBehaviour
 
     public static LunaController Ins { get; private set; }
 
-    private void CreateIns()
-    {
-        if (Ins && Ins != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Ins = this;
-        DontDestroyOnLoad(gameObject);
-    }
+    public float _baseTitlePosY = 747f;
 
     private void Awake()
     {
-        CreateIns();
+        Ins = this;
+
+        if (!title) title = GetComponentInChildren<TextMeshProUGUI>(true);
+        if (title && _baseTitlePosY == 0) _baseTitlePosY = title.rectTransform.anchoredPosition.y;
+
+        AutoFindCardReferences();
+
         CTA?.ForEach(b => { if (b) b.onClick.AddListener(ClickCTA); });
+    }
+
+    private void OnDestroy()
+    {
+        if (Ins == this) Ins = null;
     }
 
     private void Start()
     {
-        InitPlaygroundSettings();
-        InitCardEvents();
+        try { InitPlaygroundSettings(); } catch (System.Exception e) { Debug.LogWarning("[Luna] InitPlaygroundSettings error: " + e.Message); }
+        try { InitCardEvents(); } catch (System.Exception e) { Debug.LogWarning("[Luna] InitCardEvents error: " + e.Message); }
+        try { SetupPlaygroundLiveBridge(); } catch (System.Exception e) { Debug.LogWarning("[Luna] SetupPlaygroundLiveBridge error: " + e.Message); }
 
         if (ShowEndCard) ShowEndCardView();
     }
 
     private void Update()
     {
-        // Mở khóa phát nhạc khi người chơi chạm màn hình lần đầu (Web Audio policy)
+        // 1. Cập nhật Playground (Live reload khi chỉnh sửa trong Playground)
+        UpdatePlaygroundLiveSettings();
+
+        // 2. Mở khóa phát nhạc khi người chơi chạm màn hình lần đầu (Web Audio policy)
         if (Input.GetMouseButtonDown(0))
         {
             if (bgMusic && !bgMusic.isPlaying && bgMusic.clip)
@@ -89,36 +95,238 @@ public class LunaController : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (!title) title = GetComponentInChildren<TextMeshProUGUI>(true);
+        if (title != null && _baseTitlePosY == 0) _baseTitlePosY = title.rectTransform.anchoredPosition.y;
+        AutoFindCardReferences();
+        UpdatePlaygroundLiveSettings();
+    }
+#endif
+
+    private void AutoFindCardReferences()
+    {
+        if (!cardRect)
+        {
+            GameObject cardObj = GameObject.Find("Card");
+            if (cardObj) cardRect = cardObj.GetComponent<RectTransform>();
+        }
+
+        if (cardRect && cardRect.childCount >= 4)
+        {
+            if (!card1) card1 = cardRect.GetChild(0).GetComponent<RawImage>();
+            if (!card2) card2 = cardRect.GetChild(1).GetComponent<RawImage>();
+            if (!card3) card3 = cardRect.GetChild(2).GetComponent<RawImage>();
+            if (!card4) card4 = cardRect.GetChild(3).GetComponent<RawImage>();
+        }
+    }
+
     private void InitPlaygroundSettings()
     {
         // 1. Nền (Ảnh tĩnh hoặc Video tùy trường nhập vào)
         SetupBackground();
 
-        // 2. Ảnh 4 Card
-        if (Card1Image && card1) card1.texture = Card1Image;
-        if (Card2Image && card2) card2.texture = Card2Image;
-        if (Card3Image && card3) card3.texture = Card3Image;
-        if (Card4Image && card4) card4.texture = Card4Image;
+        // 2. Áp dụng toàn bộ cài đặt 4 cards, text và vị trí/chiều cao
+        UpdatePlaygroundLiveSettings();
 
-        // 3. Nội dung Text & Vị trí cao thấp (Text High)
-        if (title)
-        {
-            if (!string.IsNullOrEmpty(Text)) title.text = Text;
-            if (TextHigh != 0)
-            {
-                Vector2 pos = title.rectTransform.anchoredPosition;
-                pos.y = TextHigh;
-                title.rectTransform.anchoredPosition = pos;
-            }
-        }
-
-        // 4. Nhạc nền
+        // 3. Nhạc nền
         if (BackgroundMusic && bgMusic)
         {
             bgMusic.clip = BackgroundMusic;
             bgMusic.loop = true;
             bgMusic.Play();
         }
+    }
+
+    public void UpdatePlaygroundLiveSettings()
+    {
+        // 1. Ảnh 4 Card
+        if (Card1Image && card1 && card1.texture != Card1Image) card1.texture = Card1Image;
+        if (Card2Image && card2 && card2.texture != Card2Image) card2.texture = Card2Image;
+        if (Card3Image && card3 && card3.texture != Card3Image) card3.texture = Card3Image;
+        if (Card4Image && card4 && card4.texture != Card4Image) card4.texture = Card4Image;
+
+        // 2. Nội dung Text
+        if (title && Text != null && title.text != Text)
+        {
+            title.text = Text;
+            title.SetVerticesDirty();
+            title.SetLayoutDirty();
+            title.ForceMeshUpdate();
+        }
+
+        // 3. Vị trí cao thấp Text (Text High)
+        if (title)
+        {
+            float targetY = _baseTitlePosY;
+            if (Mathf.Abs(TextHigh) > 0.001f)
+            {
+                // Nếu giá trị nhỏ (< 300) coi là offset so với vị trí gốc; nếu lớn coi là tọa độ Y tuyệt đối
+                targetY = (Mathf.Abs(TextHigh) < 300f) ? (_baseTitlePosY + TextHigh) : TextHigh;
+            }
+
+            Vector2 pos = title.rectTransform.anchoredPosition;
+            if (Mathf.Abs(pos.y - targetY) > 0.001f)
+            {
+                pos.y = targetY;
+                title.rectTransform.anchoredPosition = pos;
+            }
+        }
+    }
+
+    private void SetupPlaygroundLiveBridge()
+    {
+#if !UNITY_EDITOR
+        try
+        {
+            Application.ExternalEval(@"
+                (function() {
+                    var typeNames = ['string', 'single', 'float', 'double', 'int', 'int32', 'int64', 'boolean', 'composite'];
+
+                    function getVal(v) {
+                        if (v === undefined || v === null) return v;
+                        while (Array.isArray(v)) {
+                            if (v.length === 0) return '';
+                            if (v.length > 1 && typeof v[0] === 'string' && typeNames.indexOf(v[0].toLowerCase()) !== -1) {
+                                v = v.slice(1);
+                                continue;
+                            }
+                            if (v.length > 1 && typeof v[0] === 'string' && v[0].length <= 3 && typeof v[1] === 'string') {
+                                v = v[1];
+                                break;
+                            }
+                            v = v[0];
+                        }
+                        if (typeof v === 'object' && v !== null) {
+                            if (v.value !== undefined) return getVal(v.value);
+                            if (v.en !== undefined) return getVal(v.en);
+                            for (var k in v) {
+                                if (typeof v[k] === 'string') return v[k];
+                            }
+                        }
+                        return v;
+                    }
+
+                    function findVal(obj, k1, k2) {
+                        if (!obj || typeof obj !== 'object') return undefined;
+                        if (obj[k1] !== undefined) return getVal(obj[k1]);
+                        if (k2 && obj[k2] !== undefined) return getVal(obj[k2]);
+                        for (var k in obj) {
+                            if (k.toLowerCase() === k1.toLowerCase() || (k2 && k.toLowerCase() === k2.toLowerCase())) {
+                                return getVal(obj[k]);
+                            }
+                        }
+                        return undefined;
+                    }
+
+                    function findOverride(name, altName) {
+                        var targets = [];
+                        if (window.playgroundOverrides) targets.push(window.playgroundOverrides);
+                        try {
+                            if (window.parent && window.parent.playgroundOverrides) targets.push(window.parent.playgroundOverrides);
+                        } catch(e) {}
+                        try {
+                            if (window.top && window.top.playgroundOverrides) targets.push(window.top.playgroundOverrides);
+                        } catch(e) {}
+
+                        for (var i = 0; i < targets.length; i++) {
+                            var o = targets[i];
+                            if (!o || typeof o !== 'object') continue;
+                            var v = findVal(o.LunaController, name, altName);
+                            if (v !== undefined) return v;
+                            v = findVal(o, name, altName);
+                            if (v !== undefined) return v;
+                            for (var k in o) {
+                                var s = o[k];
+                                v = findVal(s, name, altName);
+                                if (v !== undefined) return v;
+                            }
+                        }
+                        return undefined;
+                    }
+
+                    window.__applyLunaPlaygroundLive = function() {
+                        try {
+                            var ins = (typeof LunaController !== 'undefined' && LunaController.Ins) ? LunaController.Ins : null;
+                            if (!ins) return;
+
+                            var textVal = findOverride('Text', 'Text');
+                            if (textVal !== undefined && textVal !== null) {
+                                var strVal = String(textVal);
+                                if (ins.Text !== strVal) {
+                                    ins.Text = strVal;
+                                }
+                                if (ins.title) {
+                                    if (ins.title.text !== strVal) {
+                                        ins.title.text = strVal;
+                                    }
+                                    ins.title.m_havePropertiesChanged = true;
+                                    if (ins.title.SetVerticesDirty) ins.title.SetVerticesDirty();
+                                    if (ins.title.SetLayoutDirty) ins.title.SetLayoutDirty();
+                                    if (ins.title.ForceMeshUpdate) ins.title.ForceMeshUpdate(true, true);
+                                }
+                            }
+
+                            var highVal = findOverride('TextHigh', 'Text High');
+                            if (highVal !== undefined && highVal !== null) {
+                                var num = parseFloat(highVal);
+                                if (!isNaN(num)) {
+                                    ins.TextHigh = num;
+                                    var baseY = ins._baseTitlePosY || 747;
+                                    var targetY = (Math.abs(num) < 300) ? (baseY + num) : num;
+                                    if (ins.title) {
+                                        var rt = ins.title.rectTransform$1 || ins.title.rectTransform || (ins.title.get_rectTransform ? ins.title.get_rectTransform() : null);
+                                        if (rt && rt.anchoredPosition) {
+                                            var pos = rt.anchoredPosition.$clone ? rt.anchoredPosition.$clone() : { x: rt.anchoredPosition.x || 0, y: 0 };
+                                            if (Math.abs((pos.y || 0) - targetY) > 0.001) {
+                                                pos.y = targetY;
+                                                rt.anchoredPosition = pos.$clone ? pos.$clone() : pos;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } catch(e) {
+                            console.warn('[PlaygroundLive] Error: ', e);
+                        }
+                    };
+
+                    function handleMessage(e) {
+                        try {
+                            var msg = (typeof e.data === 'string') ? JSON.parse(e.data) : e.data;
+                            if (msg && (msg.name === 'setPlaygroundOverrides' || msg.name === 'live:setPlaygroundOverrides' || (msg.name && msg.name.indexOf('setPlaygroundOverrides') !== -1)) && msg.data) {
+                                var parsed = (typeof msg.data === 'string') ? JSON.parse(msg.data) : msg.data;
+                                if (parsed) {
+                                    if (!window.playgroundOverrides) window.playgroundOverrides = {};
+                                    window.playgroundOverrides = Object.assign(window.playgroundOverrides, parsed);
+                                    if (parsed.LunaController) {
+                                        if (!window.playgroundOverrides.LunaController) window.playgroundOverrides.LunaController = {};
+                                        window.playgroundOverrides.LunaController = Object.assign(window.playgroundOverrides.LunaController, parsed.LunaController);
+                                    }
+                                }
+                            }
+                        } catch(err) {}
+                        window.__applyLunaPlaygroundLive();
+                        setTimeout(window.__applyLunaPlaygroundLive, 20);
+                        setTimeout(window.__applyLunaPlaygroundLive, 100);
+                    }
+
+                    window.removeEventListener('message', handleMessage);
+                    window.addEventListener('message', handleMessage);
+
+                    if (window.__lunaInterval) clearInterval(window.__lunaInterval);
+                    window.__lunaInterval = setInterval(window.__applyLunaPlaygroundLive, 100);
+
+                    window.__applyLunaPlaygroundLive();
+                })();
+            ");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("[PlaygroundLiveBridge] Error: " + e.Message);
+        }
+#endif
     }
 
     private void SetupBackground()

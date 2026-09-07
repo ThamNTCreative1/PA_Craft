@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e2bd65647eae5c84fad68864e3b1b3a6",
     "applicationID": 39768,
-    "creativeName": "",
+    "creativeName": "CBBW2_V23_YenTTH_DatDV",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -1565,10 +1565,6 @@
             },
             {
                 "name": "UnityEngine.AnimatorTransitionInfo",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.ArgumentCache",
                 "excluded": true
             },
             {
@@ -4041,11 +4037,11 @@
             },
             {
                 "name": "UnityEngine.Events.PersistentListenerMode",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.Events.UnityEventCallState",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.EventSystems.EventHandle",
@@ -7254,10 +7250,6 @@
             {
                 "name": "TMPro.VerticalAlignmentOptions",
                 "excluded": false
-            },
-            {
-                "name": "CardUIItem",
-                "excluded": true
             },
             {
                 "name": "IAmAnEmptyScriptJustToMakeCodelessProjectsCompileProperty",
@@ -12281,27 +12273,27 @@
                     },
                     {
                         "name": "init",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "$ctor1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ctor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Dispose",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "moveNext",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "MoveNextRare",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "System$Collections$IEnumerator$reset",
@@ -12317,7 +12309,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -15003,7 +14995,7 @@
                     },
                     {
                         "name": "init",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Invoke",
@@ -15055,11 +15047,11 @@
                     },
                     {
                         "name": "UnsafeAddListener",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "UnsafeRemoveListener",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetPersistentEventCount",
@@ -16883,11 +16875,11 @@
                     },
                     {
                         "name": "AddListener",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "RemoveListener",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -17727,7 +17719,7 @@
                     },
                     {
                         "name": "childCount#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "name#get",
@@ -19175,7 +19167,7 @@
                     },
                     {
                         "name": "anchoredPosition#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "anchoredPosition#set",
@@ -21445,7 +21437,7 @@
                 "instanceMethods": [
                     {
                         "name": "texture#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "texture#set",
@@ -21943,7 +21935,7 @@
                     },
                     {
                         "name": "text#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "text#set",
@@ -23855,15 +23847,15 @@
                 "instanceMethods": [
                     {
                         "name": "SelectedCardIndex#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "CurrentTargetCard#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "IsPlaying#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "init",
@@ -27442,10 +27434,6 @@
                 "staticMethods": [],
                 "instanceMethods": [
                     {
-                        "name": "CreateIns",
-                        "excluded": false
-                    },
-                    {
                         "name": "Awake",
                         "excluded": false
                     },
@@ -27467,7 +27455,7 @@
                     },
                     {
                         "name": "SetupVideoBackground",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetupImageBackground",
@@ -27475,27 +27463,47 @@
                     },
                     {
                         "name": "InitCardEvents",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "BindCard",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnCardClicked",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ShowEndCardView",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ClickCTA",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "EndGame",
-                        "excluded": true
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AutoFindCardReferences",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdatePlaygroundLiveSettings",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetupPlaygroundLiveBridge",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
                     }
                 ]
             },
@@ -27577,6 +27585,58 @@
                     },
                     {
                         "name": "ctor",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.ArgumentCache",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "CardUIItem",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "CardId#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CardId#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsInteractable#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsInteractable#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerDown",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnPointerUp",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnPointerClick",
                         "excluded": true
                     }
                 ]
@@ -27647,6 +27707,16 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/TextMesh Pro/Fonts/SVN-Kimberley SDF.asset"
                     }
                 ]
             },
