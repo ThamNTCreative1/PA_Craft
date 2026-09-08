@@ -2,526 +2,178 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
+using UnityEngine.EventSystems;
 using TMPro;
 
 public class LunaController : MonoBehaviour
 {
-    [Header("--- Playground ---")]
-    [LunaPlaygroundField("Show End Card")] public bool ShowEndCard;
-
-    [Header("--- Background ---")]
-    [LunaPlaygroundField("Is Video Background?")] public bool isVideoBackground;
-    [LunaPlaygroundAsset("BackgroundImage")] public Texture2D backgroundImage;
-    [LunaPlaygroundAsset("BackgroundVideo")] public UnityEngine.Video.VideoClip backgroundVideo;
-
-    [Space(5)]
-    [Tooltip("RawImage hiển thị hình nền ảnh tĩnh hoặc nhận RenderTexture từ Video (Khuyên dùng)")]
+    [Header("Bg")]
+    [SerializeField] private bool isVideo = false;
+    [LunaPlaygroundAsset("BackGround")] public Texture2D BackGround;
+    [SerializeField] public VideoClip BackGroundVideo;
     [SerializeField] private RawImage bg;
-    [Tooltip("Image hiển thị ảnh nền (Dự phòng nếu GameObject đang dùng Image thay vì RawImage)")]
-    [SerializeField] private Image bgImage;
-    [Tooltip("Component VideoPlayer phát video nền")]
-    [SerializeField] private UnityEngine.Video.VideoPlayer bgVideo;
-    [Tooltip("RenderTexture trung gian cho video (nếu để trống, script sẽ tự lấy từ VideoPlayer hoặc tự tạo)")]
-    [SerializeField] private RenderTexture bgRenderTexture;
-    [Tooltip("Tự động cân đối tỷ lệ hiển thị tránh méo hình ảnh/video")]
-    [SerializeField] private AspectRatioFitter bgAspectFitter;
+    [SerializeField] private VideoPlayer bgVideo;
+    [LunaPlaygroundAsset("BG Music")] public AudioClip BGM;
+    [SerializeField] private AudioSource musicSource;
 
-    [Header("--- 4 Cards ---")]
-    [LunaPlaygroundAsset("Card1Image")] public Texture2D Card1Image;
-    [LunaPlaygroundAsset("Card2Image")] public Texture2D Card2Image;
-    [LunaPlaygroundAsset("Card3Image")] public Texture2D Card3Image;
-    [LunaPlaygroundAsset("Card4Image")] public Texture2D Card4Image;
+    [Header("card")]
+    [LunaPlaygroundAsset("Card1Image")] public Texture2D card1image;
     [SerializeField] private RawImage card1;
+    [LunaPlaygroundAsset("Card2Image")] public Texture2D card2image;
     [SerializeField] private RawImage card2;
+    [LunaPlaygroundAsset("Card3Image")] public Texture2D card3image;
     [SerializeField] private RawImage card3;
+    [LunaPlaygroundAsset("Card4Image")] public Texture2D card4image;
     [SerializeField] private RawImage card4;
-    [SerializeField] private RectTransform cardRect;
 
-    [Header("--- Title Text ---")]
-    [LunaPlaygroundField("Text")] public string Text = "BUILD YOUR NEXT HOUSE!";
+    [Header("Text")]
+    [LunaPlaygroundField("Text")] public string Text;
+    [SerializeField] private TextMeshProUGUI text;
     [LunaPlaygroundField("Text High")] public float TextHigh = 0f;
-    [SerializeField] private TextMeshProUGUI title;
 
-    [Header("--- Audio ---")]
-    [LunaPlaygroundAsset("BackgroundMusic")] public AudioClip BackgroundMusic;
-    [SerializeField] private AudioSource bgMusic;
+    [Header("End Card / Timing")]
+    [LunaPlaygroundField("Time Play")] public float TimePlay = 10f;
+    [LunaPlaygroundField("Limit Time Play")] public bool LimitTimePlay = false;
+    [SerializeField] private Button endCard;
 
-    [Header("--- CTA & EndCard ---")]
-    [SerializeField] private List<Button> CTA;
-    [SerializeField] private GameObject endCard;
+    private string _lastText;
+    private float _lastTextHigh = float.NaN;
+    private bool _lastIsVideo;
 
-    public static LunaController Ins { get; private set; }
-
-    public float _baseTitlePosY = 747f;
-
-    private void Awake()
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
-        Ins = this;
-
-        if (!title) title = GetComponentInChildren<TextMeshProUGUI>(true);
-        if (title && _baseTitlePosY == 0) _baseTitlePosY = title.rectTransform.anchoredPosition.y;
-
-        AutoFindCardReferences();
-
-        CTA?.ForEach(b => { if (b) b.onClick.AddListener(ClickCTA); });
-    }
-
-    private void OnDestroy()
-    {
-        if (Ins == this) Ins = null;
-    }
-
-    private void Start()
-    {
-        try { InitPlaygroundSettings(); } catch (System.Exception e) { Debug.LogWarning("[Luna] InitPlaygroundSettings error: " + e.Message); }
-        try { InitCardEvents(); } catch (System.Exception e) { Debug.LogWarning("[Luna] InitCardEvents error: " + e.Message); }
-        try { SetupPlaygroundLiveBridge(); } catch (System.Exception e) { Debug.LogWarning("[Luna] SetupPlaygroundLiveBridge error: " + e.Message); }
-
-        if (ShowEndCard) ShowEndCardView();
+        StartCoroutine(EndGame());
+        Init();
+        endCard.onClick.AddListener(ClickCTA);
+        if (musicSource) musicSource.Play();
     }
 
     private void Update()
     {
-        // 1. Cập nhật Playground (Live reload khi chỉnh sửa trong Playground)
-        UpdatePlaygroundLiveSettings();
-
-        // 2. Mở khóa phát nhạc khi người chơi chạm màn hình lần đầu (Web Audio policy)
-        if (Input.GetMouseButtonDown(0))
+        // 1. Cập nhật Text thời gian thực khi sửa trên Playworks editor
+        if (text && Text != _lastText)
         {
-            if (bgMusic && !bgMusic.isPlaying && bgMusic.clip)
+            _lastText = Text;
+            text.text = Text;
+        }
+
+        // 2. Cập nhật TextHigh (posY) thời gian thực khi sửa trên Playworks editor
+        if (text && TextHigh != _lastTextHigh)
+        {
+            _lastTextHigh = TextHigh;
+            if (TextHigh != 0)
             {
-                bgMusic.Play();
+                RectTransform rt = text.GetComponent<RectTransform>();
+                if (rt)
+                {
+                    Vector2 pos = rt.anchoredPosition;
+                    pos.y = TextHigh;
+                    rt.anchoredPosition = pos;
+                }
+            }
+        }
+
+        // 3. Cập nhật chuyển đổi Video/Ảnh nền thời gian thực khi tích/bỏ tích trên Playworks editor
+        if (isVideo != _lastIsVideo)
+        {
+            _lastIsVideo = isVideo;
+            ApplyBackgroundMode();
+        }
+
+    }
+    
+
+    private void Init()
+    {
+        _lastText = Text;
+        _lastTextHigh = TextHigh;
+        _lastIsVideo = isVideo;
+
+        ApplyBackgroundMode();
+
+        if (musicSource && BGM) musicSource.clip = BGM;
+
+        if (card1 && card1image) card1.texture = card1image;
+        if (card2 && card2image) card2.texture = card2image;
+        if (card3 && card3image) card3.texture = card3image;
+        if (card4 && card4image) card4.texture = card4image;
+
+        if (text)
+        {
+            text.text = Text;
+            if (TextHigh != 0)
+            {
+                RectTransform rt = text.GetComponent<RectTransform>();
+                if (rt)
+                {
+                    Vector2 pos = rt.anchoredPosition;
+                    pos.y = TextHigh;
+                    rt.anchoredPosition = pos;
+                }
             }
         }
     }
 
-#if UNITY_EDITOR
-    private void OnValidate()
+    private void ApplyBackgroundMode()
     {
-        if (!title) title = GetComponentInChildren<TextMeshProUGUI>(true);
-        if (title != null && _baseTitlePosY == 0) _baseTitlePosY = title.rectTransform.anchoredPosition.y;
-        AutoFindCardReferences();
-        UpdatePlaygroundLiveSettings();
-    }
-#endif
-
-    private void AutoFindCardReferences()
-    {
-        if (!cardRect)
-        {
-            GameObject cardObj = GameObject.Find("Card");
-            if (cardObj) cardRect = cardObj.GetComponent<RectTransform>();
-        }
-
-        if (cardRect && cardRect.childCount >= 4)
-        {
-            if (!card1) card1 = cardRect.GetChild(0).GetComponent<RawImage>();
-            if (!card2) card2 = cardRect.GetChild(1).GetComponent<RawImage>();
-            if (!card3) card3 = cardRect.GetChild(2).GetComponent<RawImage>();
-            if (!card4) card4 = cardRect.GetChild(3).GetComponent<RawImage>();
-        }
-    }
-
-    private void InitPlaygroundSettings()
-    {
-        // 1. Nền (Ảnh tĩnh hoặc Video tùy trường nhập vào)
-        SetupBackground();
-
-        // 2. Áp dụng toàn bộ cài đặt 4 cards, text và vị trí/chiều cao
-        UpdatePlaygroundLiveSettings();
-
-        // 3. Nhạc nền
-        if (BackgroundMusic && bgMusic)
-        {
-            bgMusic.clip = BackgroundMusic;
-            bgMusic.loop = true;
-            bgMusic.Play();
-        }
-    }
-
-    public void UpdatePlaygroundLiveSettings()
-    {
-        // 1. Ảnh 4 Card
-        if (Card1Image && card1 && card1.texture != Card1Image) card1.texture = Card1Image;
-        if (Card2Image && card2 && card2.texture != Card2Image) card2.texture = Card2Image;
-        if (Card3Image && card3 && card3.texture != Card3Image) card3.texture = Card3Image;
-        if (Card4Image && card4 && card4.texture != Card4Image) card4.texture = Card4Image;
-
-        // 2. Nội dung Text
-        if (title && Text != null && title.text != Text)
-        {
-            title.text = Text;
-            title.SetVerticesDirty();
-            title.SetLayoutDirty();
-            title.ForceMeshUpdate();
-        }
-
-        // 3. Vị trí cao thấp Text (Text High)
-        if (title)
-        {
-            float targetY = _baseTitlePosY;
-            if (Mathf.Abs(TextHigh) > 0.001f)
-            {
-                // Nếu giá trị nhỏ (< 300) coi là offset so với vị trí gốc; nếu lớn coi là tọa độ Y tuyệt đối
-                targetY = (Mathf.Abs(TextHigh) < 300f) ? (_baseTitlePosY + TextHigh) : TextHigh;
-            }
-
-            Vector2 pos = title.rectTransform.anchoredPosition;
-            if (Mathf.Abs(pos.y - targetY) > 0.001f)
-            {
-                pos.y = targetY;
-                title.rectTransform.anchoredPosition = pos;
-            }
-        }
-    }
-
-    private void SetupPlaygroundLiveBridge()
-    {
-#if !UNITY_EDITOR
         try
         {
-            Application.ExternalEval(@"
-                (function() {
-                    var typeNames = ['string', 'single', 'float', 'double', 'int', 'int32', 'int64', 'boolean', 'composite'];
-
-                    function getVal(v) {
-                        if (v === undefined || v === null) return v;
-                        while (Array.isArray(v)) {
-                            if (v.length === 0) return '';
-                            if (v.length > 1 && typeof v[0] === 'string' && typeNames.indexOf(v[0].toLowerCase()) !== -1) {
-                                v = v[1];
-                                continue;
-                            }
-                            v = v[0];
-                        }
-                        if (typeof v === 'object' && v !== null) {
-                            if (v.value !== undefined) return getVal(v.value);
-                            if (v.en !== undefined) return getVal(v.en);
-                            for (var k in v) {
-                                if (typeof v[k] === 'string') return v[k];
-                            }
-                        }
-                        return v;
+            if (isVideo)
+            {
+                if (bgVideo != null)
+                {
+                    if (bg != null && bg.gameObject != bgVideo.gameObject)
+                    {
+                        bg.gameObject.SetActive(false);
                     }
-
-                    function findVal(obj, k1, k2) {
-                        if (!obj || typeof obj !== 'object') return undefined;
-                        if (obj[k1] !== undefined) return getVal(obj[k1]);
-                        if (k2 && obj[k2] !== undefined) return getVal(obj[k2]);
-                        var l1 = k1.toLowerCase(), l2 = k2 ? k2.toLowerCase() : null;
-                        for (var k in obj) {
-                            var lk = k.toLowerCase();
-                            if (lk === l1 || (l2 && lk === l2)) {
-                                return getVal(obj[k]);
-                            }
-                        }
-                        return undefined;
+                    bgVideo.gameObject.SetActive(true);
+                    bgVideo.enabled = true;
+                    if (BackGroundVideo != null) bgVideo.clip = BackGroundVideo;
+                    bgVideo.isLooping = true;
+                    bgVideo.Play();
+                }
+            }
+            else
+            {
+                if (bgVideo != null)
+                {
+                    if (bg != null && bgVideo.gameObject == bg.gameObject)
+                    {
+                        bgVideo.enabled = false;
                     }
-
-                    function findOverride(name, altName) {
-                        var targets = [];
-                        if (window.__lastLivePlaygroundData) targets.push(window.__lastLivePlaygroundData);
-                        if (window.playgroundOverrides) targets.push(window.playgroundOverrides);
-                        try {
-                            if (window.parent && window.parent.playgroundOverrides) targets.push(window.parent.playgroundOverrides);
-                        } catch(e) {}
-                        try {
-                            if (window.top && window.top.playgroundOverrides) targets.push(window.top.playgroundOverrides);
-                        } catch(e) {}
-
-                        for (var i = 0; i < targets.length; i++) {
-                            var o = targets[i];
-                            if (!o || typeof o !== 'object') continue;
-                            var v = findVal(o.LunaController, name, altName);
-                            if (v !== undefined) return v;
-                            v = findVal(o, name, altName);
-                            if (v !== undefined) return v;
-                            for (var k in o) {
-                                if (o[k] && typeof o[k] === 'object') {
-                                    v = findVal(o[k], name, altName);
-                                    if (v !== undefined) return v;
-                                }
-                            }
-                        }
-                        return undefined;
+                    else
+                    {
+                        bgVideo.gameObject.SetActive(false);
                     }
-
-                    window.__applyLunaPlaygroundLive = function() {
-                        try {
-                            var ins = (typeof LunaController !== 'undefined' && LunaController.Ins) ? LunaController.Ins : null;
-
-                            // 1. Text Update
-                            var textVal = findOverride('Text', 'title');
-                            if (textVal !== undefined && textVal !== null) {
-                                var strVal = String(textVal);
-                                if (ins) {
-                                    if (ins.Text !== strVal) {
-                                        ins.Text = strVal;
-                                    }
-                                    if (ins.title) {
-                                        if (ins.title.text !== strVal) {
-                                            ins.title.text = strVal;
-                                        }
-                                        ins.title.m_havePropertiesChanged = true;
-                                        if (ins.title.SetVerticesDirty) ins.title.SetVerticesDirty();
-                                        if (ins.title.SetLayoutDirty) ins.title.SetLayoutDirty();
-                                        if (ins.title.ForceMeshUpdate) ins.title.ForceMeshUpdate(true, true);
-                                    }
-                                }
-                                // Fallback direct TMP search if title reference is missing
-                                if (!ins || !ins.title) {
-                                    var tmpObj = UnityEngine.GameObject.Find('Text (TMP)');
-                                    if (tmpObj) {
-                                        var tmpComp = tmpObj.GetComponent(TMPro.TextMeshProUGUI);
-                                        if (tmpComp) {
-                                            tmpComp.text = strVal;
-                                            tmpComp.m_havePropertiesChanged = true;
-                                            if (tmpComp.SetVerticesDirty) tmpComp.SetVerticesDirty();
-                                            if (tmpComp.SetLayoutDirty) tmpComp.SetLayoutDirty();
-                                            if (tmpComp.ForceMeshUpdate) tmpComp.ForceMeshUpdate(true, true);
-                                        }
-                                    }
-                                }
-                            }
-
-                            // 2. TextHigh Update
-                            var highVal = findOverride('TextHigh', 'Text High');
-                            if (highVal !== undefined && highVal !== null) {
-                                var num = parseFloat(highVal);
-                                if (!isNaN(num) && ins) {
-                                    ins.TextHigh = num;
-                                    var baseY = ins._baseTitlePosY || 747;
-                                    var targetY = (Math.abs(num) < 300) ? (baseY + num) : num;
-                                    if (ins.title) {
-                                        var rt = ins.title.rectTransform$1 || ins.title.rectTransform || (ins.title.get_rectTransform ? ins.title.get_rectTransform() : null);
-                                        if (rt && rt.anchoredPosition) {
-                                            var pos = rt.anchoredPosition.$clone ? rt.anchoredPosition.$clone() : { x: rt.anchoredPosition.x || 0, y: 0 };
-                                            if (Math.abs((pos.y || 0) - targetY) > 0.001) {
-                                                pos.y = targetY;
-                                                rt.anchoredPosition = pos.$clone ? pos.$clone() : pos;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } catch(e) {
-                            console.warn('[PlaygroundLive] Error: ', e);
-                        }
-                    };
-
-                    function handleMessage(e) {
-                        try {
-                            var raw = e.data;
-                            var msg = (typeof raw === 'string') ? JSON.parse(raw) : raw;
-                            if (msg && msg.name && (msg.name.indexOf('Playground') !== -1 || msg.name.indexOf('playground') !== -1) && msg.data) {
-                                var parsed = (typeof msg.data === 'string') ? JSON.parse(msg.data) : msg.data;
-                                if (parsed && typeof parsed === 'object') {
-                                    window.__lastLivePlaygroundData = parsed;
-                                    if (!window.playgroundOverrides) window.playgroundOverrides = {};
-                                    window.playgroundOverrides = Object.assign(window.playgroundOverrides, parsed);
-                                    if (parsed.LunaController) {
-                                        if (!window.playgroundOverrides.LunaController) window.playgroundOverrides.LunaController = {};
-                                        window.playgroundOverrides.LunaController = Object.assign(window.playgroundOverrides.LunaController, parsed.LunaController);
-                                    }
-                                }
-                            }
-                        } catch(err) {}
-                        window.__applyLunaPlaygroundLive();
-                        setTimeout(window.__applyLunaPlaygroundLive, 20);
-                        setTimeout(window.__applyLunaPlaygroundLive, 100);
-                    }
-
-                    window.removeEventListener('message', handleMessage);
-                    window.addEventListener('message', handleMessage);
-
-                    if (window.__lunaInterval) clearInterval(window.__lunaInterval);
-                    window.__lunaInterval = setInterval(window.__applyLunaPlaygroundLive, 100);
-
-                    window.__applyLunaPlaygroundLive();
-                })();
-            ");
+                }
+                if (bg != null)
+                {
+                    bg.gameObject.SetActive(true);
+                    bg.enabled = true;
+                    bg.raycastTarget = false;
+                    if (BackGround != null) bg.texture = BackGround;
+                }
+            }
         }
         catch (System.Exception e)
         {
-            Debug.LogWarning("[PlaygroundLiveBridge] Error: " + e.Message);
-        }
-#endif
-    }
-
-    private void SetupBackground()
-    {
-        // 1. Tự động tìm component nếu chưa gán thủ công trên Inspector
-        if (!bg && !bgImage)
-        {
-            bg = GetComponentInChildren<RawImage>();
-            if (!bg) bgImage = GetComponentInChildren<Image>();
-        }
-        if (!bgVideo)
-        {
-            bgVideo = GetComponentInChildren<UnityEngine.Video.VideoPlayer>(true);
-        }
-        if (!bgAspectFitter)
-        {
-            if (bg) bgAspectFitter = bg.GetComponent<AspectRatioFitter>();
-            else if (bgImage) bgAspectFitter = bgImage.GetComponent<AspectRatioFitter>();
-        }
-
-        // 2. Tự động nhận diện chế độ dựa trên Playground hoặc trường nhập vào
-        bool shouldPlayVideo = isVideoBackground || (backgroundVideo != null && backgroundImage == null);
-
-        if (shouldPlayVideo && bgVideo != null)
-        {
-            SetupVideoBackground();
-        }
-        else
-        {
-            SetupImageBackground();
+            Debug.LogWarning("[ApplyBackgroundMode] " + e.Message);
         }
     }
 
-    private void SetupVideoBackground()
+    private void ClickCTA()
     {
-        if (!bgVideo) return;
-
-        // Bật GameObject chứa VideoPlayer
-        bgVideo.gameObject.SetActive(true);
-
-        // Gán clip từ Playground nếu có
-        if (backgroundVideo != null)
-        {
-            bgVideo.clip = backgroundVideo;
-        }
-
-        // Cấu hình phát video tối ưu cho WebGL / Luna
-        bgVideo.isLooping = true;
-        // Lưu ý: Đặt Audio Output Mode = None trực tiếp trên Inspector của VideoPlayer để tránh bị chặn autoplay
-
-        // Xử lý hiển thị lên UI thông qua RenderTexture & RawImage
-        if (bgVideo.renderMode == UnityEngine.Video.VideoRenderMode.RenderTexture)
-        {
-            if (bgVideo.targetTexture == null)
-            {
-                if (bgRenderTexture != null)
-                {
-                    bgVideo.targetTexture = bgRenderTexture;
-                }
-                else
-                {
-                    // Tự động khởi tạo RenderTexture kích thước màn hình
-                    int width = Screen.width > 0 ? Screen.width : 1080;
-                    int height = Screen.height > 0 ? Screen.height : 1920;
-                    bgRenderTexture = new RenderTexture(width, height, 0);
-                    bgVideo.targetTexture = bgRenderTexture;
-                }
-            }
-
-            if (bg)
-            {
-                bg.gameObject.SetActive(true);
-                bg.texture = bgVideo.targetTexture;
-            }
-        }
-
-        // Tắt component Image tĩnh dự phòng nếu ở GameObject riêng biệt
-        if (bgImage && (!bg || bgImage.gameObject != bg.gameObject))
-        {
-            bgImage.gameObject.SetActive(false);
-        }
-
-        // Cập nhật AspectRatioFitter theo tỷ lệ video
-        if (bgAspectFitter && backgroundVideo != null && backgroundVideo.height > 0)
-        {
-            bgAspectFitter.aspectRatio = (float)backgroundVideo.width / backgroundVideo.height;
-        }
-
-        bgVideo.Play();
-    }
-
-    private void SetupImageBackground()
-    {
-        // Dừng video nếu đang chạy
-        if (bgVideo)
-        {
-            bgVideo.Stop();
-            // Chỉ tắt GameObject nếu bgVideo là đối tượng riêng biệt (tránh tắt nhầm GameObject chứa bg)
-            if ((!bg || bgVideo.gameObject != bg.gameObject) && (!bgImage || bgVideo.gameObject != bgImage.gameObject))
-            {
-                bgVideo.gameObject.SetActive(false);
-            }
-        }
-
-        // Hiển thị ảnh tĩnh lên RawImage (Ưu tiên)
-        if (bg)
-        {
-            bg.gameObject.SetActive(true);
-            if (backgroundImage != null)
-            {
-                bg.texture = backgroundImage;
-            }
-        }
-        // Hoặc hiển thị lên Image dự phòng (nếu dùng component Image thông thường)
-        else if (bgImage)
-        {
-            bgImage.gameObject.SetActive(true);
-            if (backgroundImage != null)
-            {
-                bgImage.sprite = Sprite.Create(
-                    backgroundImage,
-                    new Rect(0, 0, backgroundImage.width, backgroundImage.height),
-                    new Vector2(0.5f, 0.5f)
-                );
-            }
-        }
-
-        // Cập nhật AspectRatioFitter theo tỷ lệ ảnh
-        if (bgAspectFitter && backgroundImage != null && backgroundImage.height > 0)
-        {
-            bgAspectFitter.aspectRatio = (float)backgroundImage.width / backgroundImage.height;
-        }
-    }
-
-    private void InitCardEvents()
-    {
-        BindCard(card1, 0);
-        BindCard(card2, 1);
-        BindCard(card3, 2);
-        BindCard(card4, 3);
-    }
-
-    private void BindCard(RawImage card, int index)
-    {
-        if (!card) return;
-
-        CardUIItem item = card.GetComponent<CardUIItem>();
-        if (!item) item = card.gameObject.AddComponent<CardUIItem>();
-
-        item.CardId = index;
-        if (item.onCardClicked == null) item.onCardClicked = new UnityEngine.Events.UnityEvent<int>();
-        item.onCardClicked.RemoveListener(OnCardClicked);
-        item.onCardClicked.AddListener(OnCardClicked);
-    }
-
-    public void OnCardClicked(int cardId)
-    {
-        if (HandTutorialUI.Instance) HandTutorialUI.Instance.HideTutorial();
-        StartCoroutine(EndGame());
-    }
-
-    public void ShowEndCardView()
-    {
-        if (endCard && !endCard.activeSelf) endCard.SetActive(true);
-    }
-
-    public void ClickCTA()
-    {
+        Debug.Log("ClickCTA");
         Luna.Unity.Playable.InstallFullGame();
     }
 
     private IEnumerator EndGame()
     {
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(TimePlay);
         Luna.Unity.LifeCycle.GameEnded();
-        ShowEndCardView();
-
+        if (LimitTimePlay) ClickCTA();
     }
 }
+
