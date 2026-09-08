@@ -189,12 +189,8 @@ public class LunaController : MonoBehaviour
                         while (Array.isArray(v)) {
                             if (v.length === 0) return '';
                             if (v.length > 1 && typeof v[0] === 'string' && typeNames.indexOf(v[0].toLowerCase()) !== -1) {
-                                v = v.slice(1);
-                                continue;
-                            }
-                            if (v.length > 1 && typeof v[0] === 'string' && v[0].length <= 3 && typeof v[1] === 'string') {
                                 v = v[1];
-                                break;
+                                continue;
                             }
                             v = v[0];
                         }
@@ -212,8 +208,10 @@ public class LunaController : MonoBehaviour
                         if (!obj || typeof obj !== 'object') return undefined;
                         if (obj[k1] !== undefined) return getVal(obj[k1]);
                         if (k2 && obj[k2] !== undefined) return getVal(obj[k2]);
+                        var l1 = k1.toLowerCase(), l2 = k2 ? k2.toLowerCase() : null;
                         for (var k in obj) {
-                            if (k.toLowerCase() === k1.toLowerCase() || (k2 && k.toLowerCase() === k2.toLowerCase())) {
+                            var lk = k.toLowerCase();
+                            if (lk === l1 || (l2 && lk === l2)) {
                                 return getVal(obj[k]);
                             }
                         }
@@ -222,6 +220,7 @@ public class LunaController : MonoBehaviour
 
                     function findOverride(name, altName) {
                         var targets = [];
+                        if (window.__lastLivePlaygroundData) targets.push(window.__lastLivePlaygroundData);
                         if (window.playgroundOverrides) targets.push(window.playgroundOverrides);
                         try {
                             if (window.parent && window.parent.playgroundOverrides) targets.push(window.parent.playgroundOverrides);
@@ -238,9 +237,10 @@ public class LunaController : MonoBehaviour
                             v = findVal(o, name, altName);
                             if (v !== undefined) return v;
                             for (var k in o) {
-                                var s = o[k];
-                                v = findVal(s, name, altName);
-                                if (v !== undefined) return v;
+                                if (o[k] && typeof o[k] === 'object') {
+                                    v = findVal(o[k], name, altName);
+                                    if (v !== undefined) return v;
+                                }
                             }
                         }
                         return undefined;
@@ -249,29 +249,46 @@ public class LunaController : MonoBehaviour
                     window.__applyLunaPlaygroundLive = function() {
                         try {
                             var ins = (typeof LunaController !== 'undefined' && LunaController.Ins) ? LunaController.Ins : null;
-                            if (!ins) return;
 
-                            var textVal = findOverride('Text', 'Text');
+                            // 1. Text Update
+                            var textVal = findOverride('Text', 'title');
                             if (textVal !== undefined && textVal !== null) {
                                 var strVal = String(textVal);
-                                if (ins.Text !== strVal) {
-                                    ins.Text = strVal;
-                                }
-                                if (ins.title) {
-                                    if (ins.title.text !== strVal) {
-                                        ins.title.text = strVal;
+                                if (ins) {
+                                    if (ins.Text !== strVal) {
+                                        ins.Text = strVal;
                                     }
-                                    ins.title.m_havePropertiesChanged = true;
-                                    if (ins.title.SetVerticesDirty) ins.title.SetVerticesDirty();
-                                    if (ins.title.SetLayoutDirty) ins.title.SetLayoutDirty();
-                                    if (ins.title.ForceMeshUpdate) ins.title.ForceMeshUpdate(true, true);
+                                    if (ins.title) {
+                                        if (ins.title.text !== strVal) {
+                                            ins.title.text = strVal;
+                                        }
+                                        ins.title.m_havePropertiesChanged = true;
+                                        if (ins.title.SetVerticesDirty) ins.title.SetVerticesDirty();
+                                        if (ins.title.SetLayoutDirty) ins.title.SetLayoutDirty();
+                                        if (ins.title.ForceMeshUpdate) ins.title.ForceMeshUpdate(true, true);
+                                    }
+                                }
+                                // Fallback direct TMP search if title reference is missing
+                                if (!ins || !ins.title) {
+                                    var tmpObj = UnityEngine.GameObject.Find('Text (TMP)');
+                                    if (tmpObj) {
+                                        var tmpComp = tmpObj.GetComponent(TMPro.TextMeshProUGUI);
+                                        if (tmpComp) {
+                                            tmpComp.text = strVal;
+                                            tmpComp.m_havePropertiesChanged = true;
+                                            if (tmpComp.SetVerticesDirty) tmpComp.SetVerticesDirty();
+                                            if (tmpComp.SetLayoutDirty) tmpComp.SetLayoutDirty();
+                                            if (tmpComp.ForceMeshUpdate) tmpComp.ForceMeshUpdate(true, true);
+                                        }
+                                    }
                                 }
                             }
 
+                            // 2. TextHigh Update
                             var highVal = findOverride('TextHigh', 'Text High');
                             if (highVal !== undefined && highVal !== null) {
                                 var num = parseFloat(highVal);
-                                if (!isNaN(num)) {
+                                if (!isNaN(num) && ins) {
                                     ins.TextHigh = num;
                                     var baseY = ins._baseTitlePosY || 747;
                                     var targetY = (Math.abs(num) < 300) ? (baseY + num) : num;
@@ -294,10 +311,12 @@ public class LunaController : MonoBehaviour
 
                     function handleMessage(e) {
                         try {
-                            var msg = (typeof e.data === 'string') ? JSON.parse(e.data) : e.data;
-                            if (msg && (msg.name === 'setPlaygroundOverrides' || msg.name === 'live:setPlaygroundOverrides' || (msg.name && msg.name.indexOf('setPlaygroundOverrides') !== -1)) && msg.data) {
+                            var raw = e.data;
+                            var msg = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+                            if (msg && msg.name && (msg.name.indexOf('Playground') !== -1 || msg.name.indexOf('playground') !== -1) && msg.data) {
                                 var parsed = (typeof msg.data === 'string') ? JSON.parse(msg.data) : msg.data;
-                                if (parsed) {
+                                if (parsed && typeof parsed === 'object') {
+                                    window.__lastLivePlaygroundData = parsed;
                                     if (!window.playgroundOverrides) window.playgroundOverrides = {};
                                     window.playgroundOverrides = Object.assign(window.playgroundOverrides, parsed);
                                     if (parsed.LunaController) {
