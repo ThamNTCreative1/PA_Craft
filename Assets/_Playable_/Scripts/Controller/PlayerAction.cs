@@ -12,6 +12,7 @@ namespace Playable
         [SerializeField] private Camera _interactionCamera;
         [SerializeField] private Button _exitButton;
         [SerializeField] private Arrow _motorbikeArrow;
+        [SerializeField] private Arrow _carArrow;
         [SerializeField] private MotorbikeController[] _motorbikes;
         [SerializeField, Min(0.1f)] private float _interactionDistance = 4f;
         [SerializeField] private float _tapMaxMovement = 25f;
@@ -20,6 +21,9 @@ namespace Playable
         [SerializeField, Min(0f), Tooltip("Extra tap area around the bike, in pixels at a 1080px screen short side.")]
         private float _tutorialTapPadding = 60f;
         [SerializeField, Min(0f)] private float _tutorialMinTapSize = 120f;
+        [SerializeField] private CarController[] _cars;
+        private CarController _nearestCar, _mountedCar;
+        private Collider[] _tutorialCarColliders;
         private Collider[] _tutorialBikeColliders;
         private readonly RaycastHit[] _tutorialHits = new RaycastHit[32];
         private MotorbikeController _nearest, _mounted;
@@ -30,9 +34,11 @@ namespace Playable
         private readonly List<RaycastResult> _uiHits = new List<RaycastResult>();
         private PointerEventData _pointer;
         public PlayerController PlayerController => _playerController;
-        public bool IsInCar => _mounted != null;
+        public bool IsInCar => _mountedCar != null;
+        public bool IsOnMotorbike => _mounted != null;
         public bool IsUsingTreadmill => false;
-        public event Action CarEntered;
+        public event Action MotorbikeMounted;
+        public event Action CarMounted;
         private void Awake()
         {
             if (_playerController == null) _playerController = GetComponent<PlayerController>();
@@ -42,6 +48,10 @@ namespace Playable
             _tutorialBikeColliders = new Collider[_motorbikes.Length];
             for (int i = 0; i < _motorbikes.Length; i++)
                 if (_motorbikes[i] != null) _tutorialBikeColliders[i] = _motorbikes[i].GetComponent<Collider>();
+            if (_cars == null) _cars = new CarController[0];
+            _tutorialCarColliders = new Collider[_cars.Length];
+            for (int i = 0; i < _cars.Length; i++)
+                if (_cars[i] != null) _tutorialCarColliders[i] = _cars[i].GetComponent<Collider>();
             if (_exitButton != null) _exitButton.onClick.AddListener(UseMotorbike);
         }
         private void OnDestroy()
@@ -51,27 +61,37 @@ namespace Playable
         private void Update()
         {
             if (_mounted != null && _mounted.Rider != _playerController) _mounted = null;
+            if (_mountedCar != null && _mountedCar.Rider != _playerController) _mountedCar = null;
             FindNearestMotorbike();
+            FindNearest(_cars, _tutorialCarColliders, ref _nearestCar, _carArrow);
             if (_exitButton != null) _exitButton.gameObject.SetActive(_mounted != null);
-            if (_mounted == null && ReadTap(out Vector2 screen)) TryTapBike(screen);
+            if (_mounted == null && _mountedCar == null && ReadTap(out Vector2 screen))
+            {
+                TryTapBike(screen);
+                if (_mounted == null) TryTapVehicle(_cars, screen, ref _mountedCar, _carArrow, CarMounted, false, false);
+            }
         }
         private void FindNearestMotorbike()
         {
-            _nearest = null; float best = float.PositiveInfinity;
-            MotorbikeController guide = null;
+            FindNearest(_motorbikes, _tutorialBikeColliders, ref _nearest, _motorbikeArrow);
+        }
+        private void FindNearest<T>(T[] vehicles, Collider[] colliders, ref T nearest, Arrow arrow) where T : Component, IDrivableVehicle
+        {
+            nearest = null; float best = float.PositiveInfinity;
+            T guide = null;
             if (!_playerController.IsRiding && _playerController.IsWorking)
-                foreach (var bike in _motorbikes)
+                foreach (var bike in vehicles)
                 {
-                    if (bike == null || !bike.isActiveAndEnabled || bike.IsDriven) continue;
+                    if (bike == null || !bike.gameObject.activeInHierarchy || bike.IsDriven) continue;
                     float distance = (bike.transform.position - transform.position).sqrMagnitude;
                     if (distance >= best) continue;
                     guide = bike; best = distance;
                 }
-            if (best <= _interactionDistance * _interactionDistance) _nearest = guide;
-            if (_motorbikeArrow != null)
+            if (best <= _interactionDistance * _interactionDistance) nearest = guide;
+            if (arrow != null)
             {
-                _motorbikeArrow.SetTarget(guide != null ? guide.transform : null, _interactionCamera);
-                _motorbikeArrow.gameObject.SetActive(guide != null);
+                arrow.SetTarget(guide != null ? guide.transform : null, _interactionCamera);
+                arrow.gameObject.SetActive(guide != null);
             }
         }
         public void UseMotorbike()
@@ -82,31 +102,41 @@ namespace Playable
             {
                 _mounted = _nearest;
                 if (_motorbikeArrow != null) _motorbikeArrow.gameObject.SetActive(false);
-                CarEntered?.Invoke();
+                MotorbikeMounted?.Invoke();
             }
         }
         public bool TryMountFromTutorial(Vector2 screen)
         {
-            if (_mounted != null) return true;
+            if (_mounted != null || _mountedCar != null) return true;
             _tracking = false;
             TryTapBike(screen, true, true);
             if (_mounted == null) TryTutorialTapArea(screen);
-            return _mounted != null;
+            if (_mounted == null)
+            {
+                TryTapVehicle(_cars, screen, ref _mountedCar, _carArrow, CarMounted, true, true);
+                if (_mountedCar == null) TryTutorialTapArea(_cars, _tutorialCarColliders, screen, ref _mountedCar, _carArrow, CarMounted);
+            }
+            return _mounted != null || _mountedCar != null;
         }
 
         private void TryTutorialTapArea(Vector2 screen)
+        {
+            TryTutorialTapArea(_motorbikes, _tutorialBikeColliders, screen, ref _mounted, _motorbikeArrow, MotorbikeMounted);
+        }
+
+        private void TryTutorialTapArea<T>(T[] vehicles, Collider[] colliders, Vector2 screen, ref T mounted, Arrow arrow, Action onMounted) where T : Component, IDrivableVehicle
         {
             if (_interactionCamera == null || !_interactionCamera.pixelRect.Contains(screen)) return;
             float scale = Mathf.Min(Screen.width, Screen.height) / 1080f;
             float padding = _tutorialTapPadding * scale;
             float minSize = _tutorialMinTapSize * scale;
-            MotorbikeController selected = null;
+            T selected = null;
             float best = float.PositiveInfinity;
-            for (int i = 0; i < _motorbikes.Length; i++)
+            for (int i = 0; i < vehicles.Length; i++)
             {
-                var bike = _motorbikes[i];
-                var collider = _tutorialBikeColliders[i];
-                if (bike == null || !bike.isActiveAndEnabled || bike.IsDriven || collider == null || !collider.enabled) continue;
+                var bike = vehicles[i];
+                var collider = colliders[i];
+                if (bike == null || !bike.gameObject.activeInHierarchy || bike.IsDriven || collider == null || !collider.enabled) continue;
                 Bounds bounds = collider.bounds;
                 Vector3 center = _interactionCamera.WorldToScreenPoint(bounds.center);
                 if (center.z <= _interactionCamera.nearClipPlane || center.z > 100f) continue;
@@ -130,12 +160,12 @@ namespace Playable
                 selected = bike; best = distance;
             }
             if (selected == null || !selected.TryMount(_playerController, true)) return;
-            _mounted = selected;
-            if (_motorbikeArrow != null) _motorbikeArrow.gameObject.SetActive(false);
-            CarEntered?.Invoke();
+            mounted = selected;
+            if (arrow != null) arrow.gameObject.SetActive(false);
+            onMounted?.Invoke();
         }
 
-        private bool IsTutorialBikeVisible(MotorbikeController bike, Vector3 center)
+        private bool IsTutorialBikeVisible(IDrivableVehicle bike, Vector3 center)
         {
             Ray ray = _interactionCamera.ScreenPointToRay(_interactionCamera.WorldToScreenPoint(center));
             int count = Physics.RaycastNonAlloc(ray, _tutorialHits, Vector3.Distance(ray.origin, center) + 0.1f, ~0, QueryTriggerInteraction.Ignore);
@@ -153,22 +183,31 @@ namespace Playable
 
         private void TryTapBike(Vector2 screen, bool ignoreDistance = false, bool tutorialPress = false)
         {
-            // The tutorial/joystick overlay must not consume a press on the bike.
-            if (_interactionCamera == null || (!tutorialPress && IsOverControls(screen))) return;
+            TryTapVehicle(_motorbikes, screen, ref _mounted, _motorbikeArrow, MotorbikeMounted, ignoreDistance, tutorialPress);
+        }
+
+        private bool TryTapVehicle<T>(T[] vehicles, Vector2 screen, ref T mounted, Arrow arrow, Action onMounted,
+            bool ignoreDistance, bool tutorialPress) where T : Component, IDrivableVehicle
+        {
+            if (_interactionCamera == null || (!tutorialPress && IsOverControls(screen))) return false;
             var hits = Physics.RaycastAll(_interactionCamera.ScreenPointToRay(screen), 100f, ~0, QueryTriggerInteraction.Ignore);
             Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
             foreach (var hit in hits)
             {
                 if (hit.collider.transform.IsChildOf(transform)) continue;
-                var bike = hit.collider.GetComponentInParent<MotorbikeController>();
-                if (bike != null && (ignoreDistance || (bike.transform.position - transform.position).sqrMagnitude <= _interactionDistance * _interactionDistance) && bike.TryMount(_playerController, ignoreDistance))
+                foreach (var vehicle in vehicles)
                 {
-                    _mounted = bike;
-                    if (_motorbikeArrow != null) _motorbikeArrow.gameObject.SetActive(false);
-                    CarEntered?.Invoke();
+                    if (vehicle == null || !hit.collider.transform.IsChildOf(vehicle.transform)) continue;
+                    if ((!ignoreDistance && (vehicle.transform.position - transform.position).sqrMagnitude > _interactionDistance * _interactionDistance)
+                        || !vehicle.TryMount(_playerController, ignoreDistance)) return false;
+                    mounted = vehicle;
+                    if (arrow != null) arrow.gameObject.SetActive(false);
+                    onMounted?.Invoke();
+                    return true;
                 }
-                break; // A wall in front of the bike blocks interaction.
+                break;
             }
+            return false;
         }
         private bool IsOverControls(Vector2 screen)
         {
@@ -216,6 +255,7 @@ namespace Playable
         {
             _tracking = false;
             if (_motorbikeArrow != null) _motorbikeArrow.gameObject.SetActive(false);
+            if (_carArrow != null) _carArrow.gameObject.SetActive(false);
         }
     }
 }

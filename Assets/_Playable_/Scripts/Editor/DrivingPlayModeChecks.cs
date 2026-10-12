@@ -30,6 +30,12 @@ public static class DrivingPlayModeChecks
     }
     static void OnState(PlayModeStateChange state)
     {
+        if (state == PlayModeStateChange.EnteredPlayMode && SessionState.GetBool("DrivingChecks.Car", false))
+        {
+            SessionState.SetBool("DrivingChecks.Car", false);
+            EditorApplication.update += CarTick;
+        }
+        if (state == PlayModeStateChange.ExitingPlayMode) EditorApplication.update -= CarTick;
         if (state == PlayModeStateChange.EnteredPlayMode && SessionState.GetBool("DrivingChecks.Run", false))
         {
             SessionState.SetBool("DrivingChecks.Run", false);
@@ -44,6 +50,141 @@ public static class DrivingPlayModeChecks
         File.WriteAllLines(Folder + "checks.txt", Results);
     }
     static void Next() { stage++; stageStart = Time.time; }
+    [MenuItem("Playable/Checks/Car Curbs")]
+    public static void RunCarCurbs()
+    {
+        if (EditorApplication.isPlaying) throw new InvalidOperationException("Start checks in Edit Mode.");
+        Directory.CreateDirectory(Folder);
+        SessionState.SetBool("DrivingChecks.Car", true);
+        EditorApplication.isPlaying = true;
+    }
+
+    static void CarTick()
+    {
+        if (!EditorApplication.isPlaying || Time.timeSinceLevelLoad < 1f) return;
+        EditorApplication.update -= CarTick;
+        var previousSimulation = Physics.simulationMode;
+        GameObject floor = null, curb = null, ceiling = null;
+        try
+        {
+            Results.Clear();
+            var car = UnityEngine.Object.FindFirstObjectByType<CarController>(FindObjectsInactive.Include);
+            var rider = UnityEngine.Object.FindFirstObjectByType<PlayerController>(FindObjectsInactive.Include);
+            if (car == null || rider == null) throw new Exception("Car/player missing.");
+            for (var parent = car.transform; parent != null; parent = parent.parent) parent.gameObject.SetActive(true);
+            for (var parent = rider.transform; parent != null; parent = parent.parent) parent.gameObject.SetActive(true);
+            rider.IsWorking = true;
+            Check(car.TryMount(rider, true), "Car mounts for curb checks");
+            var body = car.GetComponent<Rigidbody>();
+            var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+            var type = typeof(CarController);
+            var fixedUpdate = type.GetMethod("FixedUpdate", flags);
+            var lateUpdate = type.GetMethod("LateUpdate", flags);
+            floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            floor.name = "Temporary car check road";
+            floor.transform.position = new Vector3(1000, 99.5f, 0);
+            floor.transform.localScale = new Vector3(100, 1, 100);
+            curb = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            curb.name = "Temporary car check curb";
+            ceiling = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            ceiling.name = "Temporary car check ceiling";
+            Physics.simulationMode = SimulationMode.Script;
+            for (int scenario = 0; scenario < 13; scenario++)
+            {
+                bool reverse = scenario == 3, fast = scenario == 4 || scenario == 9, diagonal = scenario == 5;
+                bool tall = scenario == 6, overhead = scenario == 7, brake = scenario == 8;
+                bool release = scenario == 10;
+                bool singleSide = scenario == 11, landing = scenario == 12;
+                float height = scenario == 0 ? 0.04f : scenario == 1 ? 0.2f : tall ? 0.8f : 0.54f;
+                curb.transform.position = new Vector3(singleSide ? 1000.75f : 1000, 100 + height * 0.5f, landing ? 30 : 4);
+                curb.transform.localScale = new Vector3(singleSide ? 1.1f : 40, height, 8);
+                ceiling.transform.position = new Vector3(1000, overhead ? 101.65f : 120, 0);
+                ceiling.transform.localScale = new Vector3(40, 0.2f, 10);
+                body.position = new Vector3(1000, 100.02f, -6);
+                body.rotation = Quaternion.Euler(0, reverse ? 180 : diagonal ? 20 : 0, 0);
+                body.linearVelocity = Vector3.zero;
+                body.angularVelocity = Vector3.zero;
+                type.GetField("_maxForwardSpeed", flags).SetValue(car, fast ? 13f : 2f);
+                type.GetField("_maxReverseSpeed", flags).SetValue(car, 2f);
+                type.GetField("_input", flags).SetValue(car, new Vector2(0, reverse ? -1 : 1));
+                type.GetField("_handbrake", flags).SetValue(car, false);
+                Physics.SyncTransforms();
+                type.GetField("_input", flags).SetValue(car, Vector2.zero);
+                for (int settle = 0; settle < 100; settle++)
+                {
+                    fixedUpdate.Invoke(car, null);
+                    Physics.Simulate(Time.fixedDeltaTime);
+                }
+                type.GetField("_input", flags).SetValue(car, new Vector2(0, reverse ? -1 : 1));
+                if (scenario == 9) body.linearVelocity = Vector3.forward * 13;
+                if (landing)
+                {
+                    body.position += Vector3.up * 2;
+                    type.GetField("_input", flags).SetValue(car, Vector2.zero);
+                    Physics.SyncTransforms();
+                }
+                float maxRise = 0, maxHeight = body.position.y, minSpeed = float.PositiveInfinity;
+                float minUp = 1;
+                bool crossed = false, brakeApplied = false;
+                var trajectory = new List<string>();
+                for (int tick = 0; tick < 400; tick++)
+                {
+                    if ((brake || release) && body.position.z > -2.2f)
+                    {
+                        if (brake) type.GetField("_handbrake", flags).SetValue(car, true);
+                        if (release) type.GetField("_input", flags).SetValue(car, Vector2.zero);
+                        brakeApplied = true;
+                    }
+                    float before = body.position.y;
+                    fixedUpdate.Invoke(car, null);
+                    string command = body.linearVelocity.ToString("F3");
+                    Physics.Simulate(Time.fixedDeltaTime);
+                    lateUpdate.Invoke(car, null);
+                    if (scenario == 9) trajectory.Add(tick + " p=" + body.position.ToString("F3") + " command=" + command + " v=" + body.linearVelocity.ToString("F3") + " up=" + car.transform.up.ToString("F3"));
+                    maxRise = Mathf.Max(maxRise, body.position.y - before);
+                    maxHeight = Mathf.Max(maxHeight, body.position.y);
+                    minUp = Mathf.Min(minUp, car.transform.up.y);
+                    if (body.position.z > -2 && body.position.z < 1) minSpeed = Mathf.Min(minSpeed, car.Speed);
+                    if (body.position.z > 2) { crossed = true; break; }
+                }
+                bool shouldCross = !tall && !overhead && !brake && !release && !landing;
+                if (scenario == 9) File.WriteAllLines(Folder + "car-fast-trajectory.txt", trajectory);
+                Check(crossed == shouldCross && maxRise < 0.09f && (!(brake || release) || brakeApplied) &&
+                    minUp > 0.7f && (!landing || (car.IsGrounded && Mathf.Abs(body.position.y - 100) < 0.1f && body.linearVelocity.magnitude < 0.2f)) &&
+                    (!shouldCross || (minSpeed > (fast ? 3f : 0.1f) && maxHeight < 100 + height + 0.35f)),
+                    "Car scenario=" + scenario + " curb=" + height + " crossed=" + crossed +
+                    " maxTickRise=" + maxRise.ToString("F4") + " maxY=" + maxHeight.ToString("F3") + " minSpeed=" + minSpeed.ToString("F3") + " minUp=" + minUp.ToString("F3"));
+            }
+            var wheelPhysics = (WheelCollider[])type.GetField("_wheelColliders", flags).GetValue(car);
+            var wheelModels = (Transform[])type.GetField("_wheels", flags).GetValue(car);
+            bool posesMatch = true;
+            for (int i = 0; i < 4; i++)
+            {
+                wheelPhysics[i].GetWorldPose(out Vector3 position, out Quaternion rotation);
+                posesMatch &= Vector3.Distance(position, wheelModels[i].position) < 0.001f;
+            }
+            Check(posesMatch, "Wheel graphics follow suspension poses");
+            car.RequestDismount();
+            type.GetMethod("Update", flags).Invoke(car, null);
+            bool anyAssistance = false;
+            foreach (bool value in (bool[])type.GetField("_assisting", flags).GetValue(car)) anyAssistance |= value;
+            Check(!car.IsDriven && !rider.IsRiding && body.isKinematic && !anyAssistance, "Dismount clears wheel assistance and restores player");
+            File.WriteAllLines(Folder + "car-curb-checks.txt", Results);
+        }
+        catch (Exception error)
+        {
+            Check(false, error.ToString());
+            File.WriteAllLines(Folder + "car-curb-checks.txt", Results);
+        }
+        finally
+        {
+            Physics.simulationMode = previousSimulation;
+            if (floor != null) UnityEngine.Object.DestroyImmediate(floor);
+            if (curb != null) UnityEngine.Object.DestroyImmediate(curb);
+            if (ceiling != null) UnityEngine.Object.DestroyImmediate(ceiling);
+            EditorApplication.isPlaying = false;
+        }
+    }
     static void Input(Vector2 value)
     {
         var data = new PointerEventData(EventSystem.current) { pointerId = -1 };
@@ -82,9 +223,6 @@ public static class DrivingPlayModeChecks
                 if (GameController.Instance != null)
                 {
                     GameController.Instance.StopAllCoroutines();
-                    var flow = new SerializedObject(GameController.Instance);
-                    flow.FindProperty("_timeToShowMap").floatValue = 3600f;
-                    flow.ApplyModifiedPropertiesWithoutUndo();
                 }
                 camera = UnityEngine.Object.FindFirstObjectByType<CameraController>();
                 player = camera.Target; joystick = player.MoveJoystick;
@@ -92,7 +230,9 @@ public static class DrivingPlayModeChecks
                 Check(player.IsGrounded && player.transform.position.y > 10, "Player starts grounded above city road: " + player.transform.position);
                 Check(camera.OutputCamera != null && joystick != null, "Camera and joystick assigned");
                 Check(player.name == "Player" && GameObject.Find("Gojo") == null && GameObject.Find("Nigga") == null, "Existing Player replaces obsolete actors");
-                Check(player.GetComponentInChildren<Animator>().isHuman, "Player humanoid avatar is valid");
+                var playerAnimator = player.GetComponentInChildren<Animator>();
+                Check(!playerAnimator.isHuman && playerAnimator.runtimeAnimatorController != null,
+                    "Player uses the baked Generic animation controller");
                 Check(UIObject("_playerUI").activeInHierarchy && !UIObject("_motorbikeUI").activeSelf, "Only player UI visible at start");
                 Check(UIObject("_startTutorial").activeInHierarchy, "Start tutorial visible");
                 UnityEngine.Object.FindFirstObjectByType<GameController>().DismissStartTutorial();
@@ -155,7 +295,7 @@ public static class DrivingPlayModeChecks
                 Check(Vector3.Distance(player.transform.position, player.transform.parent.position) < 0.03f, "Rider remains attached to the moving seat");
                 Check(!UIObject("_drivingTutorial").activeSelf, "Driving movement dismisses tutorial");
                 Capture("driving.png");
-                var hips = player.GetComponentInChildren<Animator>().GetBoneTransform(HumanBodyBones.Hips);
+                var hips = player.GetComponentInChildren<Animator>().transform.Find("Armature.001/mixamorig:Hips");
                 File.AppendAllText(Folder + "camera-debug.txt", "Rider hips above bike=" + (hips.position.y - bike.transform.position.y) + "\n");
                 Check(bike.Speed > 2 && bike.Speed < bike.MaxSpeed, "Bike accelerates progressively: " + bike.Speed);
                 Check(Vector3.Distance(start, bike.transform.position) > 1, "Bike drives forward");

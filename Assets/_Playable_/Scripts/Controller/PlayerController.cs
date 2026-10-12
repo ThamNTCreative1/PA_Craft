@@ -51,6 +51,8 @@ namespace Playable
         private float _ignoreGroundUntil;
         private bool _isGrounded, _followCameraYaw;
         private float _cameraYaw;
+        private bool _aiming;
+        private float _aimYaw;
         private bool _hasSpeed, _hasJump;
         private float _animationSpeed, _airborneTime, _groundedTime;
         private bool _jumpAnimation;
@@ -67,6 +69,16 @@ namespace Playable
         public CameraController CameraController => _cameraController;
         public event Action MovementRequested;
         public bool IsWorking { get => _isWorking; set { _isWorking = value; if (!value) _moveInput = Vector2.zero; } }
+
+        public RuntimeAnimatorController SetOnFootAnimator(RuntimeAnimatorController controller)
+        {
+            if (_animator == null || IsRiding) return null;
+            RuntimeAnimatorController previous = _animator.runtimeAnimatorController;
+            _animator.runtimeAnimatorController = controller;
+            _animator.Rebind();
+            _animator.Update(0);
+            return previous;
+        }
 
         private void Awake()
         {
@@ -216,9 +228,11 @@ namespace Playable
             if (_groundedTime >= 0.06f) _jumpAnimation = false;
             if (_isGrounded && direction.sqrMagnitude > 0.001f) TryStep(direction.normalized);
             _rigidbody.linearVelocity = new Vector3(planar.x, vertical, planar.z);
-            if (_followCameraYaw || direction.sqrMagnitude > 0.001f)
+            if (_aiming || _followCameraYaw || direction.sqrMagnitude > 0.001f)
             {
-                Quaternion rotation = _followCameraYaw ? Quaternion.Euler(0, _cameraYaw, 0) : Quaternion.LookRotation(direction);
+                // Aim owns a separate request so camera callbacks cannot clear it on Luna.
+                Quaternion rotation = _aiming ? Quaternion.Euler(0, _aimYaw, 0) :
+                    _followCameraYaw ? Quaternion.Euler(0, _cameraYaw, 0) : Quaternion.LookRotation(direction);
                 _rigidbody.MoveRotation(Quaternion.Slerp(_rigidbody.rotation, rotation, 1f - Mathf.Exp(-_rotationSmooth * Time.fixedDeltaTime)));
             }
         }
@@ -278,6 +292,8 @@ namespace Playable
         public void SetCameraController(CameraController controller) { _cameraController = controller; }
         public void SetCameraYaw(float yaw) { _followCameraYaw = true; _cameraYaw = yaw; }
         public void StopFollowingCameraYaw() { _followCameraYaw = false; }
+        public void SetAimYaw(float yaw) { _aiming = true; _aimYaw = yaw; }
+        public void StopAiming() { _aiming = false; }
         public void Teleport(Transform destination) { if (destination != null) Teleport(destination.position, destination.rotation); }
         public void Teleport(Vector3 position, Quaternion rotation)
         {
@@ -290,6 +306,21 @@ namespace Playable
             _rigidbody.position = position; _rigidbody.rotation = rotation;
             transform.SetPositionAndRotation(position, rotation);
         }
+        public void BeginDrive()
+        {
+            if (IsRiding) return;
+            _moveInput = Vector2.zero;
+            IsRiding = true;
+            gameObject.SetActive(false);
+        }
+
+        public void EndDrive(Vector3 position, Quaternion rotation)
+        {
+            gameObject.SetActive(true);
+            IsRiding = false;
+            Teleport(position, rotation);
+        }
+
         public void BeginRide(Transform seat, RuntimeAnimatorController rideController)
         {
             if (IsRiding || seat == null) return;

@@ -1,0 +1,277 @@
+--- before/CarController.cs
++++ Assets/_Playable_/Scripts/Controller/CarController.cs
+@@ -31,10 +31,14 @@
+         [SerializeField] private float _wheelRadius = 0.4f;
+         [SerializeField] private LayerMask _groundMask = ~0;
+         [SerializeField] private float _gravity = 24f;
+-        [SerializeField, Min(0f)] private float _stepHeight = 0.3f;
++        [SerializeField, Min(0f)] private float _stepHeight = 0.6f;
++        [SerializeField, Min(0.05f)] private float _stepRiseTime = 0.2f;
+         [SerializeField] private bool _logDriveDiagnostics;
+         private float _nextDiagnosticLogTime;
+         private BoxCollider _stepBox;
++        private bool _stepping;
++        private float _stepTargetY, _stepLiftSpeed;
++        private Vector3 _stepDirection, _stepEnd;
+         private readonly Collider[] _stepOverlaps = new Collider[32];
+         private PlayerController _rider;
+         private PhysicsMaterial _material;
+@@ -115,7 +119,7 @@
+         }
+         private bool GroundAt(Vector3 local, out RaycastHit best)
+         {
+-            int count = Physics.RaycastNonAlloc(transform.TransformPoint(local), Vector3.down, _hits, 1.15f,
++            int count = Physics.RaycastNonAlloc(transform.TransformPoint(local), Vector3.down, _hits, Mathf.Max(1.15f, _stepHeight + 0.75f),
+                 _groundMask, QueryTriggerInteraction.Ignore);
+             best = default; float distance = float.MaxValue;
+             for (int i = 0; i < count; i++)
+@@ -154,7 +158,7 @@
+             slopeForward.y = -Vector3.Dot(forward, _groundNormal) / Mathf.Max(0.55f, _groundNormal.y);
+             Vector3 desired = slopeForward.normalized * speed;
+             Vector3 planar = new Vector3(velocity.x, 0, velocity.z);
+-            if (IsGrounded)
++            if (IsGrounded || _stepping)
+             {
+                 Vector3 right = rotation * Vector3.right;
+                 float along = Mathf.MoveTowards(Vector3.Dot(planar, forward), Vector3.Dot(desired, forward), _grip * Time.fixedDeltaTime);
+@@ -164,10 +168,12 @@
+             // Preserve real collision response and falling velocity. Input cannot accelerate a car in mid-air.
+             float vertical = velocity.y - _gravity * Time.fixedDeltaTime;
+             if (IsGrounded) vertical = Mathf.Max(vertical, desired.y - 2f);
+-            bool stepped = IsGrounded && !_handbrake && Mathf.Abs(_input.y) > 0.01f && Mathf.Abs(speed) > 0.05f &&
++            bool wantsStep = !_handbrake && Mathf.Abs(_input.y) > 0.01f && speed * _input.y > 0;
++            if (!wantsStep || (_stepping && Vector3.Dot(forward * Mathf.Sign(_input.y), _stepDirection) < 0.5f))
++                _stepping = false;
++            if (!_stepping && IsGrounded && wantsStep && Mathf.Abs(speed) > 0.05f)
+                 TryStep(forward * Mathf.Sign(speed), Mathf.Abs(speed));
+-            if (stepped)
+-                vertical = Mathf.Max(0, vertical);
++            bool stepped = _stepping && ApplyStep(ref planar, ref vertical, rotation);
+             _body.linearVelocity = new Vector3(planar.x, vertical, planar.z);
+             if (_logDriveDiagnostics && Time.time >= _nextDiagnosticLogTime)
+             {
+@@ -192,7 +198,8 @@
+             Vector3 half = Vector3.Scale(_stepBox.size, scale) * 0.5f;
+             Vector3 center = _body.position + _body.rotation * Vector3.Scale(_stepBox.center, scale);
+             float feetY = center.y - half.y;
+-            float reach = speed * Time.fixedDeltaTime + 0.12f;
++            float anticipation = Mathf.Max(Time.fixedDeltaTime, _stepRiseTime);
++            float reach = speed * anticipation + 0.5f * _acceleration * anticipation * anticipation + 0.25f;
+             int count = Physics.BoxCastNonAlloc(center, half * 0.98f, direction, _hits, _body.rotation,
+                 reach, _groundMask, QueryTriggerInteraction.Ignore);
+             if (count == _hits.Length) return false;
+@@ -223,7 +230,8 @@
+             if (topDistance == float.PositiveInfinity || top.normal.y < 0.65f) return false;
+             float rise = top.point.y - feetY;
+             if (rise < 0.005f || rise > _stepHeight) return false;
+-            Vector3 lift = Vector3.up * (rise + 0.02f);
++            // Clear the contact skin as well as the visible top, avoiding a speculative ramp impulse.
++            Vector3 lift = Vector3.up * (rise + Mathf.Max(0.05f, _bodyCollider.contactOffset * 2f));
+             count = Physics.BoxCastNonAlloc(center, half * 0.98f, Vector3.up, _hits, _body.rotation,
+                 lift.y, ~0, QueryTriggerInteraction.Ignore);
+             if (count == _hits.Length) return false;
+@@ -235,7 +243,59 @@
+             if (count == _stepOverlaps.Length) return false;
+             for (int i = 0; i < count; i++)
+                 if (!_stepOverlaps[i].transform.IsChildOf(transform)) return false;
+-            _body.position += lift;
++            _stepping = true;
++            _stepTargetY = _body.position.y + lift.y;
++            _stepLiftSpeed = lift.y / Mathf.Max(0.05f, _stepRiseTime);
++            _stepDirection = direction;
++            // Keep the support height until the leading edge is safely over the ledge.
++            _stepEnd = _body.position + direction * (nearest + 0.15f);
++            return true;
++        }
++
++        private bool ApplyStep(ref Vector3 planar, ref float vertical, Quaternion rotation)
++        {
++            float remaining = _stepTargetY - _body.position.y;
++            if (remaining < -0.05f)
++            {
++                _stepping = false;
++                return false;
++            }
++            if (remaining <= 0.005f && Vector3.Dot(_body.position - _stepEnd, _stepDirection) >= 0)
++            {
++                _stepping = false;
++                // The lift is support motion, not a jump impulse to keep after reaching the top.
++                vertical = Mathf.Min(vertical, 0);
++                return true;
++            }
++
++            Vector3 half = Vector3.Scale(_stepBox.size, transform.lossyScale) * 0.5f;
++            half = new Vector3(Mathf.Abs(half.x), Mathf.Abs(half.y), Mathf.Abs(half.z));
++            Vector3 center = _body.position + rotation * Vector3.Scale(_stepBox.center, transform.lossyScale);
++            float lift = Mathf.Min(Mathf.Max(0, remaining), _stepLiftSpeed * Time.fixedDeltaTime);
++            int count = Physics.BoxCastNonAlloc(center, half * 0.98f, Vector3.up, _hits, rotation,
++                lift + 0.005f, ~0, QueryTriggerInteraction.Ignore);
++            if (count == _hits.Length) { _stepping = false; return false; }
++            for (int i = 0; i < count; i++)
++                if (!_hits[i].collider.transform.IsChildOf(transform)) { _stepping = false; return false; }
++
++            // Cap forward travel while the body is still below the top; do not force it through the face.
++            float travel = planar.magnitude * Time.fixedDeltaTime;
++            if (travel > 0.0001f)
++            {
++                Vector3 direction = planar.normalized;
++                count = Physics.BoxCastNonAlloc(center + Vector3.up * lift, half * 0.98f, direction,
++                    _hits, rotation, travel + 0.05f, ~0, QueryTriggerInteraction.Ignore);
++                if (count == _hits.Length) { _stepping = false; return false; }
++                float allowed = travel;
++                for (int i = 0; i < count; i++)
++                {
++                    var hit = _hits[i];
++                    if (hit.collider.transform.IsChildOf(transform) || hit.normal.y > 0.55f) continue;
++                    allowed = Mathf.Min(allowed, Mathf.Max(0, hit.distance - 0.05f));
++                }
++                planar *= allowed / travel;
++            }
++            vertical = lift / Time.fixedDeltaTime;
+             return true;
+         }
+         private void LateUpdate()
+@@ -308,6 +368,7 @@
+ 
+         private void ReleaseInput()
+         {
++            _stepping = false;
+             _input = Vector2.zero;
+             _handbrake = false;
+             if (_forwardButton != null) _forwardButton.Release();
+--- before/Gameplay.unity
++++ Assets/_Playable_/Scenes/Gameplay.unity
+@@ -7989,7 +7989,7 @@
+     serializedVersion: 2
+     m_Bits: 4294967295
+   _gravity: 24
+-  _stepHeight: 3
++  _stepHeight: 0.6
+   _logDriveDiagnostics: 0
+ --- !u!65 &1210184723
+ BoxCollider:
+--- before/DrivingPlayModeChecks.cs
++++ Assets/_Playable_/Scripts/Editor/DrivingPlayModeChecks.cs
+@@ -30,6 +30,12 @@
+     }
+     static void OnState(PlayModeStateChange state)
+     {
++        if (state == PlayModeStateChange.EnteredPlayMode && SessionState.GetBool("DrivingChecks.Car", false))
++        {
++            SessionState.SetBool("DrivingChecks.Car", false);
++            EditorApplication.update += CarTick;
++        }
++        if (state == PlayModeStateChange.ExitingPlayMode) EditorApplication.update -= CarTick;
+         if (state == PlayModeStateChange.EnteredPlayMode && SessionState.GetBool("DrivingChecks.Run", false))
+         {
+             SessionState.SetBool("DrivingChecks.Run", false);
+@@ -44,6 +50,109 @@
+         File.WriteAllLines(Folder + "checks.txt", Results);
+     }
+     static void Next() { stage++; stageStart = Time.time; }
++    [MenuItem("Playable/Checks/Car Curbs")]
++    public static void RunCarCurbs()
++    {
++        if (EditorApplication.isPlaying) throw new InvalidOperationException("Start checks in Edit Mode.");
++        Directory.CreateDirectory(Folder);
++        SessionState.SetBool("DrivingChecks.Car", true);
++        EditorApplication.isPlaying = true;
++    }
++
++    static void CarTick()
++    {
++        if (!EditorApplication.isPlaying || Time.timeSinceLevelLoad < 1f) return;
++        EditorApplication.update -= CarTick;
++        var previousSimulation = Physics.simulationMode;
++        GameObject floor = null, curb = null, ceiling = null;
++        try
++        {
++            Results.Clear();
++            var car = UnityEngine.Object.FindFirstObjectByType<CarController>(FindObjectsInactive.Include);
++            var rider = UnityEngine.Object.FindFirstObjectByType<PlayerController>(FindObjectsInactive.Include);
++            if (car == null || rider == null) throw new Exception("Car/player missing.");
++            for (var parent = car.transform; parent != null; parent = parent.parent) parent.gameObject.SetActive(true);
++            for (var parent = rider.transform; parent != null; parent = parent.parent) parent.gameObject.SetActive(true);
++            rider.IsWorking = true;
++            Check(car.TryMount(rider, true), "Car mounts for curb checks");
++            var body = car.GetComponent<Rigidbody>();
++            var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
++            var type = typeof(CarController);
++            var fixedUpdate = type.GetMethod("FixedUpdate", flags);
++            floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
++            floor.name = "Temporary car check road";
++            floor.transform.position = new Vector3(1000, 99.5f, 0);
++            floor.transform.localScale = new Vector3(100, 1, 100);
++            curb = GameObject.CreatePrimitive(PrimitiveType.Cube);
++            curb.name = "Temporary car check curb";
++            ceiling = GameObject.CreatePrimitive(PrimitiveType.Cube);
++            ceiling.name = "Temporary car check ceiling";
++            Physics.simulationMode = SimulationMode.Script;
++            for (int scenario = 0; scenario < 11; scenario++)
++            {
++                bool reverse = scenario == 3, fast = scenario == 4 || scenario == 9, diagonal = scenario == 5;
++                bool tall = scenario == 6, overhead = scenario == 7, brake = scenario == 8;
++                bool release = scenario == 10;
++                float height = scenario == 0 ? 0.04f : scenario == 1 ? 0.2f : tall ? 0.8f : 0.54f;
++                curb.transform.position = new Vector3(1000, 100 + height * 0.5f, 4);
++                curb.transform.localScale = new Vector3(40, height, 8);
++                ceiling.transform.position = new Vector3(1000, overhead ? 101.65f : 120, 0);
++                ceiling.transform.localScale = new Vector3(40, 0.2f, 10);
++                body.position = new Vector3(1000, 100.02f, -6);
++                body.rotation = Quaternion.Euler(0, reverse ? 180 : diagonal ? 20 : 0, 0);
++                body.linearVelocity = scenario == 9 ? Vector3.forward * 13f : Vector3.zero;
++                body.angularVelocity = Vector3.zero;
++                type.GetField("_stepping", flags).SetValue(car, false);
++                type.GetField("_groundNormal", flags).SetValue(car, Vector3.up);
++                type.GetField("_maxForwardSpeed", flags).SetValue(car, fast ? 13f : 2f);
++                type.GetField("_maxReverseSpeed", flags).SetValue(car, 2f);
++                type.GetField("_input", flags).SetValue(car, new Vector2(0, reverse ? -1 : 1));
++                type.GetField("_handbrake", flags).SetValue(car, false);
++                Physics.SyncTransforms();
++                float maxRise = 0, maxHeight = body.position.y, minSpeed = float.PositiveInfinity;
++                bool crossed = false, brakeApplied = false;
++                var trajectory = new List<string>();
++                for (int tick = 0; tick < 400; tick++)
++                {
++                    if ((brake || release) && (bool)type.GetField("_stepping", flags).GetValue(car))
++                    {
++                        if (brake) type.GetField("_handbrake", flags).SetValue(car, true);
++                        if (release) type.GetField("_input", flags).SetValue(car, Vector2.zero);
++                        brakeApplied = true;
++                    }
++                    float before = body.position.y;
++                    fixedUpdate.Invoke(car, null);
++                    string command = body.linearVelocity.ToString("F3");
++                    Physics.Simulate(Time.fixedDeltaTime);
++                    if (scenario == 9) trajectory.Add(tick + " p=" + body.position.ToString("F3") + " command=" + command + " v=" + body.linearVelocity.ToString("F3") + " stepping=" + type.GetField("_stepping", flags).GetValue(car));
++                    maxRise = Mathf.Max(maxRise, body.position.y - before);
++                    maxHeight = Mathf.Max(maxHeight, body.position.y);
++                    if (body.position.z > -2 && body.position.z < 1) minSpeed = Mathf.Min(minSpeed, car.Speed);
++                    if (body.position.z > 2) { crossed = true; break; }
++                }
++                bool shouldCross = !tall && !overhead && !brake && !release;
++                if (scenario == 9) File.WriteAllLines(Folder + "car-fast-trajectory.txt", trajectory);
++                Check(crossed == shouldCross && maxRise < 0.09f && (!(brake || release) || brakeApplied) &&
++                    (!shouldCross || (minSpeed > (fast ? 3f : 1.5f) && maxHeight < 100 + height + 0.09f)),
++                    "Car scenario=" + scenario + " curb=" + height + " crossed=" + crossed +
++                    " maxTickRise=" + maxRise.ToString("F4") + " maxY=" + maxHeight.ToString("F3") + " minSpeed=" + minSpeed.ToString("F3"));
++            }
++            File.WriteAllLines(Folder + "car-curb-checks.txt", Results);
++        }
++        catch (Exception error)
++        {
++            Check(false, error.ToString());
++            File.WriteAllLines(Folder + "car-curb-checks.txt", Results);
++        }
++        finally
++        {
++            Physics.simulationMode = previousSimulation;
++            if (floor != null) UnityEngine.Object.DestroyImmediate(floor);
++            if (curb != null) UnityEngine.Object.DestroyImmediate(curb);
++            if (ceiling != null) UnityEngine.Object.DestroyImmediate(ceiling);
++            EditorApplication.isPlaying = false;
++        }
++    }
+     static void Input(Vector2 value)
+     {
+         var data = new PointerEventData(EventSystem.current) { pointerId = -1 };

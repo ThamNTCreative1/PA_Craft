@@ -17,7 +17,7 @@ namespace Playable
         [LunaPlaygroundAsset("Background Music")] [SerializeField]
         private AudioClip _backgroundMusic;
 
-        [LunaPlaygroundAsset("Background Texture")] [SerializeField]
+        [SerializeField]
         private Texture2D _backgroundTexture;
 
         [SerializeField] private Button _btnBlock;

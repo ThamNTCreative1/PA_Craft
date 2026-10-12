@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Playable
 {
     [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
-    public class MotorbikeController : MonoBehaviour
+    public class MotorbikeController : MonoBehaviour, IDrivableVehicle
     {
         [Header("Motobike 4 References")]
         [SerializeField] private Transform _visual;
@@ -47,6 +47,30 @@ namespace Playable
         public bool IsDriven => _rider != null;
         public PlayerController Rider => _rider;
         public bool IsGrounded { get; private set; }
+
+        [Header("Engine Sound")]
+        [SerializeField, Range(0f, 1f)] private float _engineIdleVolume = 0.18f;
+        [SerializeField, Range(0f, 1f)] private float _engineDriveVolume = 0.5f;
+        [SerializeField, Range(0.1f, 3f)] private float _engineIdlePitch = 0.85f;
+        [SerializeField, Range(0.1f, 3f)] private float _engineDrivePitch = 1.8f;
+
+        private void UpdateEngineSound()
+        {
+            if (_engine == null || _rider == null) return;
+            float load = Mathf.Clamp01(Speed / Mathf.Max(0.1f, _maxForwardSpeed) + Mathf.Abs(_input.y) * 0.25f);
+            float blend = 1f - Mathf.Exp(-5f * Time.deltaTime);
+            _engine.pitch = Mathf.Lerp(_engine.pitch, Mathf.Lerp(_engineIdlePitch, _engineDrivePitch, load), blend);
+            _engine.volume = Mathf.Lerp(_engine.volume, Mathf.Lerp(_engineIdleVolume, _engineDriveVolume, load), blend);
+        }
+
+        private void StartEngineSound()
+        {
+            if (_engine == null || _engine.clip == null) return;
+            _engine.loop = true;
+            _engine.pitch = _engineIdlePitch;
+            _engine.volume = _engineIdleVolume;
+            _engine.Play();
+        }
 
         private void Awake()
         {
@@ -197,11 +221,7 @@ namespace Playable
             }
             if (_wheels != null)
                 foreach (var wheel in _wheels) if (wheel != null) wheel.Rotate(Vector3.right, signedSpeed / Mathf.Max(0.1f, _wheelRadius) * Mathf.Rad2Deg * Time.deltaTime, Space.Self);
-            if (_engine != null && _rider != null)
-            {
-                _engine.pitch = Mathf.Lerp(_engine.pitch, 0.85f + 1.1f * Mathf.Clamp01(Speed / _maxForwardSpeed), 1f - Mathf.Exp(-5f * Time.deltaTime));
-                _engine.volume = Mathf.Lerp(0.18f, 0.5f, Mathf.Clamp01(Speed / _maxForwardSpeed));
-            }
+            UpdateEngineSound();
         }
         public bool TryMount(PlayerController player, bool ignoreDistance = false)
         {
@@ -217,7 +237,7 @@ namespace Playable
 #endif
             _body.linearVelocity = Vector3.zero; _body.angularVelocity = Vector3.zero;
             if (player.CameraController != null) player.CameraController.FollowVehicle(this);
-            if (_engine != null && _engine.clip != null) _engine.Play();
+            StartEngineSound();
             return true;
         }
         public void RequestDismount() { if (_rider != null) _exitRequested = true; }
@@ -250,6 +270,7 @@ namespace Playable
         }
         private void OnDisable()
         {
+            if (_engine != null) _engine.Stop();
             if (_rider != null) ReleaseRider(transform.position + transform.right * 1.5f + Vector3.up);
         }
         private void OnDestroy() { if (_material != null) Destroy(_material); }

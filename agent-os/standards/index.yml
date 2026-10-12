@@ -1,0 +1,53 @@
+# Agent OS Standards Index
+
+ai-agent:
+  approval-gates-and-change-control:
+    description: "Requires explicit user approval before implementation and renewed approval for scope changes"
+  cross-project-logic-reuse:
+    description: "Restricts cross-project reuse to the confirmed source logic and excludes unrelated code"
+  roles-and-handoff:
+    description: "Defines Codex research, Claude planning, user approval and Codex implementation handoffs"
+  safety-scope-and-verification:
+    description: "Controls scope, mutation safety, reporting and evidence required before completion"
+
+blender:
+  asset-size-estimation:
+    description: "Estimates Blender asset contribution to Unity and the final Luna playable size"
+  export-unity:
+    description: "Defines approved Blender-to-Unity export settings, transforms and validation"
+  modeling-topology:
+    description: "Sets topology, silhouette, mesh cleanup and modeling requirements for playable assets"
+  rigging-animation:
+    description: "Controls rig, bone, skinning and animation optimization for Luna-compatible assets"
+  triangle-and-geometry-budget:
+    description: "Defines triangle budgets, LOD decisions and geometry optimization based on screen use"
+
+git:
+  branches-commits-and-review:
+    description: "Defines branch, commit, review and approval practices for controlled project changes"
+  repository-and-assets:
+    description: "Controls repository layout, generated files and handling of Unity and Blender assets"
+
+luna:
+  build-budget:
+    description: "Requires measured Luna build-size analysis and optimization of major contributors"
+  luna-controller:
+    description: "Defines LunaController, typed Service Locator and approval-gated outcome event flows"
+  runtime-compatibility:
+    description: "Defines Luna runtime-safe APIs, old Input handling and initialization constraints"
+  scene-budget-4_5mb:
+    description: "Requires the complete playable scene and build to remain below the 4.5 MB target"
+  tutorial-and-onboarding:
+    description: "Defines scenario-approved onboarding, tutorial state, input and outcome interactions"
+
+testing:
+  luna-verification:
+    description: "Defines compile, Console, functional, runtime, build-size and evidence checks"
+
+unity:
+  architecture:
+    description: "Defines pragmatic OOP, SOLID, dependency flow and design-pattern approval for Unity"
+  assets:
+    description: "Controls Unity import settings and optimization for models, textures, audio and animation"
+  materials-built-in-unlit:
+    description: "Requires Built-in Unlit materials without custom shaders and approved brightness control"

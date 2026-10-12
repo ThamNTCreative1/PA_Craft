@@ -1,5 +1,4 @@
-using System.Collections;
-using DG.Tweening;
+using System;
 using UnityEngine;
 
 namespace Playable
@@ -36,75 +35,93 @@ namespace Playable
             _appliedBrightness = _gameBrightness;
         }
 
-        [Header("Minimap")] [LunaPlaygroundField("Time To Show Map")] [SerializeField, Min(0f)]
-        private float _timeToShowMap = 8f;
-
         [SerializeField] private PlayerAction _playerAction;
-        [SerializeField] private GameObject _gamePanel;
-        [SerializeField] private GameObject _minimapPanel;
-        [SerializeField] private GameObject _textMinimap;
 
         [Header("Player UI and Tutorials")] [SerializeField]
         private PlayerController _player;
 
         [SerializeField] private GameObject _playerUI;
-        [SerializeField] private GameObject _motorbikeUI;
+        [SerializeField] private RideUIState _motorbikeRide = new RideUIState();
+        [SerializeField] private RideUIState _carRide = new RideUIState();
+        private CarController _activeCar;
+        private Func<float> _readBikeInput, _readCarInput;
         [SerializeField] private GameObject _startTutorial;
         [SerializeField] private GameObject _moveTutorial;
-        [SerializeField] private GameObject _drivingTutorial;
-        private bool _hasShownDrivingTutorial;
         private bool _riding;
-        private Vector3 _rideStartPosition;
-        private bool _hasDrivingInput;
+        private int _tutorialShownFrame;
 
-        private bool _mapCountdownStarted;
+        [Serializable]
+        private class RideUIState
+        {
+            [SerializeField] private GameObject _panel;
+            [SerializeField] private GameObject _firstRideHint;
+            private bool _hasShownHint, _hasInput, _active;
+            private Vector3 _rideStart;
+
+            public void SetActive(bool riding, Transform subject)
+            {
+                bool first = riding && !_active && !_hasShownHint;
+                _active = riding;
+                if (_panel != null) _panel.SetActive(riding);
+                if (!riding)
+                {
+                    if (_firstRideHint != null) _firstRideHint.SetActive(false);
+                    return;
+                }
+                if (!first) return;
+                _hasShownHint = true;
+                _hasInput = false;
+                if (subject != null) _rideStart = subject.position;
+                if (_firstRideHint != null) _firstRideHint.SetActive(true);
+            }
+
+            public void Tick(Transform subject, Func<float> readInput)
+            {
+                if (!_active || subject == null || readInput == null || _firstRideHint == null || !_firstRideHint.activeSelf) return;
+                if (!_hasInput)
+                {
+                    _rideStart = subject.position;
+                    if (Mathf.Abs(readInput()) < 0.01f) return;
+                    _hasInput = true;
+                }
+                Vector3 travel = subject.position - _rideStart;
+                travel.y = 0;
+                if (travel.sqrMagnitude > 0.0025f) _firstRideHint.SetActive(false);
+            }
+        }
 
         private void Awake()
         {
             Instance = this;
-            if (_startTutorial != null) _startTutorial.SetActive(true);
-            if (_moveTutorial != null) _moveTutorial.SetActive(true);
+            if (_player != null) _readBikeInput = _player.ReadDriveInput;
+            _carRide.SetActive(false, null);
+            ShowStartTutorial(true);
             SetRiding(false);
         }
 
         private void Start()
         {
-            if (_minimapPanel != null) _minimapPanel.SetActive(false);
-            if (_playerAction != null) _playerAction.CarEntered += OnDrivingStarted;
+            if (_playerAction != null) _playerAction.MotorbikeMounted += OnDrivingStarted;
         }
 
         private void OnDestroy()
         {
-            if (_playerAction != null) _playerAction.CarEntered -= OnDrivingStarted;
+            if (_playerAction != null) _playerAction.MotorbikeMounted -= OnDrivingStarted;
             if (Instance == this) Instance = null;
         }
 
         private void OnDrivingStarted()
         {
-            // A successful mount also switches tutorials immediately, including
-            // a bike press made while the opening tutorial is still visible.
             SetRiding(true);
-
-            // Count from the first mount only; getting off/on does not reset the deadline.
-            if (_mapCountdownStarted || _minimapPanel == null) return;
-            _mapCountdownStarted = true;
-            StartCoroutine(IEShowMap());
-        }
-
-        private IEnumerator IEShowMap()
-        {
-            if (_timeToShowMap > 0f) yield return new WaitForSeconds(_timeToShowMap);
-            if (_gamePanel != null) _gamePanel.SetActive(false);
-            _minimapPanel.SetActive(true);
-            _textMinimap.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.Linear)
-                .SetLoops(-1, LoopType.Yoyo);
         }
 
         private void Update()
         {
             if (_appliedBrightness != _gameBrightness) ApplyBrightness();
             // Handle the first press before dismissing the tutorial state.
-            if (!_riding && ((_startTutorial != null && _startTutorial.activeInHierarchy) ||
+            if (!_riding && Time.frameCount > _tutorialShownFrame &&
+                (_player == null || _player.enabled) &&
+                ((_startTutorial != null && _startTutorial.activeInHierarchy) ||
                              (_moveTutorial != null && _moveTutorial.activeInHierarchy)))
             {
                 if (Input.touchCount > 0)
@@ -124,24 +141,21 @@ namespace Playable
                     DismissStartTutorial();
             }
 
-            if (!_riding || _player == null || _drivingTutorial == null || !_drivingTutorial.activeSelf) return;
-            if (!_hasDrivingInput)
-            {
-                // Seating/physics settling is not the player's first driving action.
-                _rideStartPosition = _player.transform.position;
-                if (Mathf.Abs(_player.ReadDriveInput()) < 0.01f) return;
-                _hasDrivingInput = true;
-            }
-
-            Vector3 travel = _player.transform.position - _rideStartPosition;
-            travel.y = 0;
-            if (travel.sqrMagnitude > 0.0025f) _drivingTutorial.SetActive(false);
+            _motorbikeRide.Tick(_player != null ? _player.transform : null, _readBikeInput);
+            _carRide.Tick(_activeCar != null ? _activeCar.transform : null, _readCarInput);
         }
 
         public void DismissStartTutorial()
         {
             if (_startTutorial != null) _startTutorial.SetActive(false);
             if (_moveTutorial != null) _moveTutorial.SetActive(false);
+        }
+
+        public void ShowStartTutorial(bool visible)
+        {
+            _tutorialShownFrame = Time.frameCount;
+            if (_startTutorial != null) _startTutorial.SetActive(visible);
+            if (_moveTutorial != null) _moveTutorial.SetActive(visible);
         }
 
         private void HandleStartTutorialPress(Vector2 screen)
@@ -153,29 +167,33 @@ namespace Playable
             if (_playerAction != null && _playerAction.TryMountFromTutorial(screen))
             {
                 // Complete the UI transition in this press, even without the event subscription.
-                OnDrivingStarted();
+                if (!_playerAction.IsInCar) OnDrivingStarted();
+                else DismissStartTutorial();
             }
-            // A missed bike press must not dismiss the tutorial and lose its easy-mount path.
+            // Only movement guidance is dismissed; vehicle hints keep their own completion rules.
+            DismissStartTutorial();
         }
 
         public void SetRiding(bool riding)
         {
-            bool firstRide = riding && !_riding && !_hasShownDrivingTutorial;
             _riding = riding;
             if (_playerUI != null) _playerUI.SetActive(!riding);
-            if (_motorbikeUI != null) _motorbikeUI.SetActive(riding);
-            if (!riding)
-            {
-                if (_drivingTutorial != null) _drivingTutorial.SetActive(false);
-                return;
-            }
-
+            _motorbikeRide.SetActive(riding, _player != null ? _player.transform : null);
+            if (!riding) return;
+            _carRide.SetActive(false, null);
             DismissStartTutorial();
-            if (!firstRide) return;
-            _hasShownDrivingTutorial = true;
-            _hasDrivingInput = false;
-            if (_player != null) _rideStartPosition = _player.transform.position;
-            if (_drivingTutorial != null) _drivingTutorial.SetActive(true);
+        }
+
+        public void SetDrivingCar(bool riding, CarController car)
+        {
+            _riding = riding;
+            _activeCar = riding ? car : null;
+            _readCarInput = _activeCar != null ? (Func<float>)_activeCar.ReadDriveInput : null;
+            if (_playerUI != null) _playerUI.SetActive(!riding);
+            _carRide.SetActive(riding, _activeCar != null ? _activeCar.transform : null);
+            if (!riding) return;
+            _motorbikeRide.SetActive(false, null);
+            DismissStartTutorial();
         }
     }
 }

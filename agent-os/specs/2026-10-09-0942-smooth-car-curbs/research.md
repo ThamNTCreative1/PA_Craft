@@ -1,0 +1,1 @@
+Current CarController directly adds the entire lift to Rigidbody.position. Step height is 0.3 and scene terrain includes height differences 0.5?0.54. Rigidbody rotation is frozen; wheels are visual. Existing test file contains motorcycle checks, requiring a separate car entry point. User approved scope and waived Claude in current chat. Existing working-tree edits are preserved.

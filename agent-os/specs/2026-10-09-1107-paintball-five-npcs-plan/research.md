@@ -1,0 +1,6 @@
+﻿# Current evidence
+User confirms desired behavior subset: Paintball entry equips player gun and Fire UI, five nearby walking NPCs, hit NPC retaliates. Planning only.
+Current PaintballMissionController unavailable. MissionController owns serialized content and entry yaw/target angles; Enter/Exit lack extension hooks. Journal disables player/action while open but no mission pause hook; always re-enables driving tutorial on successful selection.
+Player current Animator is Humanoid using Assets/GameAsset/Model/Character/Player city.controller. Forearm-end bones present; weapon socket assignment/pose needs visual verification. Existing local AssaultRifleIdle, AssaultRifleFire, BodyPunch1FromIdle clips are Humanoid. Existing gun pack/ToxicGun and NPC skin assets available; no source asset imports necessary.
+Source behavior to adapt: NPCCombat damage-attacker acquisition, Traffic-to-Combat switch; BodyAttack approach/range/cadence; roaming rest/move/timeout; player look-direction shot/owner/cadence/effects. Local target movement and mission lifecycle remain authoritative.
+Proposed navigation differs from source: small explicitly authored route graph, collision/ground probes, no NavMesh or full Opsive/UniTask stack. Source play/build behavior not validated. Rig pose, clipping and final Luna size must be verified during implementation.

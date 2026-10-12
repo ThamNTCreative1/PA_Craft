@@ -1,0 +1,3 @@
+﻿User directly requests replacement with pictured Car.fbx. Scope announced before change: Gameplay scene only, existing CarMission car model, wheel references/positions/radius, chassis bounds. No controller physics algorithm changes, new packages or copied assets.
+Source: Assets/GameAsset/Model/Cars/Car.fbx, existing project asset. Replace Car_8 model child with Car model; preserve parent controller and all mission/input/camera references. Wheel map rear left Tire_3, rear right Tire, front left Tire_2, front right Tire_1. Shared radius .34 (visual rear .36/front .33); chassis1.9x.8x4.25 centered(0,.75,.24).
+Verification: existing Editor curb suite, mission entry/mount, visual inspection. No Luna build claim.

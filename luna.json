@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 42155,
-    "creativeName": "CCPW_V02_AnhPP_HuyNQ",
+    "creativeName": "C1_2610_HuyNQ_CCPW_V03_AnhPP",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -81,7 +81,7 @@
             "externalJSLibraries": [],
             "scriptingDefines": [],
             "msbuildVersion": "18.9",
-            "monoVersion": "9.0.18",
+            "monoVersion": "9.0.3",
             "dotnetVersion": ""
         },
         "assets": {
@@ -3024,10 +3024,6 @@
                 "excluded": true
             },
             {
-                "name": "Luna.Unity.DTO.UnityEngine.Animation.Mecanim.TransformMaskElement",
-                "excluded": true
-            },
-            {
                 "name": "Luna.Unity.DTO.UnityEngine.Assets.EnumDescription",
                 "excluded": true
             },
@@ -3081,10 +3077,6 @@
             },
             {
                 "name": "LunaUnity.Utils.TaskExtensions",
-                "excluded": true
-            },
-            {
-                "name": "UnityEditor.Animations.ChildMotion",
                 "excluded": true
             },
             {
@@ -3168,10 +3160,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.DefaultExecutionOrder",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.Experimental.Rendering.GraphicsFormatUtility",
                 "excluded": true
             },
@@ -3233,10 +3221,6 @@
             },
             {
                 "name": "UnityEngine.JointMotor2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.JointSpring",
                 "excluded": true
             },
             {
@@ -3320,10 +3304,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.RangeAttribute",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.RangeInt",
                 "excluded": true
             },
@@ -3365,10 +3345,6 @@
             },
             {
                 "name": "UnityEngine.Rendering.RenderPipelineManager",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.RequireComponent",
                 "excluded": true
             },
             {
@@ -3468,26 +3444,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.WheelCollider.FrictionController",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WheelCollider.SpringController",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WheelCollider.WheelController",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WheelFrictionCurve",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WheelHit",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.WWWForm",
                 "excluded": true
             },
@@ -3536,10 +3492,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.AvatarMask",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.GUILayout.AreaScope",
                 "excluded": true
             },
@@ -3553,10 +3505,6 @@
             },
             {
                 "name": "UnityEngine.GUILayout.VerticalScope",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.HeaderAttribute",
                 "excluded": true
             },
             {
@@ -3597,10 +3545,6 @@
             },
             {
                 "name": "UnityEngine.Timeline.TimeFieldAttribute",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.TooltipAttribute",
                 "excluded": true
             },
             {
@@ -3661,10 +3605,6 @@
             },
             {
                 "name": "Luna.Unity.DTO.UnityEngine.Components.WheelCollider",
-                "excluded": true
-            },
-            {
-                "name": "UnityEditor.Animations.BlendTree",
                 "excluded": true
             },
             {
@@ -3853,10 +3793,6 @@
             },
             {
                 "name": "UnityEngine.SpringJoint",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WheelCollider",
                 "excluded": true
             },
             {
@@ -4841,7 +4777,7 @@
             },
             {
                 "name": "UnityEditor.Animations.BlendTreeType",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEditor.Animations.TransitionInterruptionSource",
@@ -5073,7 +5009,7 @@
             },
             {
                 "name": "UnityEngine.AvatarMaskBodyPart",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.AvatarTarget",
@@ -5401,7 +5337,7 @@
             },
             {
                 "name": "UnityEngine.PropertyAttribute",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.HideInInspector",
@@ -6305,7 +6241,7 @@
             },
             {
                 "name": "UnityEngine.SerializeFieldAttribute",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.ShadowmaskMode",
@@ -7673,7 +7609,7 @@
             },
             {
                 "name": "UnityEngine.EventSystems.ICancelHandler",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.EventSystems.EventTrigger.TriggerEvent",
@@ -8318,6 +8254,14 @@
             {
                 "name": "UltimateJoystick.TensionType",
                 "excluded": false
+            },
+            {
+                "name": "Playable.IDrivableVehicle",
+                "excluded": false
+            },
+            {
+                "name": "Playable.PaintballNpcController.NpcState",
+                "excluded": false
             }
         ],
         "unusedMethods": [
@@ -8939,7 +8883,7 @@
                     },
                     {
                         "name": "$is",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "parse",
@@ -16277,7 +16221,7 @@
                     },
                     {
                         "name": "name#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "filterMode#get",
@@ -16503,7 +16447,7 @@
                     },
                     {
                         "name": "up#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "up#set",
@@ -17067,7 +17011,7 @@
                     },
                     {
                         "name": "fieldOfView#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "fieldOfView#set",
@@ -17123,11 +17067,11 @@
                     },
                     {
                         "name": "_aspect#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "aspect#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "aspect#set",
@@ -20075,11 +20019,11 @@
                     },
                     {
                         "name": "autoSyncTransforms#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "autoSyncTransforms#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "autoSimulation#get",
@@ -20251,7 +20195,7 @@
                     },
                     {
                         "name": "CapsuleCastNonAlloc",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OverlapCapsule",
@@ -21499,7 +21443,7 @@
                     },
                     {
                         "name": "name#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "name#set",
@@ -21809,7 +21753,7 @@
                     },
                     {
                         "name": "name#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "pixelsPerUnit#get",
@@ -22349,7 +22293,7 @@
                     },
                     {
                         "name": "Play$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Pause",
@@ -22369,7 +22313,7 @@
                     },
                     {
                         "name": "Stop$2",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Emit",
@@ -22665,7 +22609,7 @@
                     },
                     {
                         "name": "constraints#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "constraints#set",
@@ -22717,7 +22661,7 @@
                     },
                     {
                         "name": "angularDamping#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "drag#get",
@@ -22737,7 +22681,7 @@
                     },
                     {
                         "name": "mass#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "mass#set",
@@ -22745,19 +22689,19 @@
                     },
                     {
                         "name": "centerOfMass#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "centerOfMass#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "worldCenterOfMass#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "angularVelocity#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "angularVelocity#set",
@@ -22857,11 +22801,11 @@
                     },
                     {
                         "name": "AddForceAtPosition",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "MovePosition",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "MoveRotation",
@@ -22873,7 +22817,7 @@
                     },
                     {
                         "name": "GetPointVelocity",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ClosestPointOnBounds",
@@ -22889,7 +22833,7 @@
                     },
                     {
                         "name": "IsSleeping",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ResetCenterOfMass",
@@ -23657,7 +23601,7 @@
                     },
                     {
                         "name": "center#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "center#set",
@@ -25033,7 +24977,7 @@
                     },
                     {
                         "name": "DelayedSetDirty",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -28115,7 +28059,7 @@
                     },
                     {
                         "name": "name#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "dynamic#get",
@@ -28811,7 +28755,7 @@
                     },
                     {
                         "name": "name#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "name#set",
@@ -31225,7 +31169,7 @@
                     },
                     {
                         "name": "ForceInit",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Pause",
@@ -33493,11 +33437,11 @@
                     },
                     {
                         "name": "speed#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "speed#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "angularVelocity#get",
@@ -33777,7 +33721,7 @@
                     },
                     {
                         "name": "OnMaskChanged",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Play$1",
@@ -34561,7 +34505,7 @@
                     },
                     {
                         "name": "value#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "onUnitSphere#get",
@@ -37800,10 +37744,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "IEShowMap",
-                        "excluded": false
-                    },
-                    {
                         "name": "DismissStartTutorial",
                         "excluded": false
                     },
@@ -37825,6 +37765,14 @@
                     },
                     {
                         "name": "ApplyBrightness",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetDrivingCar",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowStartTutorial",
                         "excluded": false
                     }
                 ]
@@ -37881,7 +37829,7 @@
                     },
                     {
                         "name": "CurrentViewMode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "init",
@@ -37957,7 +37905,7 @@
                     },
                     {
                         "name": "OutputCamera#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Target#get",
@@ -37973,6 +37921,30 @@
                     },
                     {
                         "name": "UpdateCamera",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Pitch#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaintballZoom",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaintballAim",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AddFeedback",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ClearFeedback",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetEntryAngles",
                         "excluded": false
                     }
                 ]
@@ -38099,6 +38071,26 @@
                     },
                     {
                         "name": "ReadSteerInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetOnFootAnimator",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginDrive",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndDrive",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetAimYaw",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopAiming",
                         "excluded": false
                     }
                 ]
@@ -38553,7 +38545,7 @@
                     },
                     {
                         "name": "IsInCar#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "IsUsingTreadmill#get",
@@ -38589,7 +38581,7 @@
                     },
                     {
                         "name": "OnDisable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "TryMountFromTutorial",
@@ -38601,6 +38593,22 @@
                     },
                     {
                         "name": "IsTutorialBikeVisible",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsOnMotorbike#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "FindNearest",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryTutorialTapArea$1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryTapVehicle",
                         "excluded": false
                     }
                 ]
@@ -38647,7 +38655,7 @@
                     },
                     {
                         "name": "OnRectTransformDimensionsChange",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "HandleSelfFittingAlongAxis",
@@ -39015,7 +39023,7 @@
                     },
                     {
                         "name": "OnDisable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnUpdate",
@@ -39232,32 +39240,6 @@
                 ]
             },
             {
-                "className": "Playable.MinimapPointMotion",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
                 "className": "Playable.MotorbikeController",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -39336,6 +39318,1286 @@
                     {
                         "name": "StepRay",
                         "excluded": false
+                    },
+                    {
+                        "name": "UpdateEngineSound",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StartEngineSound",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.JournalHandSequencer",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Begin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Stop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "KillSequence",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MissionRowView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "GoRect#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnGoPressed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Mission#get",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MissionsJournalController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Show",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hide",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnGoPressed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopTitleTween",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Luna.Unity.DTO.UnityEngine.Animation.Mecanim.TransformMaskElement",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEditor.Animations.ChildMotion",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.AvatarMask",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Mapping#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Mask#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "humanoidBodyPartCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "hasFeetIK#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "transformCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "transformCount#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsEmpty",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Reset",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetHumanoidBodyPartActive",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetHumanoidBodyPartActive",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddTransformPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RemoveTransformPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetTransformPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetTransformPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetTransformActive",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetTransformActive",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetBodyPart",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetBodyPart",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetTransformCount",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetTransformCount",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetTransformWeight",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetTransformWeight",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddTransformPathInternal",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RemoveTransformPathInternal",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CalculateTransformPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AppendTransformPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ValidateBodyPartIndex",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ValidateTransformIndex",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CommitChanges",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEditor.Animations.BlendTree",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "children#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "children#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "length#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "length#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetSamplers",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetParameters",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RecalculatePositionLimits",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NormalizeWeights",
+                        "excluded": true
+                    },
+                    {
+                        "name": "BlendSamplers",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Sample",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PullOrphanEvents",
+                        "excluded": true
+                    },
+                    {
+                        "name": "WeightForIndex",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Simple1DSampler",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GradientBandInterpolationSampler",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PolarGradientInterpolator",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PolarGradientBandInterpolationSampler",
+                        "excluded": true
+                    },
+                    {
+                        "name": "DirectSampler",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SimpleDirectional2DSampler",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.JointSpring",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelCollider.FrictionController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "CalculateLateralSlip",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CalculateLongitudinalSlip",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelCollider.SpringController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelCollider.WheelController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelFrictionCurve",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "asymptoteSlip#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "asymptoteSlip#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "asymptoteValue#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "asymptoteValue#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "extremumSlip#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "extremumSlip#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "extremumValue#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "extremumValue#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "stiffness#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "stiffness#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelHit",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "collider#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "normal#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelCollider",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "brakeTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "brakeTorque#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "motorTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motorTorque#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "steerAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "steerAngle#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "radius#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "radius#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "mass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "mass#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "isGrounded#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "suspensionDistance#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "suspensionDistance#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "rpm#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "sprungMass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FixedUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetGroundHit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetWorldPose",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateHit",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateSuspension",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateWheel",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateFriction",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IntegrateForces",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetupCurve",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CalculateWheelParams",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MissionController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "IsAvailable#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UsesDrivingTutorial#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CanEnter#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaused",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEntered",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnExited",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Enter",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Exit",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.GameController.RideUIState",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetActive",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tick",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MissionManager",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "SetPaused",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TrySelect",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PaintballFireButton",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "IsHeld#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnInitializePotentialDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerDown",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerUp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnCancel",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Release",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnApplicationFocus",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnApplicationPause",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PaintballMovementTutorial",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Begin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "End",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaused",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Refresh",
+                        "excluded": false
+                    },
+                    {
+                        "name": "WasScreenPressed",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PaintballNpcController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetNpc",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaused",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReceiveHit",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FixedUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HasClearStrike",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EnterIdle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PaintballNpcMotor",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Home#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RouteCount#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RoutePoint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetToHome",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Stop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Face",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MoveTowards",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PaintballProjectile",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ClearParticles",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RestartParticles",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PauseParticles",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsBusy#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Speed#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Launch",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaused",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetProjectile",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FixedUpdate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PlayerPaintballController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Player#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsReloading#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Ammo#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsReady#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Equip",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Unequip",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaused",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryFire",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPaintballAnimationEvent",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FireProjectile",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginReload",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateAmmo",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReceiveHit",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AdvanceAnimationWatchdog",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetAimRay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateCrosshairScale",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ScaleHandHint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CarController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "CameraTarget#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Speed#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MaxSpeed#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsDriven#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Rider#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateEngineSound",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StartEngineSound",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReadDriveInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ConfigureWheels",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FixedUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AssistWheels",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FindLedge",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CurbRay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HasLiftClearance",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ClearAssistance",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryMount",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RequestDismount",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryDismount",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReleaseRider",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReleaseInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PaintballMissionController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "IsAvailable#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEntered",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnExited",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaused",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.DefaultExecutionOrder",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.RangeAttribute",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.RequireComponent",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor2",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.HeaderAttribute",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.TooltipAttribute",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CarDriveTutorial",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Begin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "End",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaused",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Complete",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Refresh",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdatePosition",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CarMissionController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "OnEntered",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnExited",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaused",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MotorbikeMissionController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "OnEntered",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnExited",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPaused",
+                        "excluded": true
                     }
                 ]
             }
@@ -39585,6 +40847,16 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/Game/Fonts/FredokaOne-Regular SDF.asset"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/MissionsJournal/FredokaOne-Regular SDF.asset"
                     }
                 ]
             },
@@ -39768,6 +41040,56 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/Sound/Scheming - weasel (1) (video-converter.com).mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:23.271",
+                        "lengthInSeconds": 23.270999908447267,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/Sound/alex-productions-extreme-trap-racing-music-power(chosic.com).mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:09.730",
+                        "lengthInSeconds": 9.729999542236329,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/GameAsset/SFX/Vehicle/Motor/Vespa.mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:01.471",
+                        "lengthInSeconds": 1.4709999561309815,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Opsive/UltimateCharacterController/Demo/Audio/Items/Shooter/AssaultRifle/AssaultRifleReload.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:01.471",
+                        "lengthInSeconds": 1.4709999561309815,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/GameAsset/SFX/Vehicle/car/med_on.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:01.471",
+                        "lengthInSeconds": 1.4709999561309815,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Opsive/UltimateCharacterController/Demo/Audio/Items/Shooter/AssaultRifle/AssaultRifleSingleShot.wav"
                     }
                 ]
             },

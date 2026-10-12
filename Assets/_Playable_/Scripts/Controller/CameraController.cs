@@ -46,19 +46,47 @@ namespace Playable
 
         [SerializeField] private float _speedPullback = 1.5f;
         private float _yaw, _pitch, _distance;
+        private Vector2 _feedback;
+        private bool _paintballAim;
+        [Header("Paintball Zoom")]
+        [SerializeField] private float _paintballZoomFov = 60f;
+        [SerializeField] private float _paintballZoomDistance = 2f;
+        [SerializeField] private float _paintballZoomShoulder = 1.3f;
+        [SerializeField] private float _paintballZoomRate = 10f;
+        [Header("Paintball Portrait Framing")]
+        [SerializeField, Range(30f, 90f)] private float _paintballPortraitZoomFov = 65f;
+        [SerializeField, Min(0.5f)] private float _paintballPortraitZoomDistance = 3f;
+        [SerializeField] private float _paintballPortraitZoomShoulder = 0.35f;
+        private bool _paintballZoom;
+        private float _zoomWeight, _normalFov;
+        public void SetPaintballZoom(bool held) { _paintballZoom = _paintballAim && held; }
+        public void SetPaintballAim(bool active)
+        {
+            if (active && !_paintballAim && _targetCamera != null) _normalFov = _targetCamera.fieldOfView;
+            if (!active && _paintballAim)
+            {
+                _paintballZoom = false;
+                _zoomWeight = 0;
+                if (_targetCamera != null) _targetCamera.fieldOfView = _normalFov;
+            }
+            _paintballAim = active;
+        }
+        public void AddFeedback(Vector2 angles) { _feedback = Vector2.ClampMagnitude(_feedback + angles, 4f); }
+        public void ClearFeedback() { _feedback = Vector2.zero; }
         private Vector3 _anchorPosition, _anchorVelocity;
         private Transform _followOverride;
 #if UNITY_LUNA
         private Transform _lastAnchor;
         private Vector3 _lastAnchorPosition;
 #endif
-        private MotorbikeController _vehicle;
+        private IDrivableVehicle _vehicle;
         private readonly RaycastHit[] _hits = new RaycastHit[64];
         public Transform YawPivot => _yawPivot != null ? _yawPivot : transform;
         public ViewMode CurrentViewMode => _viewMode;
         public Camera OutputCamera => _targetCamera;
         public PlayerController Target => _target;
         public float Yaw => _yaw;
+        public float Pitch => _pitch;
 
         private void Awake()
         {
@@ -72,6 +100,7 @@ namespace Playable
 
         private void OnDisable()
         {
+            SetPaintballAim(false);
             if (_touchController != null) _touchController.OnLookDelta -= AddLookInput;
         }
 
@@ -105,8 +134,9 @@ namespace Playable
             _vehicle = null;
         }
 
-        public void FollowVehicle(MotorbikeController vehicle)
+        public void FollowVehicle(IDrivableVehicle vehicle)
         {
+            SetPaintballAim(false);
             _vehicle = vehicle;
             _followOverride = vehicle != null ? vehicle.CameraTarget : null;
             if (vehicle != null)
@@ -155,6 +185,14 @@ namespace Playable
         {
             _yaw = Mathf.Repeat(_yaw + delta.x * _lookSensitivity, 360f);
             _pitch = Mathf.Clamp(_pitch - delta.y * _lookSensitivity, _pitchMin, _pitchMax);
+        }
+
+        public void SetEntryAngles(float yaw, float pitch)
+        {
+            _yaw = yaw;
+            _pitch = Mathf.Clamp(pitch, _pitchMin, _pitchMax);
+            _anchorVelocity = Vector3.zero;
+            UpdateCamera(true);
         }
 
         public void LookAtPoint(Vector3 worldPoint, bool instant = true)
@@ -208,7 +246,8 @@ namespace Playable
                 : Vector3.SmoothDamp(_anchorPosition, anchor, ref _anchorVelocity,
                     1f / Mathf.Max(1f, _followSmooth), Mathf.Infinity, Time.deltaTime);
             Quaternion yawRotation = Quaternion.Euler(0, _yaw, 0);
-            Quaternion rotation = Quaternion.Euler(_pitch, _yaw, 0);
+            _feedback = Vector2.Lerp(_feedback, Vector2.zero, 1f - Mathf.Exp(-10f * Time.deltaTime));
+            Quaternion rotation = Quaternion.Euler(_pitch + _feedback.y, _yaw + _feedback.x, 0);
             if (_yawPivot != null) _yawPivot.SetPositionAndRotation(_anchorPosition, yawRotation);
             if (_pitchPivot != null) _pitchPivot.rotation = rotation;
             bool firstPerson = _vehicle == null && _viewMode == ViewMode.FirstPerson;
@@ -219,8 +258,24 @@ namespace Playable
             }
 
             Vector3 offset = _vehicle != null ? _bikeOffset : firstPerson ? _firstPersonOffset : _thirdPersonOffset;
+            _zoomWeight = Mathf.MoveTowards(_zoomWeight, _paintballZoom && _vehicle == null ? 1f : 0f,
+                Time.deltaTime * _paintballZoomRate);
+            // Vertical FOV leaves much less horizontal room in portrait. Blend toward
+            // a closer-to-centre shoulder view instead of pushing the player off-screen.
+            float portraitWeight = Mathf.Clamp01((1f - _targetCamera.aspect) / (1f - 9f / 16f));
+            float zoomFov = Mathf.Lerp(_paintballZoomFov, _paintballPortraitZoomFov, portraitWeight);
+            if (_paintballAim) _targetCamera.fieldOfView = Mathf.Lerp(_normalFov, zoomFov, _zoomWeight);
             Vector3 origin = _anchorPosition + Vector3.up * offset.y + yawRotation * Vector3.right * offset.x;
+            if (_paintballAim && !firstPerson && _vehicle == null)
+            {
+                float idleShoulder = Mathf.Lerp(0.7f, 0.35f, portraitWeight);
+                float zoomShoulder = Mathf.Lerp(_paintballZoomShoulder, _paintballPortraitZoomShoulder, portraitWeight);
+                origin += yawRotation * Vector3.right * Mathf.Lerp(idleShoulder, zoomShoulder, _zoomWeight);
+            }
             float wantedDistance = firstPerson ? 0 : Mathf.Abs(offset.z);
+            if (_paintballAim && !firstPerson && _vehicle == null)
+                wantedDistance = Mathf.Lerp(wantedDistance,
+                    Mathf.Lerp(_paintballZoomDistance, _paintballPortraitZoomDistance, portraitWeight), _zoomWeight);
             if (_vehicle != null) wantedDistance += _speedPullback * Mathf.Clamp01(_vehicle.Speed / _vehicle.MaxSpeed);
             Vector3 backward = rotation * Vector3.back;
             float allowed = wantedDistance;

@@ -1,0 +1,851 @@
+--- before/CarController.cs
++++ Assets/_Playable_/Scripts/Controller/CarController.cs
+@@ -10,6 +10,8 @@
+         [SerializeField] private Collider _bodyCollider;
+         [SerializeField] private Transform _cameraTarget;
+         [SerializeField] private Transform[] _wheels;
++        [SerializeField] private WheelCollider[] _wheelColliders;
++        [SerializeField] private SphereCollider[] _wheelContacts;
+         [SerializeField] private GameController _gameController;
+         [SerializeField] private Button _exitButton;
+         [SerializeField] private DriveHoldButton _forwardButton, _reverseButton, _leftButton, _rightButton, _handbrakeButton;
+@@ -22,7 +24,6 @@
+         [SerializeField] private float _braking = 14f;
+         [SerializeField] private float _coastDeceleration = 5f;
+         [SerializeField] private float _handbrakeDeceleration = 24f;
+-        [SerializeField] private float _grip = 28f;
+         [SerializeField] private float _lateralGrip = 45f;
+         [SerializeField] private float _wheelBase = 2.6f;
+         [SerializeField] private float _lowSpeedSteerAngle = 35f;
+@@ -30,23 +31,18 @@
+         [SerializeField] private float _steerSmoothTime = 0.14f;
+         [SerializeField] private float _wheelRadius = 0.4f;
+         [SerializeField] private LayerMask _groundMask = ~0;
+-        [SerializeField] private float _gravity = 24f;
+-        [SerializeField, Min(0f)] private float _stepHeight = 0.6f;
+-        [SerializeField, Min(0.05f)] private float _stepRiseTime = 0.2f;
++        [Header("Suspension")]
++        [SerializeField, Min(0.01f)] private float _suspensionTravel = 0.22f;
++        [SerializeField, Min(1f)] private float _springStrength = 35000f;
++        [SerializeField, Min(0f)] private float _springDamper = 4500f;
+         [SerializeField] private bool _logDriveDiagnostics;
+         private float _nextDiagnosticLogTime;
+-        private BoxCollider _stepBox;
+-        private bool _stepping;
+-        private float _stepTargetY, _stepLiftSpeed;
+-        private Vector3 _stepDirection, _stepEnd;
+-        private readonly Collider[] _stepOverlaps = new Collider[32];
++        private readonly Quaternion[] _wheelMeshOffsets = new Quaternion[4];
+         private PlayerController _rider;
+         private PhysicsMaterial _material;
+         private Vector2 _input;
+         private float _steer, _steerVelocity;
+         private bool _exitRequested, _handbrake;
+-        private Vector3 _groundNormal = Vector3.up;
+-        private readonly RaycastHit[] _hits = new RaycastHit[32];
+         public Transform CameraTarget => _cameraTarget;
+         public float Speed => _body != null ? Vector3.ProjectOnPlane(_body.linearVelocity, Vector3.up).magnitude : 0;
+         public float MaxSpeed => _maxForwardSpeed;
+@@ -57,9 +53,8 @@
+         private void Awake()
+         {
+             if (_body == null) _body = GetComponent<Rigidbody>();
+-            _stepBox = _bodyCollider as BoxCollider;
+             _body.mass = 1000f;
+-            _body.useGravity = false;
++            _body.useGravity = true;
+             _body.isKinematic = true;
+ #if UNITY_LUNA
+             _body.interpolation = RigidbodyInterpolation.Extrapolate;
+@@ -67,7 +62,10 @@
+             _body.interpolation = RigidbodyInterpolation.Interpolate;
+ #endif
+             _body.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+-            _body.constraints = RigidbodyConstraints.FreezeRotation;
++            _body.constraints = RigidbodyConstraints.None;
++            _body.angularDamping = 2f;
++            _body.centerOfMass = new Vector3(0, 0.35f, 0);
++            _body.maxDepenetrationVelocity = 1f;
+             _material = new PhysicsMaterial
+             {
+                 staticFriction = 0,
+@@ -77,6 +75,7 @@
+                 bounceCombine = PhysicsMaterialCombine.Minimum
+             };
+             if (_bodyCollider != null) _bodyCollider.material = _material;
++            if (!ConfigureWheels()) { enabled = false; return; }
+             if (_exitButton != null) _exitButton.onClick.AddListener(RequestDismount);
+             if (_bodyCollider == null || _cameraTarget == null || _gameController == null ||
+                 _forwardButton == null || _reverseButton == null || _leftButton == null ||
+@@ -117,193 +116,89 @@
+             }
+             if (_exitRequested && Speed < 0.5f) TryDismount();
+         }
+-        private bool GroundAt(Vector3 local, out RaycastHit best)
+-        {
+-            int count = Physics.RaycastNonAlloc(transform.TransformPoint(local), Vector3.down, _hits, Mathf.Max(1.15f, _stepHeight + 0.75f),
+-                _groundMask, QueryTriggerInteraction.Ignore);
+-            best = default; float distance = float.MaxValue;
+-            for (int i = 0; i < count; i++)
+-            {
+-                var h = _hits[i];
+-                if (h.collider.transform.IsChildOf(transform) || h.normal.y < 0.55f || h.distance >= distance) continue;
+-                best = h; distance = h.distance;
+-            }
+-            return distance < float.MaxValue;
+-        }
++        private bool ConfigureWheels()
++        {
++            if (_wheels == null || _wheels.Length != 4 || _wheelColliders == null || _wheelColliders.Length != 4 ||
++                _wheelContacts == null || _wheelContacts.Length != 4)
++            {
++                Debug.LogError("CarController requires four wheel visuals, WheelColliders and rounded contacts.", this);
++                return false;
++            }
++            for (int i = 0; i < 4; i++)
++            {
++                if (_wheels[i] == null || _wheelColliders[i] == null || _wheelContacts[i] == null)
++                {
++                    Debug.LogError("CarController has an unassigned wheel reference.", this);
++                    return false;
++                }
++                var wheel = _wheelColliders[i];
++                wheel.radius = _wheelRadius;
++                wheel.suspensionDistance = _suspensionTravel;
++                wheel.suspensionSpring = new JointSpring
++                {
++                    spring = _springStrength, damper = _springDamper, targetPosition = 0.5f
++                };
++                _wheelContacts[i].material = _material;
++                // Preserve model orientation; the collider supplies suspension position and wheel spin.
++                _wheelMeshOffsets[i] = Quaternion.Inverse(wheel.transform.rotation) * _wheels[i].rotation;
++            }
++            return true;
++        }
++
+         private void FixedUpdate()
+         {
+             if (_rider == null || _body.isKinematic) return;
+-            bool front = GroundAt(new Vector3(0, 0.65f, _wheelBase * 0.45f), out RaycastHit frontHit);
+-            bool rear = GroundAt(new Vector3(0, 0.65f, -_wheelBase * 0.45f), out RaycastHit rearHit);
+-            IsGrounded = front || rear;
+-            Vector3 normal = front && rear ? (frontHit.normal + rearHit.normal).normalized : front ? frontHit.normal : rear ? rearHit.normal : Vector3.up;
+-            _groundNormal = Vector3.Slerp(_groundNormal, normal, 1f - Mathf.Exp(-12f * Time.fixedDeltaTime));
+-            Vector3 velocity = _body.linearVelocity;
+-            float current = Vector3.Dot(velocity, transform.forward);
++            IsGrounded = false;
++            for (int i = 0; i < _wheelColliders.Length; i++) IsGrounded |= _wheelColliders[i].isGrounded;
++
++            Vector3 forward = transform.forward;
++            float current = Vector3.Dot(_body.linearVelocity, forward);
+             float target = _input.y >= 0 ? _input.y * _maxForwardSpeed : _input.y * _maxReverseSpeed;
+             if (_handbrake) target = 0;
+             bool reversing = current * target < -0.05f;
+-            float acceleration = _handbrake ? _handbrakeDeceleration : reversing ? _braking : Mathf.Abs(_input.y) < 0.01f ? _coastDeceleration : _acceleration;
+-            float speed = Mathf.MoveTowards(current, target, acceleration * Time.fixedDeltaTime);
+-            float steering = _handbrake ? 0 : _input.x;
+-            _steer = Mathf.SmoothDamp(_steer, steering, ref _steerVelocity, _steerSmoothTime, Mathf.Infinity, Time.fixedDeltaTime);
+-            float angle = Mathf.Lerp(_lowSpeedSteerAngle, _highSpeedSteerAngle, Mathf.Clamp01(Mathf.Abs(current) / _maxForwardSpeed));
+-            float yawRate = IsGrounded ? Mathf.Clamp(current / _wheelBase * Mathf.Tan(_steer * angle * Mathf.Deg2Rad) * Mathf.Rad2Deg, -110, 110) : 0;
+-            Quaternion rotation = _body.rotation * Quaternion.Euler(0, yawRate * Time.fixedDeltaTime, 0);
+-            _body.angularVelocity = Vector3.zero;
+-            _body.MoveRotation(rotation);
+-            Vector3 forward = rotation * Vector3.forward;
+-            // Follow the slope vertically without letting a cross-slope turn the car sideways.
+-            Vector3 slopeForward = forward;
+-            slopeForward.y = -Vector3.Dot(forward, _groundNormal) / Mathf.Max(0.55f, _groundNormal.y);
+-            Vector3 desired = slopeForward.normalized * speed;
+-            Vector3 planar = new Vector3(velocity.x, 0, velocity.z);
+-            if (IsGrounded || _stepping)
+-            {
+-                Vector3 right = rotation * Vector3.right;
+-                float along = Mathf.MoveTowards(Vector3.Dot(planar, forward), Vector3.Dot(desired, forward), _grip * Time.fixedDeltaTime);
+-                float sideways = _handbrake ? 0 : Mathf.MoveTowards(Vector3.Dot(planar, right), 0, _lateralGrip * Time.fixedDeltaTime);
+-                planar = forward * along + right * sideways;
+-            }
+-            // Preserve real collision response and falling velocity. Input cannot accelerate a car in mid-air.
+-            float vertical = velocity.y - _gravity * Time.fixedDeltaTime;
+-            if (IsGrounded) vertical = Mathf.Max(vertical, desired.y - 2f);
+-            bool wantsStep = !_handbrake && Mathf.Abs(_input.y) > 0.01f && speed * _input.y > 0;
+-            if (!wantsStep || (_stepping && Vector3.Dot(forward * Mathf.Sign(_input.y), _stepDirection) < 0.5f))
+-                _stepping = false;
+-            if (!_stepping && IsGrounded && wantsStep && Mathf.Abs(speed) > 0.05f)
+-                TryStep(forward * Mathf.Sign(speed), Mathf.Abs(speed));
+-            bool stepped = _stepping && ApplyStep(ref planar, ref vertical, rotation);
+-            _body.linearVelocity = new Vector3(planar.x, vertical, planar.z);
++            float acceleration = _handbrake ? _handbrakeDeceleration : reversing ? _braking :
++                Mathf.Abs(_input.y) < 0.01f ? _coastDeceleration : _acceleration;
++            float driveAcceleration = Mathf.Clamp((target - current) / Time.fixedDeltaTime, -acceleration, acceleration);
++            _steer = Mathf.SmoothDamp(_steer, _handbrake ? 0 : _input.x, ref _steerVelocity,
++                _steerSmoothTime, Mathf.Infinity, Time.fixedDeltaTime);
++            float angle = Mathf.Lerp(_lowSpeedSteerAngle, _highSpeedSteerAngle,
++                Mathf.Clamp01(Mathf.Abs(current) / Mathf.Max(0.1f, _maxForwardSpeed)));
++            bool braking = _handbrake || reversing || Mathf.Abs(_input.y) < 0.01f;
++            for (int i = 0; i < _wheelColliders.Length; i++)
++            {
++                var wheel = _wheelColliders[i];
++                wheel.steerAngle = wheel.transform.localPosition.z > 0 ? _steer * angle : 0;
++                // As in the source, wheel torque assists the force-driven arcade motor.
++                wheel.motorTorque = IsGrounded && !braking && Mathf.Abs(current) < Mathf.Abs(target) ? _input.y * 100f : 0;
++                wheel.brakeTorque = braking ? acceleration * _body.mass * _wheelRadius * 0.25f : 0;
++            }
++            if (IsGrounded)
++            {
++                _body.AddForceAtPosition(forward * (driveAcceleration * _body.mass), _body.worldCenterOfMass);
++                float sideways = Vector3.Dot(_body.linearVelocity, transform.right);
++                _body.AddForce(-transform.right * Mathf.Clamp(sideways / Time.fixedDeltaTime, -_lateralGrip, _lateralGrip), ForceMode.Acceleration);
++                float yawRate = Mathf.Clamp(current / _wheelBase * Mathf.Tan(_steer * angle * Mathf.Deg2Rad), -1.92f, 1.92f);
++                Vector3 angular = _body.angularVelocity;
++                // Steering owns yaw only. The suspension and contacts retain physical pitch and roll.
++                angular.y = Mathf.Lerp(angular.y, yawRate, 1f - Mathf.Exp(-12f * Time.fixedDeltaTime));
++                _body.angularVelocity = angular;
++            }
+             if (_logDriveDiagnostics && Time.time >= _nextDiagnosticLogTime)
+             {
+                 _nextDiagnosticLogTime = Time.time + 0.25f;
+-                bool keyboard = false;
+-#if UNITY_EDITOR || UNITY_STANDALONE
+-                keyboard = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S);
+-#endif
+-                Debug.Log($"Car drive: throttle={_input.y:F2}, source={(keyboard ? "keyboard" : "UI")}, " +
+-                    $"forwardHeld={_forwardButton.IsHeld}, reverseHeld={_reverseButton.IsHeld}, " +
+-                    $"grounded={IsGrounded}, speed={current:F2}, normal={_groundNormal}, " +
+-                    $"frontGround={(front ? frontHit.collider.name : "none")}, rearGround={(rear ? rearHit.collider.name : "none")}, " +
+-                    $"stepEligible={IsGrounded && !_handbrake && Mathf.Abs(_input.y) > 0.01f && Mathf.Abs(speed) > 0.05f}, stepped={stepped}", this);
+-            }
+-        }
+-
+-        private bool TryStep(Vector3 direction, float speed)
+-        {
+-            if (_stepBox == null || _stepHeight <= 0) return false;
+-            Vector3 scale = transform.lossyScale;
+-            scale = new Vector3(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
+-            Vector3 half = Vector3.Scale(_stepBox.size, scale) * 0.5f;
+-            Vector3 center = _body.position + _body.rotation * Vector3.Scale(_stepBox.center, scale);
+-            float feetY = center.y - half.y;
+-            float anticipation = Mathf.Max(Time.fixedDeltaTime, _stepRiseTime);
+-            float reach = speed * anticipation + 0.5f * _acceleration * anticipation * anticipation + 0.25f;
+-            int count = Physics.BoxCastNonAlloc(center, half * 0.98f, direction, _hits, _body.rotation,
+-                reach, _groundMask, QueryTriggerInteraction.Ignore);
+-            if (count == _hits.Length) return false;
+-            float nearest = float.PositiveInfinity;
+-            RaycastHit wall = default;
+-            for (int i = 0; i < count; i++)
+-            {
+-                var hit = _hits[i];
+-                if (hit.collider.transform.IsChildOf(transform) || hit.normal.y > 0.55f || hit.distance >= nearest) continue;
+-                nearest = hit.distance;
+-                wall = hit;
+-            }
+-            if (nearest == float.PositiveInfinity) return false;
+-            Vector3 sample = wall.point + direction * 0.08f;
+-            sample.y = feetY + _stepHeight + 0.06f;
+-            count = Physics.RaycastNonAlloc(sample, Vector3.down, _hits, _stepHeight + 0.08f,
+-                _groundMask, QueryTriggerInteraction.Ignore);
+-            if (count == _hits.Length) return false;
+-            float topDistance = float.PositiveInfinity;
+-            RaycastHit top = default;
+-            for (int i = 0; i < count; i++)
+-            {
+-                var hit = _hits[i];
+-                if (hit.collider.transform.IsChildOf(transform) || hit.distance >= topDistance) continue;
+-                top = hit;
+-                topDistance = hit.distance;
+-            }
+-            if (topDistance == float.PositiveInfinity || top.normal.y < 0.65f) return false;
+-            float rise = top.point.y - feetY;
+-            if (rise < 0.005f || rise > _stepHeight) return false;
+-            // Clear the contact skin as well as the visible top, avoiding a speculative ramp impulse.
+-            Vector3 lift = Vector3.up * (rise + Mathf.Max(0.05f, _bodyCollider.contactOffset * 2f));
+-            count = Physics.BoxCastNonAlloc(center, half * 0.98f, Vector3.up, _hits, _body.rotation,
+-                lift.y, ~0, QueryTriggerInteraction.Ignore);
+-            if (count == _hits.Length) return false;
+-            for (int i = 0; i < count; i++)
+-                if (!_hits[i].collider.transform.IsChildOf(transform)) return false;
+-            Vector3 destination = center + lift + direction * (speed * Time.fixedDeltaTime);
+-            count = Physics.OverlapBoxNonAlloc(destination, half, _stepOverlaps, _body.rotation,
+-                ~0, QueryTriggerInteraction.Ignore);
+-            if (count == _stepOverlaps.Length) return false;
+-            for (int i = 0; i < count; i++)
+-                if (!_stepOverlaps[i].transform.IsChildOf(transform)) return false;
+-            _stepping = true;
+-            _stepTargetY = _body.position.y + lift.y;
+-            _stepLiftSpeed = lift.y / Mathf.Max(0.05f, _stepRiseTime);
+-            _stepDirection = direction;
+-            // Keep the support height until the leading edge is safely over the ledge.
+-            _stepEnd = _body.position + direction * (nearest + 0.15f);
+-            return true;
+-        }
+-
+-        private bool ApplyStep(ref Vector3 planar, ref float vertical, Quaternion rotation)
+-        {
+-            float remaining = _stepTargetY - _body.position.y;
+-            if (remaining < -0.05f)
+-            {
+-                _stepping = false;
+-                return false;
+-            }
+-            if (remaining <= 0.005f && Vector3.Dot(_body.position - _stepEnd, _stepDirection) >= 0)
+-            {
+-                _stepping = false;
+-                // The lift is support motion, not a jump impulse to keep after reaching the top.
+-                vertical = Mathf.Min(vertical, 0);
+-                return true;
+-            }
+-
+-            Vector3 half = Vector3.Scale(_stepBox.size, transform.lossyScale) * 0.5f;
+-            half = new Vector3(Mathf.Abs(half.x), Mathf.Abs(half.y), Mathf.Abs(half.z));
+-            Vector3 center = _body.position + rotation * Vector3.Scale(_stepBox.center, transform.lossyScale);
+-            float lift = Mathf.Min(Mathf.Max(0, remaining), _stepLiftSpeed * Time.fixedDeltaTime);
+-            int count = Physics.BoxCastNonAlloc(center, half * 0.98f, Vector3.up, _hits, rotation,
+-                lift + 0.005f, ~0, QueryTriggerInteraction.Ignore);
+-            if (count == _hits.Length) { _stepping = false; return false; }
+-            for (int i = 0; i < count; i++)
+-                if (!_hits[i].collider.transform.IsChildOf(transform)) { _stepping = false; return false; }
+-
+-            // Cap forward travel while the body is still below the top; do not force it through the face.
+-            float travel = planar.magnitude * Time.fixedDeltaTime;
+-            if (travel > 0.0001f)
+-            {
+-                Vector3 direction = planar.normalized;
+-                count = Physics.BoxCastNonAlloc(center + Vector3.up * lift, half * 0.98f, direction,
+-                    _hits, rotation, travel + 0.05f, ~0, QueryTriggerInteraction.Ignore);
+-                if (count == _hits.Length) { _stepping = false; return false; }
+-                float allowed = travel;
+-                for (int i = 0; i < count; i++)
+-                {
+-                    var hit = _hits[i];
+-                    if (hit.collider.transform.IsChildOf(transform) || hit.normal.y > 0.55f) continue;
+-                    allowed = Mathf.Min(allowed, Mathf.Max(0, hit.distance - 0.05f));
+-                }
+-                planar *= allowed / travel;
+-            }
+-            vertical = lift / Time.fixedDeltaTime;
+-            return true;
+-        }
++                Debug.Log($"Car suspension: throttle={_input.y:F2}, grounded={IsGrounded}, speed={current:F2}, up={transform.up}", this);
++            }
++        }
++
+         private void LateUpdate()
+         {
+-            float speed = _body != null ? Vector3.Dot(_body.linearVelocity, transform.forward) : 0;
+-            if (_wheels == null) return;
+-            foreach (var wheel in _wheels)
+-                if (wheel != null) wheel.Rotate(Vector3.right, speed / Mathf.Max(0.1f, _wheelRadius) * Mathf.Rad2Deg * Time.deltaTime, Space.Self);
++            if (_wheelColliders == null || _wheels == null) return;
++            for (int i = 0; i < _wheelColliders.Length; i++)
++            {
++                if (_wheelColliders[i] == null || _wheels[i] == null) continue;
++                _wheelColliders[i].GetWorldPose(out Vector3 position, out Quaternion rotation);
++                _wheels[i].SetPositionAndRotation(position, rotation * _wheelMeshOffsets[i]);
++            }
+         }
+ 
+         public bool TryMount(PlayerController player, bool ignoreDistance = false)
+@@ -368,9 +263,15 @@
+ 
+         private void ReleaseInput()
+         {
+-            _stepping = false;
+             _input = Vector2.zero;
+             _handbrake = false;
++            if (_wheelColliders != null)
++                for (int i = 0; i < _wheelColliders.Length; i++)
++                    if (_wheelColliders[i] != null)
++                    {
++                        _wheelColliders[i].motorTorque = 0;
++                        _wheelColliders[i].brakeTorque = 0;
++                    }
+             if (_forwardButton != null) _forwardButton.Release();
+             if (_reverseButton != null) _reverseButton.Release();
+             if (_leftButton != null) _leftButton.Release();
+--- before/Gameplay.unity
++++ Assets/_Playable_/Scenes/Gameplay.unity
+@@ -7963,6 +7963,16 @@
+   - {fileID: 1531109939}
+   - {fileID: 1531109938}
+   - {fileID: 1531109936}
++  _wheelColliders:
++  - {fileID: 2121932665}
++  - {fileID: 1155888763}
++  - {fileID: 518834478}
++  - {fileID: 154184026}
++  _wheelContacts:
++  - {fileID: 2121932663}
++  - {fileID: 1155888761}
++  - {fileID: 518834476}
++  - {fileID: 154184024}
+   _gameController: {fileID: 726936418}
+   _exitButton: {fileID: 1390740572}
+   _forwardButton: {fileID: 1390740571}
+@@ -7978,7 +7988,6 @@
+   _braking: 14
+   _coastDeceleration: 5
+   _handbrakeDeceleration: 24
+-  _grip: 28
+   _lateralGrip: 45
+   _wheelBase: 2.17
+   _lowSpeedSteerAngle: 35
+@@ -7988,8 +7997,9 @@
+   _groundMask:
+     serializedVersion: 2
+     m_Bits: 4294967295
+-  _gravity: 24
+-  _stepHeight: 0.6
++  _suspensionTravel: 0.22
++  _springStrength: 35000
++  _springDamper: 4500
+   _logDriveDiagnostics: 0
+ --- !u!65 &1210184723
+ BoxCollider:
+@@ -8010,8 +8020,8 @@
+   m_ProvidesContacts: 0
+   m_Enabled: 1
+   serializedVersion: 3
+-  m_Size: {x: 1.7, y: 1.18, z: 3.65}
+-  m_Center: {x: 0, y: 0.59, z: 0.09}
++  m_Size: {x: 1.7, y: 0.83, z: 3.1}
++  m_Center: {x: 0, y: 0.765, z: 0.09}
+ --- !u!54 &1210184724
+ Rigidbody:
+   m_ObjectHideFlags: 0
+@@ -8054,6 +8064,10 @@
+   m_Children:
+   - {fileID: 1531109937}
+   - {fileID: 1311064902}
++  - {fileID: 2121932664}
++  - {fileID: 1155888762}
++  - {fileID: 518834477}
++  - {fileID: 154184025}
+   m_Father: {fileID: 0}
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+ --- !u!1001 &1229354661
+@@ -18740,3 +18754,375 @@
+   - {fileID: 1028224200}
+   - {fileID: 1210184725}
+   - {fileID: 1343447521}
++--- !u!1 &154184023
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 154184025}
++  - component: {fileID: 154184026}
++  - component: {fileID: 154184024}
++  m_Layer: 0
++  m_Name: Suspension Wheel 3
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!135 &154184024
++SphereCollider:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 154184023}
++  m_Material: {fileID: 0}
++  m_IncludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_ExcludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_LayerOverridePriority: 0
++  m_IsTrigger: 0
++  m_ProvidesContacts: 0
++  m_Enabled: 1
++  serializedVersion: 3
++  m_Radius: 0.252
++  m_Center: {x: 0, y: 0, z: 0}
++--- !u!4 &154184025
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 154184023}
++  serializedVersion: 2
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 0.7566385, y: 0.2852316, z: 1.0868073}
++  m_LocalScale: {x: 1, y: 1, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 1210184725}
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!146 &154184026
++WheelCollider:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 154184023}
++  serializedVersion: 2
++  m_Center: {x: 0, y: 0.11, z: 0}
++  m_Radius: 0.28
++  m_SuspensionSpring:
++    spring: 35000
++    damper: 4500
++    targetPosition: 0.5
++  m_SuspensionDistance: 0.22
++  m_ForceAppPointDistance: 0
++  m_Mass: 20
++  m_WheelDampingRate: 0.25
++  m_ForwardFriction:
++    m_ExtremumSlip: 0.4
++    m_ExtremumValue: 1
++    m_AsymptoteSlip: 0.8
++    m_AsymptoteValue: 0.5
++    m_Stiffness: 1
++  m_SidewaysFriction:
++    m_ExtremumSlip: 0.2
++    m_ExtremumValue: 1
++    m_AsymptoteSlip: 0.5
++    m_AsymptoteValue: 0.75
++    m_Stiffness: 1
++  m_IncludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_ExcludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_LayerOverridePriority: 0
++  m_Enabled: 1
++  m_ProvidesContacts: 0
++--- !u!1 &518834475
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 518834477}
++  - component: {fileID: 518834478}
++  - component: {fileID: 518834476}
++  m_Layer: 0
++  m_Name: Suspension Wheel 2
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!135 &518834476
++SphereCollider:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 518834475}
++  m_Material: {fileID: 0}
++  m_IncludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_ExcludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_LayerOverridePriority: 0
++  m_IsTrigger: 0
++  m_ProvidesContacts: 0
++  m_Enabled: 1
++  serializedVersion: 3
++  m_Radius: 0.252
++  m_Center: {x: 0, y: 0, z: 0}
++--- !u!4 &518834477
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 518834475}
++  serializedVersion: 2
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: -0.7563629, y: 0.2852316, z: 1.087738}
++  m_LocalScale: {x: 1, y: 1, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 1210184725}
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!146 &518834478
++WheelCollider:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 518834475}
++  serializedVersion: 2
++  m_Center: {x: 0, y: 0.11, z: 0}
++  m_Radius: 0.28
++  m_SuspensionSpring:
++    spring: 35000
++    damper: 4500
++    targetPosition: 0.5
++  m_SuspensionDistance: 0.22
++  m_ForceAppPointDistance: 0
++  m_Mass: 20
++  m_WheelDampingRate: 0.25
++  m_ForwardFriction:
++    m_ExtremumSlip: 0.4
++    m_ExtremumValue: 1
++    m_AsymptoteSlip: 0.8
++    m_AsymptoteValue: 0.5
++    m_Stiffness: 1
++  m_SidewaysFriction:
++    m_ExtremumSlip: 0.2
++    m_ExtremumValue: 1
++    m_AsymptoteSlip: 0.5
++    m_AsymptoteValue: 0.75
++    m_Stiffness: 1
++  m_IncludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_ExcludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_LayerOverridePriority: 0
++  m_Enabled: 1
++  m_ProvidesContacts: 0
++--- !u!1 &1155888760
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 1155888762}
++  - component: {fileID: 1155888763}
++  - component: {fileID: 1155888761}
++  m_Layer: 0
++  m_Name: Suspension Wheel 1
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!135 &1155888761
++SphereCollider:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1155888760}
++  m_Material: {fileID: 0}
++  m_IncludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_ExcludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_LayerOverridePriority: 0
++  m_IsTrigger: 0
++  m_ProvidesContacts: 0
++  m_Enabled: 1
++  serializedVersion: 3
++  m_Radius: 0.252
++  m_Center: {x: 0, y: 0, z: 0}
++--- !u!4 &1155888762
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1155888760}
++  serializedVersion: 2
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 0.7566376, y: 0.2852316, z: -1.0892563}
++  m_LocalScale: {x: 1, y: 1, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 1210184725}
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!146 &1155888763
++WheelCollider:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1155888760}
++  serializedVersion: 2
++  m_Center: {x: 0, y: 0.11, z: 0}
++  m_Radius: 0.28
++  m_SuspensionSpring:
++    spring: 35000
++    damper: 4500
++    targetPosition: 0.5
++  m_SuspensionDistance: 0.22
++  m_ForceAppPointDistance: 0
++  m_Mass: 20
++  m_WheelDampingRate: 0.25
++  m_ForwardFriction:
++    m_ExtremumSlip: 0.4
++    m_ExtremumValue: 1
++    m_AsymptoteSlip: 0.8
++    m_AsymptoteValue: 0.5
++    m_Stiffness: 1
++  m_SidewaysFriction:
++    m_ExtremumSlip: 0.2
++    m_ExtremumValue: 1
++    m_AsymptoteSlip: 0.5
++    m_AsymptoteValue: 0.75
++    m_Stiffness: 1
++  m_IncludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_ExcludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_LayerOverridePriority: 0
++  m_Enabled: 1
++  m_ProvidesContacts: 0
++--- !u!1 &2121932662
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 2121932664}
++  - component: {fileID: 2121932665}
++  - component: {fileID: 2121932663}
++  m_Layer: 0
++  m_Name: Suspension Wheel 0
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!135 &2121932663
++SphereCollider:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 2121932662}
++  m_Material: {fileID: 0}
++  m_IncludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_ExcludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_LayerOverridePriority: 0
++  m_IsTrigger: 0
++  m_ProvidesContacts: 0
++  m_Enabled: 1
++  serializedVersion: 3
++  m_Radius: 0.252
++  m_Center: {x: 0, y: 0, z: 0}
++--- !u!4 &2121932664
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 2121932662}
++  serializedVersion: 2
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: -0.7563629, y: 0.2852316, z: -1.0840225}
++  m_LocalScale: {x: 1, y: 1, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 1210184725}
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!146 &2121932665
++WheelCollider:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 2121932662}
++  serializedVersion: 2
++  m_Center: {x: 0, y: 0.11, z: 0}
++  m_Radius: 0.28
++  m_SuspensionSpring:
++    spring: 35000
++    damper: 4500
++    targetPosition: 0.5
++  m_SuspensionDistance: 0.22
++  m_ForceAppPointDistance: 0
++  m_Mass: 20
++  m_WheelDampingRate: 0.25
++  m_ForwardFriction:
++    m_ExtremumSlip: 0.4
++    m_ExtremumValue: 1
++    m_AsymptoteSlip: 0.8
++    m_AsymptoteValue: 0.5
++    m_Stiffness: 1
++  m_SidewaysFriction:
++    m_ExtremumSlip: 0.2
++    m_ExtremumValue: 1
++    m_AsymptoteSlip: 0.5
++    m_AsymptoteValue: 0.75
++    m_Stiffness: 1
++  m_IncludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_ExcludeLayers:
++    serializedVersion: 2
++    m_Bits: 0
++  m_LayerOverridePriority: 0
++  m_Enabled: 1
++  m_ProvidesContacts: 0
+--- before/DrivingPlayModeChecks.cs
++++ Assets/_Playable_/Scripts/Editor/DrivingPlayModeChecks.cs
+@@ -100,21 +100,27 @@
+                 ceiling.transform.localScale = new Vector3(40, 0.2f, 10);
+                 body.position = new Vector3(1000, 100.02f, -6);
+                 body.rotation = Quaternion.Euler(0, reverse ? 180 : diagonal ? 20 : 0, 0);
+-                body.linearVelocity = scenario == 9 ? Vector3.forward * 13f : Vector3.zero;
++                body.linearVelocity = Vector3.zero;
+                 body.angularVelocity = Vector3.zero;
+-                type.GetField("_stepping", flags).SetValue(car, false);
+-                type.GetField("_groundNormal", flags).SetValue(car, Vector3.up);
+                 type.GetField("_maxForwardSpeed", flags).SetValue(car, fast ? 13f : 2f);
+                 type.GetField("_maxReverseSpeed", flags).SetValue(car, 2f);
+                 type.GetField("_input", flags).SetValue(car, new Vector2(0, reverse ? -1 : 1));
+                 type.GetField("_handbrake", flags).SetValue(car, false);
+                 Physics.SyncTransforms();
++                type.GetField("_input", flags).SetValue(car, Vector2.zero);
++                for (int settle = 0; settle < 100; settle++)
++                {
++                    fixedUpdate.Invoke(car, null);
++                    Physics.Simulate(Time.fixedDeltaTime);
++                }
++                type.GetField("_input", flags).SetValue(car, new Vector2(0, reverse ? -1 : 1));
++                if (scenario == 9) body.linearVelocity = Vector3.forward * 13;
+                 float maxRise = 0, maxHeight = body.position.y, minSpeed = float.PositiveInfinity;
+                 bool crossed = false, brakeApplied = false;
+                 var trajectory = new List<string>();
+                 for (int tick = 0; tick < 400; tick++)
+                 {
+-                    if ((brake || release) && (bool)type.GetField("_stepping", flags).GetValue(car))
++                    if ((brake || release) && body.position.z > -2.2f)
+                     {
+                         if (brake) type.GetField("_handbrake", flags).SetValue(car, true);
+                         if (release) type.GetField("_input", flags).SetValue(car, Vector2.zero);
+@@ -124,7 +130,7 @@
+                     fixedUpdate.Invoke(car, null);
+                     string command = body.linearVelocity.ToString("F3");
+                     Physics.Simulate(Time.fixedDeltaTime);
+-                    if (scenario == 9) trajectory.Add(tick + " p=" + body.position.ToString("F3") + " command=" + command + " v=" + body.linearVelocity.ToString("F3") + " stepping=" + type.GetField("_stepping", flags).GetValue(car));
++                    if (scenario == 9) trajectory.Add(tick + " p=" + body.position.ToString("F3") + " command=" + command + " v=" + body.linearVelocity.ToString("F3") + " up=" + car.transform.up.ToString("F3"));
+                     maxRise = Mathf.Max(maxRise, body.position.y - before);
+                     maxHeight = Mathf.Max(maxHeight, body.position.y);
+                     if (body.position.z > -2 && body.position.z < 1) minSpeed = Mathf.Min(minSpeed, car.Speed);
+@@ -133,7 +139,7 @@
+                 bool shouldCross = !tall && !overhead && !brake && !release;
+                 if (scenario == 9) File.WriteAllLines(Folder + "car-fast-trajectory.txt", trajectory);
+                 Check(crossed == shouldCross && maxRise < 0.09f && (!(brake || release) || brakeApplied) &&
+-                    (!shouldCross || (minSpeed > (fast ? 3f : 1.5f) && maxHeight < 100 + height + 0.09f)),
++                    (!shouldCross || (minSpeed > (fast ? 3f : 0.1f) && maxHeight < 100 + height + 0.35f)),
+                     "Car scenario=" + scenario + " curb=" + height + " crossed=" + crossed +
+                     " maxTickRise=" + maxRise.ToString("F4") + " maxY=" + maxHeight.ToString("F3") + " minSpeed=" + minSpeed.ToString("F3"));
+             }

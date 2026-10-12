@@ -1,0 +1,4 @@
+# Center car hand tutorial
+User requested hand directly at the center of the car. Scope communicated before edits: CarDriveTutorial.cs and Gameplay.unity.
+Converted tutorial visual to non-interactive ScreenSpaceOverlay canvas and positioned the hand at the projected car BoxCollider center (0,0.75,0.24). Text remains below. Updates via Canvas.willRenderCanvases after camera movement, hides behind camera; paired subscription cleanup. Existing mission/mount/pause behavior and pulse retained. Reuses sprite/font/material; no shaders/packages added.
+Unity compiled, Console zero errors. PlayMode screenshot reviewed at agent-os/captures/car-hand-centered.png. Projection checked at initial view and three rotated views. Fresh Luna build/device check not performed. Existing responsive UI serialization restored from baseline after save. Backup: C:/Users/Admin/AppData/Local/Temp/car-hand-center-idme9dab.
