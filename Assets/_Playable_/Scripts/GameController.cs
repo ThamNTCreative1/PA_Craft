@@ -19,6 +19,14 @@ namespace Playable
         private PlayerController _player;
 
         [SerializeField] private Monster _monster;
+
+        [Header("Boss Selection")]
+        [LunaPlaygroundField("Use Oni Tiger")] [SerializeField] private bool _useOniTiger = true;
+        [LunaPlaygroundField("Use Titan Guard")] [SerializeField] private bool _useTitanGuard;
+        [LunaPlaygroundField("Use Cosmic Dragon")] [SerializeField] private bool _useCosmicDragon;
+        [SerializeField] private Monster _oniTiger;
+        [SerializeField] private Monster _titanGuard;
+        [SerializeField] private Monster _cosmicDragon;
         [SerializeField] private Egg _egg;
         [SerializeField] private Transform _eggHoldPoint;
 
@@ -52,8 +60,23 @@ namespace Playable
 
         private void Awake()
         {
+            SelectBoss();
             if (_home != null) SetActiveIfChanged(_home.gameObject, false);
             CacheInitialState();
+        }
+
+        private void SelectBoss()
+        {
+            // Resolve conflicting Playground toggles deterministically; keep one boss active.
+            Monster selected = null;
+            if (_useCosmicDragon && _cosmicDragon != null) selected = _cosmicDragon;
+            else if (_useTitanGuard && _titanGuard != null) selected = _titanGuard;
+            else if (_useOniTiger && _oniTiger != null) selected = _oniTiger;
+            if (selected == null) selected = _oniTiger != null ? _oniTiger : _monster;
+            if (_oniTiger != null) _oniTiger.gameObject.SetActive(_oniTiger == selected);
+            if (_titanGuard != null) _titanGuard.gameObject.SetActive(_titanGuard == selected);
+            if (_cosmicDragon != null) _cosmicDragon.gameObject.SetActive(_cosmicDragon == selected);
+            _monster = selected;
         }
 
         private void OnEnable()

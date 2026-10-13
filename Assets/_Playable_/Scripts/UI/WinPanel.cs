@@ -18,7 +18,7 @@ namespace Playable
         {
             _button.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.Linear)
                 .SetLoops(-1, LoopType.Yoyo);
-            _line.DOAnchorPosX(460, 0.5f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+            _line.DOAnchorPosX(460, 0.5f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart);
         }
     }
 }

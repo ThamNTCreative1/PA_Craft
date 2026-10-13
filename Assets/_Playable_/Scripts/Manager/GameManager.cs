@@ -24,6 +24,9 @@ namespace Playable
         [SerializeField] private Button _btnBlock;
         [SerializeField] private Image _background;
 
+        [LunaPlaygroundField("Applovin")] [SerializeField]
+        private bool _isApplovin;
+
         [Header("UI Field")] [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
 
@@ -77,7 +80,7 @@ namespace Playable
             yield return new WaitForSeconds(_endTime);
             EndGame();
             yield return new WaitForSeconds(1);
-            ShowCTA();
+            if (!_isApplovin) ShowCTA();
         }
 
         private Sprite CreateSprite(Texture2D texture)
@@ -91,7 +94,7 @@ namespace Playable
         public void ShowWinPanel()
         {
             EndGame();
-            DOVirtual.DelayedCall(1, ShowCTA);
+            if (!_isApplovin) DOVirtual.DelayedCall(1, ShowCTA);
             if (_winPanel == null) return;
             _winPanel.Show();
         }
@@ -99,7 +102,7 @@ namespace Playable
         public void ShowFailPanel()
         {
             EndGame();
-            DOVirtual.DelayedCall(1, ShowCTA);
+            if (!_isApplovin) DOVirtual.DelayedCall(1, ShowCTA);
             if (_failPanel == null) return;
             _failPanel.Show();
         }
