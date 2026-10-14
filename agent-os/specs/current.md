@@ -1,3 +1,5 @@
-﻿# Current task
+# Current work item
 
-See [portrait crosshair height](2026-10-12-portrait-crosshair-height/implementation-report.md).
+agent-os/specs/2026-10-14-1432-vehicle-tap-diagnosis
+
+Status: Scene reference repair implemented; static validation passed; Unity/Luna runtime unverified.

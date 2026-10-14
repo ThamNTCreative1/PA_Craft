@@ -17,8 +17,7 @@ namespace Playable
         [LunaPlaygroundAsset("Background Music")] [SerializeField]
         private AudioClip _backgroundMusic;
 
-        [SerializeField]
-        private Texture2D _backgroundTexture;
+        [SerializeField] private Texture2D _backgroundTexture;
 
         [SerializeField] private Button _btnBlock;
         [SerializeField] private Image _background;
@@ -26,14 +25,20 @@ namespace Playable
         [Header("UI Field")] [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
 
+        [LunaPlaygroundField("Applovin")] [SerializeField]
+        private bool _isApplovin;
+
         private int _quantityEvent;
         public int EndTime => _endTime;
 
-        private void Awake() { Instance = this; }
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private void Start()
         {
-            _btnBlock.onClick.AddListener(EndGame);
+            _btnBlock.onClick.AddListener(ShowCta);
             // _btnBlock.gameObject.SetActive(false);
             if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
@@ -51,6 +56,11 @@ namespace Playable
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
             Luna.Unity.LifeCycle.GameEnded();
+            if (!_isApplovin) ShowCta();
+        }
+
+        private void ShowCta()
+        {
             Luna.Unity.Playable.InstallFullGame();
         }
 

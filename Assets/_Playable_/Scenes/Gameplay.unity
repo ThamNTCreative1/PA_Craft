@@ -4010,7 +4010,7 @@ MonoBehaviour:
   _carArrow: {fileID: 1343447518}
   _motorbikes:
   - {fileID: 1229354662}
-  _interactionDistance: 6
+  _interactionDistance: 4
   _tapMaxMovement: 25
   _tapMaxDuration: 0.4
   _tutorialTapPadding: 60
@@ -4053,10 +4053,10 @@ MonoBehaviour:
   _stepHeight: 0.55
   _jumpHeight: 1.2
   _gravity: -20
-  _fallGravityMultiplier: 2
-  _maxFallRate: 25
-  _jumpGroundIgnoreDuration: 0.12
-  _jumpBufferDuration: 0.12
+  _fallGravityMultiplier: 1.6
+  _maxFallRate: 30
+  _jumpGroundIgnoreDuration: 0.15
+  _jumpBufferDuration: 0.15
   _coyoteTime: 0.1
   _groundMask:
     serializedVersion: 2
@@ -4106,6 +4106,7 @@ MonoBehaviour:
   _muzzle: {fileID: 1914995618}
   _crosshair: {fileID: 1364886745}
   _portraitCrosshairScale: 1.8
+  _portraitCrosshairHeightOffset: 0.12
   _flash: {fileID: 1914995617}
   _hud: {fileID: 1023347905}
   _hint: {fileID: 897450195}
@@ -4997,12 +4998,12 @@ PrefabInstance:
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 270.05225
+      value: 270.1371
       objectReference: {fileID: 0}
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 270.05225
+      value: 270.1371
       objectReference: {fileID: 0}
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
@@ -5042,12 +5043,12 @@ PrefabInstance:
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 175.53397
+      value: 175.58911
       objectReference: {fileID: 0}
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 464.94135
+      value: 464.84628
       objectReference: {fileID: 0}
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
@@ -5067,12 +5068,12 @@ PrefabInstance:
     - target: {fileID: 224549901600871832, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 270.05225
+      value: 270.1371
       objectReference: {fileID: 0}
     - target: {fileID: 224549901600871832, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 270.05225
+      value: 270.1371
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8204,6 +8205,7 @@ MonoBehaviour:
   _background: {fileID: 1421159609}
   _failPanel: {fileID: 2049520472}
   _winPanel: {fileID: 1064580686}
+  _isApplovin: 1
 --- !u!1 &1064580684
 GameObject:
   m_ObjectHideFlags: 0
@@ -8257,7 +8259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5d501161d79a83478cb8b5c22e4b767, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _button: {fileID: 962474174}
+  _button: {fileID: 0}
   _buttonPulseScale: 1.12
   _buttonPulseDuration: 0.4
 --- !u!114 &1064580687
@@ -14876,7 +14878,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ac1c49469982154282a0712df12270a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _button: {fileID: 273848605}
+  _button: {fileID: 0}
   _buttonPulseScale: 1.12
   _buttonPulseDuration: 0.4
 --- !u!114 &2049520473
@@ -18048,7 +18050,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   _collisionRadius: 0.23
-  _bikeOffset: {x: 0, y: 1.32, z: -3}
+  _bikeOffset: {x: 0, y: 1.7, z: -6}
   _bikeInitialPitch: 12
   _speedPullback: 1.5
   _paintballZoomFov: 60
