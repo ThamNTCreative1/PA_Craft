@@ -2,11 +2,13 @@
 
 public class FloatingJoystick : Joystick
 {
+    protected virtual bool HideBackgroundOnStart => true;
+
     protected override void Start()
     {
         base.Start();
         if (!IsInitialized) return;
-        background.gameObject.SetActive(false);
+        if (HideBackgroundOnStart) background.gameObject.SetActive(false);
     }
 
     protected override void OnPressed(Vector2 screenPosition)

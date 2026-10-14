@@ -38,6 +38,10 @@ namespace Playable
         private float _pitch;
         private Transform _transform;
         private Transform _cameraTransform;
+        private Vector3 _smoothedPosition;
+        private Quaternion _smoothedRotation;
+        private bool _hasSmoothedPose;
+        private ClimbPlayer _climbPlayer;
 
         public Transform YawPivot => _yawPivot != null ? _yawPivot : _transform;
         public ViewMode CurrentViewMode => _viewMode;
@@ -45,6 +49,8 @@ namespace Playable
         private void Awake()
         {
             _transform = transform;
+            if (_followTarget != null)
+                _climbPlayer = _followTarget.GetComponentInParent<ClimbPlayer>();
 
             if (_targetCamera == null)
             {
@@ -67,7 +73,7 @@ namespace Playable
 
         private void Start()
         {
-            if (_target != null)
+            if (_target != null || _followTarget != null)
             {
                 SnapToTarget();
             }
@@ -75,13 +81,13 @@ namespace Playable
 
         private void LateUpdate()
         {
-            if (_target == null)
+            if (_target == null && _followTarget == null)
             {
                 return;
             }
 
             UpdateRigRotation();
-            UpdateCameraPosition();
+            UpdateCameraPosition(_climbPlayer != null && _climbPlayer.IsClimbing);
         }
 
         private void OnDisable()
@@ -96,7 +102,7 @@ namespace Playable
         {
             _target = target;
 
-            if (_target != null)
+            if (_target != null || _followTarget != null)
             {
                 SnapToTarget();
             }
@@ -208,17 +214,23 @@ namespace Playable
             Vector3 localOffset = _viewMode == ViewMode.FirstPerson ? _firstPersonOffset : _thirdPersonOffset;
             Vector3 desiredPosition = anchor.TransformPoint(localOffset);
             Quaternion desiredRotation = anchor.rotation;
-            float lerpFactor = instant ? 1f : Time.deltaTime * _followSmooth;
+            float lerpFactor = instant || !_hasSmoothedPose ? 1f
+                : 1f - Mathf.Exp(-Mathf.Max(0f, _followSmooth) * Time.deltaTime);
 
-            _cameraTransform.position = Vector3.Lerp(
-                _cameraTransform.position,
+            // The camera can be a child of the moving rig. Its current world pose
+            // already includes the parent's step, so smooth from our saved pose.
+            _smoothedPosition = Vector3.Lerp(
+                _smoothedPosition,
                 desiredPosition,
                 lerpFactor);
 
-            _cameraTransform.rotation = Quaternion.Slerp(
-                _cameraTransform.rotation,
+            _smoothedRotation = instant || !_hasSmoothedPose ? desiredRotation : Quaternion.Slerp(
+                _smoothedRotation,
                 desiredRotation,
                 lerpFactor);
+            _hasSmoothedPose = true;
+            _cameraTransform.position = _smoothedPosition;
+            _cameraTransform.rotation = _smoothedRotation;
         }
     }
 }

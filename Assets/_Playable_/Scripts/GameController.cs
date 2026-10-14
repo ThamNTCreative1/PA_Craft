@@ -1,322 +1,219 @@
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Playable
 {
-    public class GameController : MonoBehaviour
+    [DefaultExecutionOrder(-50)]
+    public sealed class GameController : MonoBehaviour
     {
-        public enum GameState
-        {
-            LookingForEgg,
-            CanStealEgg,
-            Escaping,
-            Lost,
-            Won
-        }
-
-        [Header("Gameplay References")] [SerializeField]
-        private PlayerController _player;
-
-        [SerializeField] private Monster _monster;
-
-        [Header("Boss Selection")]
-        [LunaPlaygroundField("Use Oni Tiger")] [SerializeField] private bool _useOniTiger = true;
-        [LunaPlaygroundField("Use Titan Guard")] [SerializeField] private bool _useTitanGuard;
-        [LunaPlaygroundField("Use Cosmic Dragon")] [SerializeField] private bool _useCosmicDragon;
-        [SerializeField] private Monster _oniTiger;
-        [SerializeField] private Monster _titanGuard;
-        [SerializeField] private Monster _cosmicDragon;
-        [SerializeField] private Egg _egg;
-        [SerializeField] private Transform _eggHoldPoint;
-
-        [Tooltip("Finish line across the world X axis at Home Z. Cross from the starting side while carrying the egg to win.")] [SerializeField]
-        private Transform _home;
-
-        [Header("UI")] [SerializeField] private Button _stealButton;
-        [SerializeField] private GameObject _title;
-        [SerializeField] private GameObject _runUI;
-
-        [Header("Restart")] [SerializeField, Min(0f)]
-        private float _restartDelay = 1f;
-
-
-        [Header("Tutorial")] [Tooltip("Guide from Player to Egg, then to the finish flag (Home).")] [SerializeField]
-        private TutorialLineIndicator _tutorialLineIndicator;
+        public enum GameState { ApproachingTower, Climbing, Dropping, Completed }
+        [Header("Climb Jump")]
+        [LunaPlaygroundField("Climb Speed Multiplier")]
+        [SerializeField, Min(0f)] private float _climbSpeedMultiplier = 1f;
+        [LunaPlaygroundField("Target Climb Progress")]
+        [SerializeField, Range(0f, 1f)] private float _targetClimbProgress = 1f;
+        [SerializeField, Min(0f)] private float _towerTopCtaDelay = 1f;
+        [SerializeField] private ClimbPlayer _player;
+        [SerializeField] private ClimbCup _cup;
+        [SerializeField] private ClimbHud _hud;
+        [SerializeField] private Transform _ladderFoot;
+        [SerializeField] private GameObject _jumpHeadline;
+        [SerializeField] private TMPro.TMP_Text _instructionText;
         [SerializeField] private HandTutorial _handTutorial;
-
-        private Vector3 _playerStartPosition;
-        private Quaternion _playerStartRotation;
-        private Vector3 _monsterStartPosition;
-        private Quaternion _monsterStartRotation;
-        private Transform _playerTransform;
-        private Rigidbody _playerBody;
-        private bool _initialized;
-        private bool _started;
-        private float _homeApproachSign;
-        private float _restartTimer;
-
+        [SerializeField] private TutorialLineIndicator _tutorialLineIndicator;
+        [SerializeField] private GameManager _gameManager;
+        [SerializeField, Min(0.1f)] private float _climbTutorialDistance = 3f;
+        [SerializeField] private GameObject _jumpButtonLabel;
+        private bool _climbTutorialShown;
+        private bool _waitingForClimbSwipe;
+        private bool _climbSwipeArmed;
+        private bool _hasClimbed;
+        private bool _ctaRequested;
+        private Tween _ctaTween;
+        private Tween _instructionTween;
+        private Vector3 _instructionScale;
+        private bool _instructionScaleCached;
         public GameState State { get; private set; }
-
-        private void Awake()
-        {
-            SelectBoss();
-            if (_home != null) SetActiveIfChanged(_home.gameObject, false);
-            CacheInitialState();
-        }
-
-        private void SelectBoss()
-        {
-            // Resolve conflicting Playground toggles deterministically; keep one boss active.
-            Monster selected = null;
-            if (_useCosmicDragon && _cosmicDragon != null) selected = _cosmicDragon;
-            else if (_useTitanGuard && _titanGuard != null) selected = _titanGuard;
-            else if (_useOniTiger && _oniTiger != null) selected = _oniTiger;
-            if (selected == null) selected = _oniTiger != null ? _oniTiger : _monster;
-            if (_oniTiger != null) _oniTiger.gameObject.SetActive(_oniTiger == selected);
-            if (_titanGuard != null) _titanGuard.gameObject.SetActive(_titanGuard == selected);
-            if (_cosmicDragon != null) _cosmicDragon.gameObject.SetActive(_cosmicDragon == selected);
-            _monster = selected;
-        }
 
         private void OnEnable()
         {
-            if (!_initialized) return;
-            if (_stealButton != null)
+            if (_player != null)
             {
-                _stealButton.onClick.AddListener(StealEgg);
+                _player.ClimbStarted += OnClimbStarted;
+                _player.JumpedFromLadder += OnJumpedFromLadder;
             }
-
-            if (_monster != null)
+            if (_cup != null) _cup.CollectedCup += OnCupCollected;
+            if (_gameManager != null)
             {
-                _monster.OnPlayerReached += HandlePlayerCaught;
+                _gameManager.GameEnded += OnGameEnded;
+                if (_gameManager.HasEnded) OnGameEnded();
             }
-
-            _egg.RangeChanged += RefreshEggState;
-            RefreshEggState();
-            RefreshUI();
-            RefreshTutorial();
         }
-
         private void Start()
         {
-            _started = true;
-            ResetGame();
-            _title.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.Linear)
-                .SetLoops(-1, LoopType.Yoyo);
+            if (_gameManager != null && _gameManager.HasEnded) return;
+            State = GameState.ApproachingTower;
+            if (_jumpButtonLabel != null) _jumpButtonLabel.SetActive(false);
+            _player.SetClimbSpeedMultiplier(_climbSpeedMultiplier);
+            _handTutorial.SetStealHintVisible(false);
+            _handTutorial.ShowMovementTutorial();
+            ShowInstruction("Move to tower");
+            _tutorialLineIndicator.StartDraw(_ladderFoot, _player.transform);
         }
-
-        private void OnDisable()
+        private void OnClimbStarted()
         {
-            HideTutorial();
-            if (_handTutorial != null) _handTutorial.HideAll();
-            if (_egg != null) _egg.RangeChanged -= RefreshEggState;
-            if (_stealButton != null) SetActiveIfChanged(_stealButton.gameObject, false);
-            if (_stealButton != null)
-            {
-                _stealButton.onClick.RemoveListener(StealEgg);
-            }
-
-            if (_monster != null)
-            {
-                _monster.OnPlayerReached -= HandlePlayerCaught;
-            }
+            if (_ctaRequested) return;
+            _hasClimbed = true;
+            State = GameState.Climbing;
+            ShowInstruction("Jump now");
+            _handTutorial.HideMovementTutorial();
+            _handTutorial.SetStealHintVisible(true);
+            _tutorialLineIndicator.StopDraw();
         }
-
+        private void ShowInstruction(string message)
+        {
+            if (_instructionText != null) _instructionText.text = message;
+            if (_jumpHeadline != null) _jumpHeadline.SetActive(true);
+            if (_instructionText == null) return;
+            var target = _instructionText.transform;
+            if (!_instructionScaleCached)
+            {
+                _instructionScale = target.localScale;
+                _instructionScaleCached = true;
+            }
+            _instructionTween?.Kill();
+            target.localScale = _instructionScale;
+            _instructionTween = target.DOScale(_instructionScale * 1.12f, 0.5f)
+                .SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
+        }
+        private void HideInstruction()
+        {
+            _instructionTween?.Kill();
+            _instructionTween = null;
+            if (_instructionText != null && _instructionScaleCached)
+                _instructionText.transform.localScale = _instructionScale;
+            if (_jumpHeadline != null) _jumpHeadline.SetActive(false);
+        }
         private void Update()
         {
-            if (!_initialized || !_started)
+            if (_jumpButtonLabel != null)
+                _jumpButtonLabel.SetActive(!_ctaRequested && _player.IsClimbing);
+            if (!_ctaRequested && !_hasClimbed) UpdateClimbTutorial();
+            if (!_hasClimbed || _ctaRequested) return;
+            float target = Mathf.Clamp01(_targetClimbProgress);
+            // Allow a small height rounding tolerance; reaching the summit must
+            // not depend on a physics trigger or a grounded frame after climbing.
+            if (target >= 1f && _player.Progress >= 0.9999f && !_player.IsDropping)
             {
+                RequestCTA(_towerTopCtaDelay);
+                if (_cup != null) _cup.Collect();
+            }
+            else if (target < 1f && _player.IsClimbing && _player.Progress >= target)
+                RequestCTA(0f);
+        }
+        private void UpdateClimbTutorial()
+        {
+            if (!_climbTutorialShown && _ladderFoot != null && !_player.IsClimbing)
+            {
+                Vector3 offset = _player.transform.position - _ladderFoot.position;
+                offset.y = 0f;
+                if (offset.sqrMagnitude <= _climbTutorialDistance * _climbTutorialDistance)
+                {
+                    _climbTutorialShown = true;
+                    _waitingForClimbSwipe = true;
+                    _climbSwipeArmed = false;
+                    _player.SetTutorialPaused(true);
+                    HideInstruction();
+                    _handTutorial.ShowClimbTutorial();
+                }
+            }
+            if (!_waitingForClimbSwipe) return;
+            if (!_climbSwipeArmed)
+            {
+                if (!Input.GetMouseButton(0) && Input.touchCount == 0)
+                    _climbSwipeArmed = true;
                 return;
             }
-
-            if (State == GameState.Lost)
+            if (_player.JoystickDirection.sqrMagnitude < 0.09f) return;
+            _waitingForClimbSwipe = false;
+            _player.SetTutorialPaused(false);
+            _handTutorial.HideMovementTutorial();
+        }
+        private void LateUpdate()
+        {
+            if (_hasClimbed && _player.Progress >= 1f)
             {
-                _restartTimer -= Time.deltaTime;
-                if (_restartTimer <= 0f) ResetGame();
-                return;
+                HideInstruction();
+                _handTutorial.SetStealHintVisible(false);
             }
-
-            CheckFinishFlag();
         }
-
-        private void CheckFinishFlag()
+        private void OnJumpedFromLadder()
         {
-            if (State != GameState.Escaping || _egg == null || !_egg.IsHeld ||
-                _playerTransform == null || _home == null) return;
-
-            // The finish line spans the road, independent of lateral distance or jump height.
-            float distanceFromLine = (_playerTransform.position.z - _home.position.z) * _homeApproachSign;
-            if (distanceFromLine <= 0f) Win();
+            if (_ctaRequested) return;
+            _hasClimbed = true;
+            State = GameState.Dropping;
+            _handTutorial.SetStealHintVisible(false);
+            RequestCTA(1f);
         }
-
-        public void StealEgg()
+        private void OnCupCollected(int amount)
         {
-            if (!_initialized || !_started || !isActiveAndEnabled ||
-                State != GameState.CanStealEgg || _eggHoldPoint == null ||
-                _egg == null || _player == null || _monster == null)
-            {
-                return;
-            }
-
-            if (!_egg.TryPickUp(_player, _eggHoldPoint))
-            {
-                RefreshEggState();
-                return;
-            }
-
-            _player.SetCarryingEgg(true);
-            SetActiveIfChanged(_home.gameObject, true);
-            SetActiveIfChanged(_title, false);
-            _monster.StartChasing(_playerTransform);
-            SetState(GameState.Escaping);
-            CheckFinishFlag();
+            _hud.AddCup(amount);
+            if (_ctaRequested) return;
+            if (_jumpHeadline != null) _jumpHeadline.SetActive(false);
+            _handTutorial.SetStealHintVisible(false);
+            RequestCTA(_towerTopCtaDelay);
         }
-
-        public void ResetGame()
+        private void RequestCTA(float delay)
         {
-            // Start runs after Player/Monster Awake, avoiding initialization-order dependencies.
-            if (!_initialized || !_started || _player == null || _monster == null || _egg == null) return;
-
-            _restartTimer = 0f;
-            if (_home != null) SetActiveIfChanged(_home.gameObject, false);
-            SetActiveIfChanged(_title, true);
-            _player.ResetPlayer(_playerStartPosition, _playerStartRotation);
-            _player.IsWorking = true;
-            _monster.ResetMonster(_monsterStartPosition, _monsterStartRotation);
-
-            _egg.ResetEgg();
-            HideTutorial();
-            SetState(GameState.LookingForEgg);
-            if (_handTutorial != null) _handTutorial.ShowMovementTutorial();
-            RefreshUI();
-            RefreshTutorial();
+            if (_ctaRequested) return;
+            _ctaRequested = true;
+            if (_jumpButtonLabel != null) _jumpButtonLabel.SetActive(false);
+            HideInstruction();
+            _handTutorial.HideAll();
+            _tutorialLineIndicator.StopDraw();
+            _ctaTween = DOVirtual.DelayedCall(Mathf.Max(0f, delay), CompleteCTA, true);
         }
-
-        private void HandlePlayerCaught()
+        private void CompleteCTA()
         {
-            if (!_initialized || !_started || !isActiveAndEnabled || State != GameState.Escaping)
-            {
-                return;
-            }
-
-            // Resolve arrival first if the monster callback runs before our Update this frame.
-            CheckFinishFlag();
-            if (State != GameState.Escaping) return;
-            SetState(GameState.Lost);
-            _restartTimer = Mathf.Max(0f, _restartDelay);
-            StopPlayer();
-            // The monster remains in Attacking until the round resets.
+            // EndGame invokes OnGameEnded synchronously. Clear the reference
+            // first so cleanup does not kill the tween executing this callback.
+            _ctaTween = null;
+            _gameManager.EndGame();
+            if (!_gameManager.IsApplovin) _gameManager.ShowCTA();
         }
-
-        private void Win()
+        private void CancelCTADelay()
         {
-            if (State != GameState.Escaping) return;
-            SetState(GameState.Won);
-            StopPlayer();
-            _monster.Stop();
-            if (GameManager.Instance != null) GameManager.Instance.ShowWinPanel();
-            else Debug.LogError("GameManager is required to show the win panel.", this);
+            _ctaTween?.Kill();
+            _ctaTween = null;
         }
-
-        private void SetState(GameState newState)
+        private void OnGameEnded()
         {
-            if (State == newState) return;
-            State = newState;
-            RefreshUI();
-            RefreshTutorial();
-        }
-
-        private void RefreshTutorial()
-        {
-            if (_tutorialLineIndicator == null) return;
-
-            Transform target = null;
-            if (_initialized && _started && isActiveAndEnabled && _playerTransform != null)
-            {
-                if (State == GameState.LookingForEgg || State == GameState.CanStealEgg)
-                    target = _egg != null ? _egg.transform : null;
-                else if (State == GameState.Escaping)
-                    target = _home;
-            }
-
-            if (target != null) _tutorialLineIndicator.StartDraw(target, _playerTransform);
-            else _tutorialLineIndicator.StopDraw();
-        }
-
-        private void HideTutorial()
-        {
+            CancelCTADelay();
+            _waitingForClimbSwipe = false;
+            if (_player != null) _player.SetTutorialPaused(false);
+            if (_jumpButtonLabel != null) _jumpButtonLabel.SetActive(false);
+            _ctaRequested = true;
+            StopAllCoroutines();
+            State = GameState.Completed;
+            if (_player != null) _player.InputEnabled = false;
+            HideInstruction();
+            if (_handTutorial != null) _handTutorial.HideAll();
             if (_tutorialLineIndicator != null) _tutorialLineIndicator.StopDraw();
         }
-
-        private void RefreshUI()
+        private void OnDisable()
         {
-            if (_handTutorial != null)
+            CancelCTADelay();
+            if (_player != null) _player.SetTutorialPaused(false);
+            if (_jumpButtonLabel != null) _jumpButtonLabel.SetActive(false);
+            HideInstruction();
+            StopAllCoroutines();
+            if (_player != null)
             {
-                _handTutorial.SetStealHintVisible(State == GameState.CanStealEgg);
-                if (State == GameState.Escaping || State == GameState.Lost || State == GameState.Won)
-                    _handTutorial.HideMovementTutorial();
+                _player.ClimbStarted -= OnClimbStarted;
+                _player.JumpedFromLadder -= OnJumpedFromLadder;
             }
-
-            if (_stealButton != null)
-            {
-                SetActiveIfChanged(_stealButton.gameObject, State == GameState.CanStealEgg);
-            }
-
-            if (_runUI != null)
-            {
-                SetActiveIfChanged(_runUI, State == GameState.Escaping);
-            }
+            if (_cup != null) _cup.CollectedCup -= OnCupCollected;
+            if (_gameManager != null) _gameManager.GameEnded -= OnGameEnded;
         }
-
-        private void CacheInitialState()
-        {
-            if (_player == null || _monster == null || _egg == null || _eggHoldPoint == null || _home == null)
-            {
-                Debug.LogError("GameController requires Player, Monster, Egg, Egg Hold Point and Home references.",
-                    this);
-                if (_stealButton != null) SetActiveIfChanged(_stealButton.gameObject, false);
-                if (_runUI != null) SetActiveIfChanged(_runUI, false);
-                enabled = false;
-                return;
-            }
-
-            _playerTransform = _player.transform;
-            if (_tutorialLineIndicator == null)
-                _tutorialLineIndicator = GetComponentInChildren<TutorialLineIndicator>(true);
-            _playerBody = _player.GetComponent<Rigidbody>();
-            _playerStartPosition = _playerTransform.position;
-            _homeApproachSign = _playerStartPosition.z >= _home.position.z ? 1f : -1f;
-            _playerStartRotation = _playerTransform.rotation;
-            _monsterStartPosition = _monster.transform.position;
-            _monsterStartRotation = _monster.transform.rotation;
-            _egg.BindPlayer(_player);
-
-            _initialized = true;
-        }
-
-        private void RefreshEggState()
-        {
-            if (!_initialized || !_started || !isActiveAndEnabled) return;
-            if (State != GameState.LookingForEgg && State != GameState.CanStealEgg) return;
-            SetState(_egg != null && _egg.CanSteal ? GameState.CanStealEgg : GameState.LookingForEgg);
-        }
-
-        private void StopPlayer()
-        {
-            if (_player != null) _player.IsWorking = false;
-            if (_playerBody == null || _playerBody.isKinematic) return;
-            // Stopping input alone leaves the last horizontal physics velocity active.
-            Vector3 velocity = _playerBody.linearVelocity;
-            velocity.x = 0f;
-            velocity.z = 0f;
-            _playerBody.linearVelocity = velocity;
-        }
-
-        private static void SetActiveIfChanged(GameObject target, bool active)
-        {
-            if (target.activeSelf != active) target.SetActive(active);
-        }
-
     }
 }

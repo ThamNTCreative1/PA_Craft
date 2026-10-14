@@ -27,6 +27,11 @@ namespace Playable
         [LunaPlaygroundField("Applovin")] [SerializeField]
         private bool _isApplovin;
 
+        public bool IsApplovin => _isApplovin;
+        public bool HasEnded { get; private set; }
+        public event System.Action GameEnded;
+        private Coroutine _countdown;
+
         [Header("UI Field")] [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
 
@@ -50,9 +55,14 @@ namespace Playable
 
         public void EndGame()
         {
+            if (HasEnded) return;
+            HasEnded = true;
+            if (_countdown != null) StopCoroutine(_countdown);
+            _countdown = null;
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
             Luna.Unity.LifeCycle.GameEnded();
+            GameEnded?.Invoke();
         }
 
         public void ShowCTA()
@@ -72,12 +82,14 @@ namespace Playable
 
         public void CountdownEndGame()
         {
-            StartCoroutine(IECountdownEndGame());
+            if (HasEnded || _countdown != null) return;
+            _countdown = StartCoroutine(IECountdownEndGame());
         }
 
         private IEnumerator IECountdownEndGame()
         {
             yield return new WaitForSeconds(_endTime);
+            _countdown = null;
             EndGame();
             yield return new WaitForSeconds(1);
             if (!_isApplovin) ShowCTA();
