@@ -208,7 +208,7 @@ namespace Playable
             Vector3 localOffset = _viewMode == ViewMode.FirstPerson ? _firstPersonOffset : _thirdPersonOffset;
             Vector3 desiredPosition = anchor.TransformPoint(localOffset);
             Quaternion desiredRotation = anchor.rotation;
-            float lerpFactor = instant ? 1f : Time.deltaTime * _followSmooth;
+            float lerpFactor = instant ? 1f : 1f - Mathf.Exp(-_followSmooth * Time.deltaTime);
 
             _cameraTransform.position = Vector3.Lerp(
                 _cameraTransform.position,

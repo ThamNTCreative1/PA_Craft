@@ -20,18 +20,19 @@ namespace Playable
 
         [SerializeField] private Monster _monster;
 
-        [Header("Boss Selection")]
-        [LunaPlaygroundField("Use Oni Tiger")] [SerializeField] private bool _useOniTiger = true;
-        [LunaPlaygroundField("Use Titan Guard")] [SerializeField] private bool _useTitanGuard;
-        [LunaPlaygroundField("Use Cosmic Dragon")] [SerializeField] private bool _useCosmicDragon;
-        [SerializeField] private Monster _oniTiger;
-        [SerializeField] private Monster _titanGuard;
-        [SerializeField] private Monster _cosmicDragon;
         [SerializeField] private Egg _egg;
         [SerializeField] private Transform _eggHoldPoint;
 
-        [Tooltip("Finish line across the world X axis at Home Z. Cross from the starting side while carrying the egg to win.")] [SerializeField]
+        [Tooltip("Tutorial destination inside the home pen.")] [SerializeField]
         private Transform _home;
+        [SerializeField] private BoxCollider _homeZone;
+        [Tooltip("Approach points around the fence, ending at its open gate.")]
+        [SerializeField] private Transform[] _homeRoute;
+        [SerializeField, Min(.1f)] private float _homeRouteArrivalRadius = 3f;
+
+        [Header("Map CTA Regions")]
+        [SerializeField] private BoxCollider _purpleGardenZone;
+        [SerializeField] private BoxCollider _desertZone;
 
         [Header("UI")] [SerializeField] private Button _stealButton;
         [SerializeField] private GameObject _title;
@@ -41,7 +42,7 @@ namespace Playable
         private float _restartDelay = 1f;
 
 
-        [Header("Tutorial")] [Tooltip("Guide from Player to Egg, then to the finish flag (Home).")] [SerializeField]
+        [Header("Tutorial")] [Tooltip("Guide from Player to Egg, then through the home pen gate.")] [SerializeField]
         private TutorialLineIndicator _tutorialLineIndicator;
         [SerializeField] private HandTutorial _handTutorial;
 
@@ -53,30 +54,16 @@ namespace Playable
         private Rigidbody _playerBody;
         private bool _initialized;
         private bool _started;
-        private float _homeApproachSign;
+        private int _homeRouteIndex;
+        private bool _insidePurpleGarden;
+        private bool _insideDesert;
         private float _restartTimer;
 
         public GameState State { get; private set; }
 
         private void Awake()
         {
-            SelectBoss();
-            if (_home != null) SetActiveIfChanged(_home.gameObject, false);
             CacheInitialState();
-        }
-
-        private void SelectBoss()
-        {
-            // Resolve conflicting Playground toggles deterministically; keep one boss active.
-            Monster selected = null;
-            if (_useCosmicDragon && _cosmicDragon != null) selected = _cosmicDragon;
-            else if (_useTitanGuard && _titanGuard != null) selected = _titanGuard;
-            else if (_useOniTiger && _oniTiger != null) selected = _oniTiger;
-            if (selected == null) selected = _oniTiger != null ? _oniTiger : _monster;
-            if (_oniTiger != null) _oniTiger.gameObject.SetActive(_oniTiger == selected);
-            if (_titanGuard != null) _titanGuard.gameObject.SetActive(_titanGuard == selected);
-            if (_cosmicDragon != null) _cosmicDragon.gameObject.SetActive(_cosmicDragon == selected);
-            _monster = selected;
         }
 
         private void OnEnable()
@@ -102,8 +89,9 @@ namespace Playable
         {
             _started = true;
             ResetGame();
-            _title.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.Linear)
-                .SetLoops(-1, LoopType.Yoyo);
+            if (_title != null)
+                _title.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.Linear)
+                    .SetLoops(-1, LoopType.Yoyo);
         }
 
         private void OnDisable()
@@ -138,6 +126,9 @@ namespace Playable
             }
 
             CheckFinishFlag();
+            if (State == GameState.Won) return;
+            CheckMapCTA();
+            UpdateHomeRoute();
         }
 
         private void CheckFinishFlag()
@@ -145,9 +136,57 @@ namespace Playable
             if (State != GameState.Escaping || _egg == null || !_egg.IsHeld ||
                 _playerTransform == null || _home == null) return;
 
-            // The finish line spans the road, independent of lateral distance or jump height.
-            float distanceFromLine = (_playerTransform.position.z - _home.position.z) * _homeApproachSign;
-            if (distanceFromLine <= 0f) Win();
+            // Only the inside of this pen is Home, not the entire width of the map.
+            if (_homeZone != null)
+            {
+                if (ContainsXZ(_homeZone, _playerTransform.position)) Win();
+            }
+            else
+            {
+                Vector3 offset = _playerTransform.position - _home.position;
+                offset.y = 0f;
+                if (offset.sqrMagnitude <= 4f) Win();
+            }
+        }
+
+        private static bool ContainsXZ(BoxCollider zone, Vector3 position)
+        {
+            if (zone == null) return false;
+            Vector3 local = zone.transform.InverseTransformPoint(position) - zone.center;
+            Vector3 half = zone.size * .5f;
+            return Mathf.Abs(local.x) <= half.x && Mathf.Abs(local.z) <= half.z;
+        }
+
+        private void CheckMapCTA()
+        {
+            CheckMapZone(_purpleGardenZone, ref _insidePurpleGarden, GameManager.GameplayCtaPoint.PurpleGarden);
+            CheckMapZone(_desertZone, ref _insideDesert, GameManager.GameplayCtaPoint.Desert);
+        }
+
+        private void CheckMapZone(BoxCollider zone, ref bool wasInside, GameManager.GameplayCtaPoint point)
+        {
+            bool inside = ContainsXZ(zone, _playerTransform.position);
+            if (inside && !wasInside && State == GameState.Escaping &&
+                _egg != null && _egg.IsHeld && GameManager.Instance != null)
+                GameManager.Instance.TryShowGameplayCTA(point);
+            wasInside = inside;
+        }
+
+        private void UpdateHomeRoute()
+        {
+            if (State != GameState.Escaping || _homeRoute == null) return;
+            while (_homeRouteIndex < _homeRoute.Length)
+            {
+                Transform waypoint = _homeRoute[_homeRouteIndex];
+                if (waypoint != null)
+                {
+                    Vector3 offset = _playerTransform.position - waypoint.position;
+                    offset.y = 0f;
+                    if (offset.sqrMagnitude > _homeRouteArrivalRadius * _homeRouteArrivalRadius) break;
+                }
+                _homeRouteIndex++;
+                RefreshTutorial();
+            }
         }
 
         public void StealEgg()
@@ -166,10 +205,11 @@ namespace Playable
             }
 
             _player.SetCarryingEgg(true);
-            SetActiveIfChanged(_home.gameObject, true);
             SetActiveIfChanged(_title, false);
             _monster.StartChasing(_playerTransform);
             SetState(GameState.Escaping);
+            if (GameManager.Instance != null)
+                GameManager.Instance.TryShowGameplayCTA(GameManager.GameplayCtaPoint.Steal);
             CheckFinishFlag();
         }
 
@@ -179,9 +219,12 @@ namespace Playable
             if (!_initialized || !_started || _player == null || _monster == null || _egg == null) return;
 
             _restartTimer = 0f;
-            if (_home != null) SetActiveIfChanged(_home.gameObject, false);
+            _homeRouteIndex = 0;
+            if (GameManager.Instance != null) GameManager.Instance.ResetGameplayCtas();
             SetActiveIfChanged(_title, true);
             _player.ResetPlayer(_playerStartPosition, _playerStartRotation);
+            _insidePurpleGarden = ContainsXZ(_purpleGardenZone, _playerStartPosition);
+            _insideDesert = ContainsXZ(_desertZone, _playerStartPosition);
             _player.IsWorking = true;
             _monster.ResetMonster(_monsterStartPosition, _monsterStartRotation);
 
@@ -237,7 +280,8 @@ namespace Playable
                 if (State == GameState.LookingForEgg || State == GameState.CanStealEgg)
                     target = _egg != null ? _egg.transform : null;
                 else if (State == GameState.Escaping)
-                    target = _home;
+                    target = _homeRoute != null && _homeRouteIndex < _homeRoute.Length &&
+                             _homeRoute[_homeRouteIndex] != null ? _homeRoute[_homeRouteIndex] : _home;
             }
 
             if (target != null) _tutorialLineIndicator.StartDraw(target, _playerTransform);
@@ -286,7 +330,6 @@ namespace Playable
                 _tutorialLineIndicator = GetComponentInChildren<TutorialLineIndicator>(true);
             _playerBody = _player.GetComponent<Rigidbody>();
             _playerStartPosition = _playerTransform.position;
-            _homeApproachSign = _playerStartPosition.z >= _home.position.z ? 1f : -1f;
             _playerStartRotation = _playerTransform.rotation;
             _monsterStartPosition = _monster.transform.position;
             _monsterStartRotation = _monster.transform.rotation;
@@ -315,7 +358,7 @@ namespace Playable
 
         private static void SetActiveIfChanged(GameObject target, bool active)
         {
-            if (target.activeSelf != active) target.SetActive(active);
+            if (target != null && target.activeSelf != active) target.SetActive(active);
         }
 
     }

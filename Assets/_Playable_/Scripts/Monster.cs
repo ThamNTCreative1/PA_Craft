@@ -10,17 +10,30 @@ namespace Playable
             Idle,
             Chasing,
             Attacking,
-            WaitingToChase
+            WaitingToChase,
+            Patrolling
         }
 
-        [Header("Movement")]
-        [SerializeField] private float _moveSpeed = 3.5f;
+        [Header("Movement")] [LunaPlaygroundField("Monster Speed", 2, "Gameplay")] [SerializeField, Min(0f)]
+        private float _moveSpeed = 3.5f;
+
         [SerializeField] private float _rotationSpeed = 10f;
         [SerializeField] private float _attackDistance = 1.5f;
         [SerializeField, Min(0f)] private float _chaseDelay = 1f;
 
-        [Header("Animation")]
-        [SerializeField] private Animator _animator;
+        [Header("Safe Area")]
+        [Tooltip("Stop chasing when the player enters this courtyard's XZ bounds.")]
+        [SerializeField] private Renderer _grassCourtyard;
+
+        [Header("Nest Patrol")] [SerializeField]
+        private Transform _patrolCenter;
+
+        [SerializeField] private Vector2 _patrolRadii = new Vector2(18f, 22f);
+        [SerializeField, Min(0f)] private float _patrolSpeed = 8f;
+        private float _patrolAngle;
+        private float _patrolHeight;
+
+        [Header("Animation")] [SerializeField] private Animator _animator;
         [SerializeField] private string _isRunningParam = "IsRun";
         [SerializeField] private string _attackTriggerParam = "Attack";
 
@@ -58,6 +71,19 @@ namespace Playable
 
         private void Update()
         {
+            if ((State == MonsterState.WaitingToChase || State == MonsterState.Chasing) &&
+                IsTargetInCourtyard())
+            {
+                Stop();
+                return;
+            }
+
+            if (State == MonsterState.Patrolling)
+            {
+                UpdatePatrol(Time.deltaTime);
+                return;
+            }
+
             if (State == MonsterState.WaitingToChase)
             {
                 if (_target == null)
@@ -88,11 +114,22 @@ namespace Playable
             }
 
             Vector3 direction = offset.normalized;
-            transform.position += direction * (_moveSpeed * Time.deltaTime);
+            transform.position += direction * Mathf.Min(Mathf.Max(0f, _moveSpeed) * Time.deltaTime,
+                Mathf.Max(0f, offset.magnitude - _attackDistance));
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 Quaternion.LookRotation(direction),
                 _rotationSpeed * Time.deltaTime);
+        }
+
+        private bool IsTargetInCourtyard()
+        {
+            if (_target == null || _grassCourtyard == null) return false;
+            Bounds bounds = _grassCourtyard.bounds;
+            Vector3 position = _target.position;
+            // Ignore height so jumping into the courtyard also ends the chase.
+            return position.x >= bounds.min.x && position.x <= bounds.max.x &&
+                   position.z >= bounds.min.z && position.z <= bounds.max.z;
         }
 
         public void StartChasing(Transform target)
@@ -128,6 +165,44 @@ namespace Playable
 
             Stop();
             transform.SetPositionAndRotation(position, rotation);
+            StartPatrolling();
+        }
+
+        public void StartPatrolling()
+        {
+            if (_patrolCenter == null) return;
+            _target = null;
+            _patrolHeight = transform.position.y;
+            Vector3 offset = transform.position - _patrolCenter.position;
+            _patrolAngle = Mathf.Atan2(offset.z / Mathf.Max(.1f, _patrolRadii.y),
+                offset.x / Mathf.Max(.1f, _patrolRadii.x));
+            State = MonsterState.Patrolling;
+            SetRunning(_patrolSpeed > 0f);
+        }
+
+        private void UpdatePatrol(float deltaTime)
+        {
+            if (_patrolCenter == null)
+            {
+                Stop();
+                return;
+            }
+
+            float rx = Mathf.Max(.1f, _patrolRadii.x);
+            float rz = Mathf.Max(.1f, _patrolRadii.y);
+            float sin = Mathf.Sin(_patrolAngle);
+            float cos = Mathf.Cos(_patrolAngle);
+            float tangentLength = Mathf.Sqrt(rx * rx * sin * sin + rz * rz * cos * cos);
+            _patrolAngle = Mathf.Repeat(_patrolAngle + Mathf.Max(0f, _patrolSpeed) * deltaTime /
+                Mathf.Max(.1f, tangentLength), Mathf.PI * 2f);
+            Vector3 position = _patrolCenter.position +
+                               new Vector3(rx * Mathf.Cos(_patrolAngle), 0f, rz * Mathf.Sin(_patrolAngle));
+            position.y = _patrolHeight;
+            Vector3 direction = position - transform.position;
+            transform.position = position;
+            if (direction.sqrMagnitude > .0001f)
+                transform.rotation = Quaternion.Slerp(transform.rotation,
+                    Quaternion.LookRotation(direction), _rotationSpeed * deltaTime);
         }
 
         private void Attack()
@@ -150,6 +225,5 @@ namespace Playable
                 _animator.SetBool(_isRunningHash, isRunning);
             }
         }
-
     }
 }

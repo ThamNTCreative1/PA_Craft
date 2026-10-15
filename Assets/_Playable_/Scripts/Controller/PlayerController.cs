@@ -17,14 +17,14 @@ namespace Playable
 
         [Header("Animation")]
         [SerializeField] private string _speedParam = "Speed";
-        [SerializeField] private string _isJumpParam = "isJump";
+        [SerializeField] private string _isJumpParam = "IsJump";
         [SerializeField] private string _isCarryingEggParam = "IsCarryingEgg";
 
         [Header("Input")]
         [SerializeField] private Button _btnJump;
 
         [Header("Movement")]
-        [SerializeField] private float _moveSpeed = 4f;
+        [LunaPlaygroundField("Player Move Speed", 1, "Gameplay")] [SerializeField, Min(0f)] private float _moveSpeed = 4f;
         [SerializeField] private float _rotationSmooth = 12f;
         [SerializeField] private float _airControlMultiplier = 0.6f;
         [SerializeField, Range(0f, 0.5f)] private float _inputDeadZone = 0.1f;
@@ -85,7 +85,8 @@ namespace Playable
                 _capsuleCollider = GetComponent<CapsuleCollider>();
             }
 
-            _rigidbody.useGravity = true;
+            // ApplyGravity owns vertical motion; do not apply physics gravity a second time.
+            _rigidbody.useGravity = false;
             _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             _rigidbody.collisionDetectionMode = _useContinuousCollision
                 ? CollisionDetectionMode.Continuous
@@ -129,7 +130,7 @@ namespace Playable
             _coyoteTimer = 0f;
             _airborneTime = 0f;
 
-            _rigidbody.useGravity = true;
+            _rigidbody.useGravity = false;
             _rigidbody.linearVelocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
             _isGrounded = false;
@@ -297,7 +298,10 @@ namespace Playable
             // Nới quãng dò theo vận tốc rơi hiện tại - 1 step rơi nhanh (frame bị giật trên máy yếu) có
             // thể đi xa hơn quãng dò cố định, khiến sphere-cast bỏ lỡ sàn và player xuyên sàn.
             float fallDistanceThisStep = Mathf.Max(0f, -_verticalVelocity.y) * Time.fixedDeltaTime;
-            float probeDistance = _groundCheckDistance + 0.05f + fallDistanceThisStep;
+            // The smaller probe sphere starts above the capsule's bottom. Include
+            // that gap so groundCheckDistance remains the actual tolerance below the feet.
+            float probeDistance = _scaledGroundRadius - radius + 0.02f +
+                                  _groundCheckDistance + fallDistanceThisStep;
 
             return Physics.SphereCast(
                 origin,

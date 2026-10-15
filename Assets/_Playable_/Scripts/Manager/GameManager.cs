@@ -7,29 +7,45 @@ namespace Playable
 {
     public class GameManager : MonoBehaviour
     {
+        public enum GameplayCtaPoint
+        {
+            Steal,
+            PurpleGarden,
+            Desert
+        }
+
         public static GameManager Instance;
 
-        [Header("Luna Field")] [LunaPlaygroundField("Total Event For CTA")] [SerializeField]
-        private int _totalEvent;
+        [Header("Gameplay CTA")] [LunaPlaygroundField("CTA On Steal", 1, "CTA")] [SerializeField]
+        private bool _ctaOnSteal;
 
-        [LunaPlaygroundField("End Time")] [SerializeField]
+        [LunaPlaygroundField("CTA On Sakura", 2, "CTA")] [SerializeField]
+        private bool _ctaOnSakura;
+
+        [LunaPlaygroundField("CTA On Desert", 3, "CTA")] [SerializeField]
+        private bool _ctaOnDesert;
+
+        [Header("End Game")] [LunaPlaygroundField("End Time", 1, "End Game")] [SerializeField]
         private int _endTime = 30;
 
-        [LunaPlaygroundAsset("Background Music")] [SerializeField]
+        [LunaPlaygroundField("Total Event For CTA", 2, "End Game")] [SerializeField]
+        private int _totalEvent;
+
+        [Header("Audio & Visual")] [LunaPlaygroundAsset("Background Music", 1, "Audio & Visual")] [SerializeField]
         private AudioClip _backgroundMusic;
 
-        [LunaPlaygroundAsset("Background Texture")] [SerializeField]
+        [LunaPlaygroundAsset("Background Texture", 2, "Audio & Visual")] [SerializeField]
         private Texture2D _backgroundTexture;
 
-        [SerializeField] private Button _btnBlock;
-        [SerializeField] private Image _background;
-
-        [LunaPlaygroundField("Applovin")] [SerializeField]
+        [Header("Ad Network")] [LunaPlaygroundField("Applovin", 1, "Ad Network")] [SerializeField]
         private bool _isApplovin;
 
-        [Header("UI Field")] [SerializeField] private FailPanel _failPanel;
+        [Header("UI References")] [SerializeField] private Button _btnBlock;
+        [SerializeField] private Image _background;
+        [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
 
+        private int _shownGameplayCtas;
         private int _quantityEvent = 0;
 
         private void Awake()
@@ -61,6 +77,23 @@ namespace Playable
             Luna.Unity.Playable.InstallFullGame();
         }
 
+        public void ResetGameplayCtas()
+        {
+            _shownGameplayCtas = 0;
+        }
+
+        public void TryShowGameplayCTA(GameplayCtaPoint point)
+        {
+            bool enabled = point == GameplayCtaPoint.Steal ? _ctaOnSteal :
+                point == GameplayCtaPoint.PurpleGarden ? _ctaOnSakura :
+                point == GameplayCtaPoint.Desert && _ctaOnDesert;
+            int bit = 1 << (int)point;
+            if (!enabled || (_shownGameplayCtas & bit) != 0) return;
+            _shownGameplayCtas |= bit;
+            EndGame();
+            ShowCTA();
+        }
+
         public void CountEvent()
         {
             _quantityEvent++;
@@ -72,6 +105,8 @@ namespace Playable
 
         public void CountdownEndGame()
         {
+            // Zero disables the timer for creatives driven by gameplay checkpoints.
+            if (_endTime <= 0) return;
             StartCoroutine(IECountdownEndGame());
         }
 

@@ -106,7 +106,7 @@ MonoBehaviour:
   _cameraController: {fileID: 3791338694366148034}
   _animator: {fileID: 2517261228894410037}
   _speedParam: Speed
-  _isJumpParam: isJump
+  _isJumpParam: IsJump
   _isCarryingEggParam: IsCarryingEgg
   _btnJump: {fileID: 0}
   _moveSpeed: 8
@@ -122,7 +122,7 @@ MonoBehaviour:
   _keepSpeedWhileAirborne: 0
   _groundMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 1088
   _groundCheckDistance: 0.1
   _useContinuousCollision: 0
   _allowSleepWhenIdle: 1
@@ -352,6 +352,8 @@ MonoBehaviour:
   _lookSensitivity: 0.18
   _pitchMin: -35
   _pitchMax: 75
+  _initialPitch: 0
+  _initialYaw: 0
 --- !u!1001 &3544452055800504494
 PrefabInstance:
   m_ObjectHideFlags: 0

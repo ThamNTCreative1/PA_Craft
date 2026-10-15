@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 43297,
-    "creativeName": "C1_2610_HuyNQ_SAEHR_V01_NgocNDL",
+    "creativeName": "C1_2610_HuyNQ_SAEHR_V05_NgocNDL",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -8318,6 +8318,10 @@
             {
                 "name": "UltimateJoystick.TensionType",
                 "excluded": false
+            },
+            {
+                "name": "Playable.GameManager.GameplayCtaPoint",
+                "excluded": false
             }
         ],
         "unusedMethods": [
@@ -14925,7 +14929,7 @@
                     },
                     {
                         "name": "Exp",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PingPong",
@@ -17545,7 +17549,7 @@
                     },
                     {
                         "name": "bounds#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sortingOrder#get",
@@ -37778,6 +37782,14 @@
                     {
                         "name": "ShowCTA",
                         "excluded": false
+                    },
+                    {
+                        "name": "ResetGameplayCtas",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryShowGameplayCTA",
+                        "excluded": false
                     }
                 ]
             },
@@ -37862,7 +37874,19 @@
                         "excluded": false
                     },
                     {
-                        "name": "SelectBoss",
+                        "name": "ContainsXZ",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CheckMapCTA",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CheckMapZone",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateHomeRoute",
                         "excluded": false
                     }
                 ]
@@ -38759,6 +38783,18 @@
                     },
                     {
                         "name": "SetRunning",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StartPatrolling",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdatePatrol",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsTargetInCourtyard",
                         "excluded": false
                     }
                 ]
