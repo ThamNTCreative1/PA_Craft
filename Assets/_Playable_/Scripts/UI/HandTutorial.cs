@@ -1,15 +1,18 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Playable
 {
     public class HandTutorial : MonoBehaviour
     {
         [Header("Move hint")]
-        [SerializeField] private RectTransform _infinityGraphic;
+        [FormerlySerializedAs("_infinityGraphic")]
+        [SerializeField] private RectTransform _movementRoot;
         [SerializeField] private RectTransform _moveHand;
+        [SerializeField] private UltimateJoystick _moveJoystick;
         [SerializeField, Min(0.1f)] private float _loopDuration = 2f;
-        [SerializeField] private Vector2 _pathSize = new Vector2(0.4f, 0.3f);
+        [SerializeField] private Vector2 _swipeOffset = new Vector2(0f, 110f);
 
         [Header("Steal hint")]
         [SerializeField] private RectTransform _stealHand;
@@ -34,22 +37,27 @@ namespace Playable
         {
             CacheLayout();
             HideMovementTutorial();
-            if (_infinityGraphic == null || _moveHand == null) return;
+            if (_movementRoot == null || _moveHand == null) return;
 
-            _infinityGraphic.gameObject.SetActive(true);
+            _movementRoot.gameObject.SetActive(true);
             _moveHand.gameObject.SetActive(true);
-            _moveTween = DOVirtual.Float(0f, Mathf.PI * 2f, Mathf.Max(0.1f, _loopDuration), angle =>
-            {
-                Vector2 size = _infinityGraphic.rect.size;
-                _moveHand.anchoredPosition = _moveHandOrigin + new Vector2(
-                    Mathf.Sin(angle) * size.x * _pathSize.x,
-                    Mathf.Sin(angle * 2f) * size.y * _pathSize.y);
-            }).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart);
+            float duration = Mathf.Max(0.1f, _loopDuration);
+            _moveTween = DOTween.Sequence()
+                .Append(_moveHand.DOAnchorPos(_moveHandOrigin + _swipeOffset, duration * 0.85f)
+                    .SetEase(Ease.InOutSine))
+                .AppendInterval(duration * 0.15f)
+                .SetLoops(-1, LoopType.Restart);
         }
 
         private void Update()
         {
-            if (_infinityGraphic == null || !_infinityGraphic.gameObject.activeSelf) return;
+            if (_movementRoot == null || !_movementRoot.gameObject.activeSelf) return;
+            if (_moveJoystick != null)
+            {
+                if (new Vector2(_moveJoystick.HorizontalAxis, _moveJoystick.VerticalAxis).sqrMagnitude > 0.01f)
+                    HideMovementTutorial();
+                return;
+            }
             if (Input.GetMouseButtonDown(0))
             {
                 HideMovementTutorial();
@@ -69,8 +77,12 @@ namespace Playable
             CacheLayout();
             _moveTween?.Kill();
             _moveTween = null;
-            if (_moveHand != null) _moveHand.anchoredPosition = _moveHandOrigin;
-            if (_infinityGraphic != null) _infinityGraphic.gameObject.SetActive(false);
+            if (_moveHand != null)
+            {
+                _moveHand.anchoredPosition = _moveHandOrigin;
+            }
+            if (_moveHand != null) _moveHand.gameObject.SetActive(false);
+            if (_movementRoot != null) _movementRoot.gameObject.SetActive(false);
         }
 
         public void SetStealHintVisible(bool visible)

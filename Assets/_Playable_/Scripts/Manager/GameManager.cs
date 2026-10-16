@@ -1,3 +1,4 @@
+using TMPro;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
@@ -15,15 +16,6 @@ namespace Playable
         }
 
         public static GameManager Instance;
-
-        [Header("Gameplay CTA")] [LunaPlaygroundField("CTA On Steal", 1, "CTA")] [SerializeField]
-        private bool _ctaOnSteal;
-
-        [LunaPlaygroundField("CTA On Sakura", 2, "CTA")] [SerializeField]
-        private bool _ctaOnSakura;
-
-        [LunaPlaygroundField("CTA On Desert", 3, "CTA")] [SerializeField]
-        private bool _ctaOnDesert;
 
         [Header("End Game")] [LunaPlaygroundField("End Time", 1, "End Game")] [SerializeField]
         private int _endTime = 30;
@@ -44,6 +36,14 @@ namespace Playable
         [SerializeField] private Image _background;
         [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
+        [SerializeField] private TMP_Text _countdownText;
+
+        public int EndTime => _endTime;
+        public float RemainingTime { get; private set; }
+        public bool HasEnded { get; private set; }
+        public event System.Action CountdownExpired;
+        private Coroutine _countdownRoutine;
+        private int _displayedSeconds = -1;
 
         private int _shownGameplayCtas;
         private int _quantityEvent = 0;
@@ -66,6 +66,8 @@ namespace Playable
 
         public void EndGame()
         {
+            if (HasEnded) return;
+            HasEnded = true;
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
             Luna.Unity.LifeCycle.GameEnded();
@@ -81,18 +83,7 @@ namespace Playable
         {
             _shownGameplayCtas = 0;
         }
-
-        public void TryShowGameplayCTA(GameplayCtaPoint point)
-        {
-            bool enabled = point == GameplayCtaPoint.Steal ? _ctaOnSteal :
-                point == GameplayCtaPoint.PurpleGarden ? _ctaOnSakura :
-                point == GameplayCtaPoint.Desert && _ctaOnDesert;
-            int bit = 1 << (int)point;
-            if (!enabled || (_shownGameplayCtas & bit) != 0) return;
-            _shownGameplayCtas |= bit;
-            EndGame();
-            ShowCTA();
-        }
+        
 
         public void CountEvent()
         {
@@ -105,17 +96,40 @@ namespace Playable
 
         public void CountdownEndGame()
         {
+            if (_countdownRoutine != null) StopCoroutine(_countdownRoutine);
+            RemainingTime = Mathf.Max(0, _endTime);
+            UpdateCountdownText();
             // Zero disables the timer for creatives driven by gameplay checkpoints.
             if (_endTime <= 0) return;
-            StartCoroutine(IECountdownEndGame());
+            _countdownRoutine = StartCoroutine(IECountdownEndGame());
         }
 
         private IEnumerator IECountdownEndGame()
         {
-            yield return new WaitForSeconds(_endTime);
+            while (RemainingTime > 0f && !HasEnded)
+            {
+                yield return null;
+                if (HasEnded) yield break;
+                RemainingTime = Mathf.Max(0f, RemainingTime - Time.deltaTime);
+                UpdateCountdownText();
+            }
+            if (HasEnded) yield break;
+            if (CountdownExpired != null)
+            {
+                CountdownExpired.Invoke();
+                yield break;
+            }
             EndGame();
             yield return new WaitForSeconds(1);
             if (!_isApplovin) ShowCTA();
+        }
+
+        private void UpdateCountdownText()
+        {
+            int seconds = Mathf.CeilToInt(RemainingTime);
+            if (_countdownText == null || seconds == _displayedSeconds) return;
+            _displayedSeconds = seconds;
+            _countdownText.text = (seconds / 60).ToString("00") + ":" + (seconds % 60).ToString("00");
         }
 
         private Sprite CreateSprite(Texture2D texture)

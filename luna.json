@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 43297,
-    "creativeName": "C1_2610_HuyNQ_SAEHR_V05_NgocNDL",
+    "applicationID": 29023,
+    "creativeName": "C1_2610_HuyNQ_UAC_V75_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -8288,18 +8288,6 @@
                 "excluded": false
             },
             {
-                "name": "Playable.GameController.GameState",
-                "excluded": false
-            },
-            {
-                "name": "Playable.Monster.MonsterState",
-                "excluded": false
-            },
-            {
-                "name": "Playable.PlayerAction",
-                "excluded": false
-            },
-            {
                 "name": "TankAndHealerStudioAssets.RelativeCameraRotationExample.MovementCalculations",
                 "excluded": true
             },
@@ -8321,6 +8309,14 @@
             },
             {
                 "name": "Playable.GameManager.GameplayCtaPoint",
+                "excluded": false
+            },
+            {
+                "name": "Playable.LavaCorridorRespawn",
+                "excluded": true
+            },
+            {
+                "name": "Playable.GameController.RunState",
                 "excluded": false
             }
         ],
@@ -8805,11 +8801,11 @@
                     },
                     {
                         "name": "customFormat",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "addGroup",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "parseFloat",
@@ -24059,7 +24055,7 @@
                     },
                     {
                         "name": "pixelRect#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sortingLayerID#set",
@@ -24075,7 +24071,7 @@
                     },
                     {
                         "name": "rootCanvas#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "referencePixelsPerUnit#get",
@@ -37718,6 +37714,18 @@
                     {
                         "name": "Show",
                         "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
                     }
                 ]
             },
@@ -37788,7 +37796,11 @@
                         "excluded": false
                     },
                     {
-                        "name": "TryShowGameplayCTA",
+                        "name": "EndTime#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateCountdownText",
                         "excluded": false
                     }
                 ]
@@ -37810,14 +37822,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "SetActiveIfChanged",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
                         "name": "OnEnable",
                         "excluded": false
                     },
@@ -37826,68 +37830,36 @@
                         "excluded": true
                     },
                     {
-                        "name": "CheckFinishFlag",
+                        "name": "OnJumpPressed",
                         "excluded": false
                     },
                     {
-                        "name": "StealEgg",
+                        "name": "OnTryAgainPressed",
                         "excluded": false
                     },
                     {
-                        "name": "ResetGame",
+                        "name": "Lose",
                         "excluded": false
                     },
                     {
-                        "name": "HandlePlayerCaught",
+                        "name": "StopRun",
                         "excluded": false
                     },
                     {
-                        "name": "Win",
+                        "name": "StopHintPulse",
                         "excluded": false
                     },
                     {
-                        "name": "SetState",
+                        "name": "Awake",
                         "excluded": false
                     },
                     {
-                        "name": "RefreshTutorial",
+                        "name": "AlignPortraitControls",
                         "excluded": false
                     },
                     {
-                        "name": "HideTutorial",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RefreshUI",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CacheInitialState",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RefreshEggState",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StopPlayer",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ContainsXZ",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CheckMapCTA",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CheckMapZone",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateHomeRoute",
-                        "excluded": false
+                        "name": "RestoreJumpPosition",
+                        "excluded": true
                     }
                 ]
             },
@@ -38654,152 +38626,6 @@
                 ]
             },
             {
-                "className": "Playable.Egg",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "CanSteal#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Initialize",
-                        "excluded": false
-                    },
-                    {
-                        "name": "BindPlayer",
-                        "excluded": false
-                    },
-                    {
-                        "name": "EnterRange",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ExitRange",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FixedUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RefreshRange",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ClearContacts",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryPickUp",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ResetEgg",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "OnDrawGizmosSelected",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.EggPickupTrigger",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Configure",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OverlapsBounds",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnTriggerEnter",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnTriggerStay",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnTriggerExit",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.Monster",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "AttackDistance#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StartChasing",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Stop",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ResetMonster",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Attack",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetRunning",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StartPatrolling",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdatePatrol",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsTargetInCourtyard",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.PlayerController",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -38809,7 +38635,7 @@
                     },
                     {
                         "name": "IsGrounded#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "IsWorking#get",
@@ -38857,7 +38683,7 @@
                     },
                     {
                         "name": "OnJumpButtonPressed",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetMoveJoystick",
@@ -38897,6 +38723,10 @@
                     },
                     {
                         "name": "UpdateAnimator",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayJumpAnimation",
                         "excluded": false
                     }
                 ]
@@ -38939,36 +38769,6 @@
                     },
                     {
                         "name": "CacheRectTransform",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.TutorialLineIndicator",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StartDraw",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "DrawLine",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StopDraw",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
                         "excluded": false
                     }
                 ]
@@ -39063,7 +38863,7 @@
                     },
                     {
                         "name": "JoystickBase#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Joystick#get",
@@ -39241,10 +39041,40 @@
                     },
                     {
                         "name": "HideAll",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnDisable",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "SoundChar",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "PlayIdleSound",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PlayAttackSound",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PlayTakeDameSound",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PlayDeadSound",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PlayMoveSound",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PlayJumpSound",
                         "excluded": true
                     }
                 ]

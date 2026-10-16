@@ -245,6 +245,13 @@ namespace Playable
             _jumpBufferTimer = _jumpBufferTime;
         }
 
+        public void PlayJumpAnimation()
+        {
+            if (!_hasAnimator) return;
+            _animator.SetBool(_isJumpParamHash, true);
+            _appliedJumpPlayer = true;
+        }
+
         public void SetMoveJoystick(UltimateJoystick joystick)
         {
             _moveJoystick = joystick;
