@@ -8,12 +8,6 @@ namespace Playable
 {
     public class GameManager : MonoBehaviour
     {
-        public enum GameplayCtaPoint
-        {
-            Steal,
-            PurpleGarden,
-            Desert
-        }
 
         public static GameManager Instance;
 
@@ -26,7 +20,7 @@ namespace Playable
         [Header("Audio & Visual")] [LunaPlaygroundAsset("Background Music", 1, "Audio & Visual")] [SerializeField]
         private AudioClip _backgroundMusic;
 
-        [LunaPlaygroundAsset("Background Texture", 2, "Audio & Visual")] [SerializeField]
+        [SerializeField]
         private Texture2D _backgroundTexture;
 
         [Header("Ad Network")] [LunaPlaygroundField("Applovin", 1, "Ad Network")] [SerializeField]
@@ -55,10 +49,13 @@ namespace Playable
 
         private void Start()
         {
-            _btnBlock.onClick.AddListener(ShowCTA);
-            _btnBlock.gameObject.SetActive(false);
+            if (_btnBlock != null)
+            {
+                _btnBlock.onClick.AddListener(ShowCTA);
+                _btnBlock.gameObject.SetActive(false);
+            }
 
-            if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);
+            if (_backgroundTexture && _background) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
             CountdownEndGame();
         }
@@ -69,7 +66,7 @@ namespace Playable
             if (HasEnded) return;
             HasEnded = true;
             Debug.Log("End Game");
-            _btnBlock.gameObject.SetActive(true);
+            if (_btnBlock != null) _btnBlock.gameObject.SetActive(true);
             Luna.Unity.LifeCycle.GameEnded();
         }
 

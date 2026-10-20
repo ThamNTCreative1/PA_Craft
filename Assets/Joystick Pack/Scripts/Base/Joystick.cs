@@ -33,7 +33,8 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     [SerializeField] private bool snapY = false;
 
     [SerializeField] protected RectTransform background = null;
-    [SerializeField] private RectTransform handle = null;
+    [UnityEngine.Serialization.FormerlySerializedAs("handle")]
+    [SerializeField] private RectTransform joystickKnob = null;
     [Tooltip("Test Luna mouse input in Unity. Luna builds always use this input path.")]
     [SerializeField] private bool simulateLunaInput = false;
     [Tooltip("Optional UI regions that must not start a joystick drag, such as a custom CTA.")]
@@ -71,8 +72,8 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         canvas = GetComponentInParent<Canvas>();
         if (canvas != null) canvas = canvas.rootCanvas;
         if (background == null) background = transform.Find("Background") as RectTransform;
-        if (handle == null && background != null) handle = background.Find("Handle") as RectTransform;
-        if (canvas == null || baseRect == null || background == null || handle == null)
+        if (joystickKnob == null && background != null) joystickKnob = background.Find("Handle") as RectTransform;
+        if (canvas == null || baseRect == null || background == null || joystickKnob == null)
         {
             Debug.LogError("Joystick requires a Canvas, Background and Handle RectTransform.", this);
             enabled = false;
@@ -83,10 +84,10 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
         Vector2 center = new Vector2(0.5f, 0.5f);
         background.pivot = center;
-        handle.anchorMin = center;
-        handle.anchorMax = center;
-        handle.pivot = center;
-        handle.anchoredPosition = Vector2.zero;
+        joystickKnob.anchorMin = center;
+        joystickKnob.anchorMax = center;
+        joystickKnob.pivot = center;
+        joystickKnob.anchoredPosition = Vector2.zero;
         IsInitialized = true;
     }
 
@@ -132,7 +133,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         input = new Vector2(localPoint.x / radius.x, localPoint.y / radius.y);
         FormatInput();
         HandleInput(input.magnitude, input.normalized, radius, cam);
-        handle.anchoredPosition = input * radius * handleRange;
+        joystickKnob.anchoredPosition = input * radius * handleRange;
     }
 
     protected virtual void HandleInput(float magnitude, Vector2 normalised, Vector2 radius, Camera cam)
@@ -193,7 +194,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         pressed = false;
         if (mouseOwner == this) mouseOwner = null;
         input = Vector2.zero;
-        if (handle != null) handle.anchoredPosition = Vector2.zero;
+        if (joystickKnob != null) joystickKnob.anchoredPosition = Vector2.zero;
         if (IsInitialized) OnReleased();
     }
 
