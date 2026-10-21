@@ -14,6 +14,8 @@ namespace Playable
         [Header("End Game")] [LunaPlaygroundField("End Time", 1, "End Game")] [SerializeField]
         private int _endTime = 30;
 
+        private bool _gameplayStarted;
+
         [LunaPlaygroundField("Total Event For CTA", 2, "End Game")] [SerializeField]
         private int _totalEvent;
 
@@ -57,6 +59,13 @@ namespace Playable
 
             if (_backgroundTexture && _background) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
+             BeginGameplay();
+        }
+
+        public void BeginGameplay()
+        {
+            if (_gameplayStarted || HasEnded) return;
+            _gameplayStarted = true;
             CountdownEndGame();
         }
 
