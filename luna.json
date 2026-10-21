@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 29023,
-    "creativeName": "C1_2610_HuyNQ_UAC_V78_ThuLH",
+    "applicationID": 43685,
+    "creativeName": "C1_2610_HuyNQ_OBP_V01_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -39472,6 +39472,46 @@
                     {
                         "name": "OnDestroy",
                         "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.StealEggsGame",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Steal",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowEndCard",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.StealEggsLayout",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
                     }
                 ]
             }
