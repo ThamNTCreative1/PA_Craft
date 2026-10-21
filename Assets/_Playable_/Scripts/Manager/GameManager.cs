@@ -35,6 +35,8 @@ namespace Playable
         [SerializeField] private TMP_Text _countdownText;
 
         public int EndTime => _endTime;
+        public int TotalEvent => _totalEvent;
+        public event System.Action GameplayEnded;
         public float RemainingTime { get; private set; }
         public bool HasEnded { get; private set; }
         public event System.Action CountdownExpired;
@@ -43,6 +45,8 @@ namespace Playable
 
         private int _shownGameplayCtas;
         private int _quantityEvent = 0;
+        private bool _ctaScheduled;
+        private bool _ctaShown;
 
         private void Awake()
         {
@@ -75,14 +79,32 @@ namespace Playable
             if (HasEnded) return;
             HasEnded = true;
             Debug.Log("End Game");
-            if (_btnBlock != null) _btnBlock.gameObject.SetActive(true);
+            ShowBlock();
+            GameplayEnded?.Invoke();
             Luna.Unity.LifeCycle.GameEnded();
         }
 
         public void ShowCTA()
         {
+            _ctaShown = true;
+            ShowBlock();
             Debug.Log("Show CTA");
             Luna.Unity.Playable.InstallFullGame();
+        }
+
+        private void ShowBlock()
+        {
+            if (_btnBlock == null) return;
+            _btnBlock.gameObject.SetActive(true);
+            _btnBlock.transform.SetAsLastSibling();
+            var canvas = _btnBlock.GetComponent<Canvas>();
+            if (canvas == null) canvas = _btnBlock.gameObject.AddComponent<Canvas>();
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = short.MaxValue;
+            if (_btnBlock.GetComponent<GraphicRaycaster>() == null)
+                _btnBlock.gameObject.AddComponent<GraphicRaycaster>();
+            _btnBlock.interactable = true;
+            if (_btnBlock.targetGraphic != null) _btnBlock.targetGraphic.raycastTarget = true;
         }
 
         public void ResetGameplayCtas()
@@ -93,11 +115,26 @@ namespace Playable
 
         public void CountEvent()
         {
+            if (HasEnded) return;
             _quantityEvent++;
             if (_quantityEvent >= _totalEvent)
             {
                 EndGame();
+                ScheduleCTA();
             }
+        }
+
+        public void ScheduleCTA()
+        {
+            if (_ctaScheduled || _ctaShown || _isApplovin) return;
+            _ctaScheduled = true;
+            StartCoroutine(ShowCTADelayed());
+        }
+
+        private IEnumerator ShowCTADelayed()
+        {
+            yield return new WaitForSeconds(1f);
+            if (!_ctaShown) ShowCTA();
         }
 
         public void CountdownEndGame()
@@ -126,8 +163,7 @@ namespace Playable
                 yield break;
             }
             EndGame();
-            yield return new WaitForSeconds(1);
-            if (!_isApplovin) ShowCTA();
+            ScheduleCTA();
         }
 
         private void UpdateCountdownText()

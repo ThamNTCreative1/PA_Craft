@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 29023,
-    "creativeName": "C1_2610_HuyNQ_UAC_V77_ThuLH",
+    "creativeName": "C1_2610_HuyNQ_UAC_V78_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -8230,6 +8230,42 @@
             {
                 "name": "Playable.GameController.RunState",
                 "excluded": false
+            },
+            {
+                "name": "JoystickPlayerExample",
+                "excluded": true
+            },
+            {
+                "name": "JoystickSetterExample",
+                "excluded": true
+            },
+            {
+                "name": "DynamicJoystick",
+                "excluded": true
+            },
+            {
+                "name": "FloatingJoystick",
+                "excluded": true
+            },
+            {
+                "name": "VariableJoystick",
+                "excluded": true
+            },
+            {
+                "name": "JoystickType",
+                "excluded": true
+            },
+            {
+                "name": "AxisOptions",
+                "excluded": false
+            },
+            {
+                "name": "Playable.HiddenHuntGame.HuntStage",
+                "excluded": false
+            },
+            {
+                "name": "FixedJoystick",
+                "excluded": false
             }
         ],
         "unusedMethods": [
@@ -15125,7 +15161,7 @@
                     },
                     {
                         "name": "xMin#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "xMin#set",
@@ -15145,7 +15181,7 @@
                     },
                     {
                         "name": "yMin#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "yMin#set",
@@ -15169,7 +15205,7 @@
                     },
                     {
                         "name": "Contains",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "equals",
@@ -16483,7 +16519,7 @@
                     },
                     {
                         "name": "IsChildOf",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "TransformPoint",
@@ -17599,7 +17635,7 @@
                     },
                     {
                         "name": "offsetMin#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "offsetMax#get",
@@ -17607,7 +17643,7 @@
                     },
                     {
                         "name": "offsetMax#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetSizeWithCurrentAnchors",
@@ -20447,7 +20483,7 @@
                     },
                     {
                         "name": "RectangleContainsScreenPoint",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PixelAdjustPoint",
@@ -20761,7 +20797,7 @@
                     },
                     {
                         "name": "safeArea#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "currentResolution#get",
@@ -35225,7 +35261,7 @@
                     },
                     {
                         "name": "SetParameter$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetParameter$2",
@@ -35309,7 +35345,7 @@
                     },
                     {
                         "name": "SetColor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetVector$1",
@@ -37643,7 +37679,7 @@
                     },
                     {
                         "name": "CountEvent",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "IECountdownEndGame",
@@ -37683,6 +37719,22 @@
                     },
                     {
                         "name": "BeginGameplay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TotalEvent#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ScheduleCTA",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowCTADelayed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowBlock",
                         "excluded": false
                     }
                 ]
@@ -39000,28 +39052,6 @@
                 ]
             },
             {
-                "className": "Playable.BlockCraftTapTutorial",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "UnityEngine.WaitForSecondsRealtime",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -39044,20 +39074,404 @@
                 ]
             },
             {
-                "className": "Playable.BlockCraftResponsiveLayout",
+                "className": "Joystick",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
-                        "name": "Place",
+                        "name": "ContainsScreenPoint",
                         "excluded": false
                     },
                     {
-                        "name": "LateUpdate",
+                        "name": "Horizontal#get",
                         "excluded": false
                     },
                     {
-                        "name": "ApplyLayout",
+                        "name": "Vertical#get",
                         "excluded": false
+                    },
+                    {
+                        "name": "Direction#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleRange#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "HandleRange#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DeadZone#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "DeadZone#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AxisOptions#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AxisOptions#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SnapX#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SnapX#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SnapY#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SnapY#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UsesMouseInput#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerDown",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPressed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnReleased",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateCamera",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DragInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FormatInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SnapFloat",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnPointerUp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CancelInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnApplicationFocus",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnApplicationPause",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CanInteract",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsBlocked",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MoveBackground",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ScreenPointToAnchoredPosition",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.HiddenHuntGame",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Fire",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FindNextTarget",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Looked",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Moved",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Ended",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.HiddenHuntTarget",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AimPoint#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hit",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.HuntHUD",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshLayout",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetCount",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetText",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowShoot",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowTurning",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowLook",
+                        "excluded": false
+                    },
+                    {
+                        "name": "InfinityPoint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LayoutInstruction",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowMove",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideTutorial",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "TopInstructionY#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideAllTutorials",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.HuntLookInput",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerDown",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerUp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnApplicationFocus",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.HuntPlayer",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ViewCamera#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Look",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyRotation",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AimAt",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CanStand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsLand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopControls",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.HuntWeapon",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyAspect",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Fire",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
                     }
                 ]
             }
