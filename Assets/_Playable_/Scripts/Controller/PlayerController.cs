@@ -224,7 +224,7 @@ namespace Playable
             if (_btnSpeed != null) _btnSpeed.onClick.AddListener(OnSpeedButtonPressed);
             if (_btnTransform != null)
             {
-                _btnTransform.onClick.AddListener(OnTransformButtonPressed);
+                _btnTransform.gameObject.SetActive(false);
             }
 
             if (_horse != null)

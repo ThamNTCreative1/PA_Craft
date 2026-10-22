@@ -64,7 +64,7 @@ namespace Playable
 
         [Tooltip("Bán kính tap phụ (pixel) ngoài vùng spawn point. 0 = chỉ nhận tap trong RectTransform")]
         [SerializeField]
-        private float _extraTapRadius = 0f;
+        private float _extraTapRadius = 150f;
 
         [Tooltip("PlayerController của player, dùng để biết khi nào player transform xong")] [SerializeField]
         private PlayerController _playerController;
@@ -159,17 +159,12 @@ namespace Playable
             ResolveUiCamera();
 
             // Thiếu 1 trong các điều kiện dưới thì không chạy được đủ chuỗi tutorial
-            // (transform -> hotbar[0] -> spawn[0] -> hotbar[1] -> spawn[1]). Bỏ qua thẳng
+            // (hotbar[0] -> spawn[0] -> hotbar[1] -> spawn[1]). Bỏ qua thẳng
             // vào gameplay, không kẹt tutorial.
-            if (_spawnPoints.Count < 2 || _hotbarItems.Count < 2 || _transformButtonTarget == null)
+            if (_spawnPoints.Count < 2 || _hotbarItems.Count < 2)
             {
                 EnterGameplay();
                 return;
-            }
-
-            if (_playerController != null)
-            {
-                _playerController.OnTransformedOn += HandlePlayerTransformed;
             }
 
             if (_blur != null)
@@ -177,7 +172,7 @@ namespace Playable
                 _blur.SetActive(true);
             }
 
-            GoToTransformStep();
+            GoToHotbarStep(0);
         }
 
         private void Update()
@@ -244,6 +239,8 @@ namespace Playable
                 hotbarItem.SetSelected(hotbarItem == source);
             }
 
+            GameManager.Instance.CountEvent();
+
             if (_currentPhase != Phase.Tutorial)
             {
                 return;
@@ -255,12 +252,10 @@ namespace Playable
 
             if (_tutorialStep == TutorialStep.WaitHotbar0 && index == 0)
             {
-                _hotbarItems[0].TurnOnCanvas(false);
                 GoToSpawnStep(0);
             }
             else if (_tutorialStep == TutorialStep.WaitHotbar1 && index == 1)
             {
-                _hotbarItems[1].TurnOnCanvas(false);
                 GoToSpawnStep(1);
             }
         }
@@ -274,6 +269,7 @@ namespace Playable
 
         private void GoToTransformStep()
         {
+            SetHotbarHighlighted(-1);
             _tutorialStep = TutorialStep.WaitTransform;
             SetTransformButtonHighlighted(true);
             ShowHandAt(_transformButtonTarget);
@@ -309,7 +305,7 @@ namespace Playable
                 return;
             }
 
-            hotbar.TurnOnCanvas(true);
+            SetHotbarHighlighted(index);
 
             _tutorialStep = index == 0 ? TutorialStep.WaitHotbar0 : TutorialStep.WaitHotbar1;
             ShowHandAt(hotbar.ButtonRect);
@@ -318,6 +314,7 @@ namespace Playable
 
         private void GoToSpawnStep(int index)
         {
+            SetHotbarHighlighted(-1);
             _tutorialStep = index == 0 ? TutorialStep.WaitSpawn0 : TutorialStep.WaitSpawn1;
             _currentSpawnIndex = index;
 
@@ -343,6 +340,14 @@ namespace Playable
 
             CacheCameraState();
             _refreshTime = Time.time + _refreshInterval;
+        }
+
+        private void SetHotbarHighlighted(int index)
+        {
+            for (int i = 0; i < _hotbarItems.Count; i++)
+            {
+                _hotbarItems[i].TurnOnCanvas(i == index);
+            }
         }
 
         private void AdvanceAfterSpawnFailure(int index)
@@ -506,6 +511,7 @@ namespace Playable
 
         private void EnterGameplay()
         {
+            SetHotbarHighlighted(-1);
             _currentPhase = Phase.Gameplay;
 
             _tutorialPointer?.Stop();

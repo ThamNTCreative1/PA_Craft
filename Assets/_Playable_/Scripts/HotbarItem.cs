@@ -12,7 +12,7 @@ namespace Playable
         [SerializeField] private Canvas _canvas;
 
         [Tooltip("SortingOrder khi hotbar được tutorial highlight (nổi lên trên màn blur). " +
-                 "Lúc không highlight thì về lại 0. Canvas phải để sẵn overrideSorting = true.")]
+                 "Lúc không highlight thì Canvas trở về thứ tự của Canvas cha, nằm dưới màn blur.")]
         [SerializeField]
         private int _highlightSortingOrder = 3;
 
@@ -28,6 +28,7 @@ namespace Playable
         public void Init(IMonsterSelector selector)
         {
             _selector = selector;
+            TurnOnCanvas(false);
         }
 
         private void OnClick()
@@ -45,7 +46,18 @@ namespace Playable
 
         public void TurnOnCanvas(bool active)
         {
-            _canvas.sortingOrder = active ? _highlightSortingOrder : 1;
+            if (_canvas == null)
+            {
+                _canvas = GetComponent<Canvas>();
+            }
+
+            if (_canvas == null)
+            {
+                return;
+            }
+
+            _canvas.overrideSorting = active;
+            _canvas.sortingOrder = active ? _highlightSortingOrder : 0;
         }
     }
 }

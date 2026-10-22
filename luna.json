@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 40867,
-    "creativeName": "CBBW3_V06_DungNV_HuyNQ",
+    "applicationID": 35800,
+    "creativeName": "C1_2610_HuyNQ_CEBB_V13_NgocNDL",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -76,12 +76,12 @@
                 "Stubs/SupersonicWisdom/"
             ],
             "msbuildMac64": "/Library/Frameworks/Mono.framework/Versions/Current/bin/msbuild",
-            "msbuildWin64": "C:\\Program Files (x86)\\Microsoft Visual Studio\\18\\BuildTools\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            "msbuildWin64": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
             "externalSources": [],
             "externalJSLibraries": [],
             "scriptingDefines": [],
-            "msbuildVersion": "18.8",
-            "monoVersion": "9.0.18",
+            "msbuildVersion": "18.9",
+            "monoVersion": "9.0.3",
             "dotnetVersion": ""
         },
         "assets": {
@@ -3393,10 +3393,6 @@
             },
             {
                 "name": "UnityEngine.SoftJointLimitSpring",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.Sprites.DataUtility",
                 "excluded": true
             },
             {
@@ -18899,7 +18895,7 @@
                     },
                     {
                         "name": "enabled#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "enabled#set",
@@ -18915,11 +18911,11 @@
                     },
                     {
                         "name": "pixelsPerUnit#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "multipliedPixelsPerUnit#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "hasBorder#get",
@@ -18927,15 +18923,15 @@
                     },
                     {
                         "name": "minWidth#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "preferredWidth#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "flexibleWidth#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "minHeight#get",
@@ -21861,7 +21857,7 @@
                     },
                     {
                         "name": "pixelsPerUnit#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "packed#get",
@@ -21893,7 +21889,7 @@
                     },
                     {
                         "name": "border#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "textureRect#get",
@@ -24123,7 +24119,7 @@
                     },
                     {
                         "name": "referencePixelsPerUnit#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sortingLayerName#get",
@@ -33749,11 +33745,11 @@
                     },
                     {
                         "name": "ResetTrigger$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ResetTrigger",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetFloat",
@@ -38433,7 +38429,7 @@
                     },
                     {
                         "name": "SafeSetAnimatorTrigger",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "UpdateAttack",
@@ -39156,6 +39152,10 @@
                     {
                         "name": "EndPointerTracking",
                         "excluded": false
+                    },
+                    {
+                        "name": "SetHotbarHighlighted",
+                        "excluded": false
                     }
                 ]
             },
@@ -39304,6 +39304,28 @@
                     {
                         "name": "TryParseHtmlString",
                         "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Sprites.DataUtility",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "GetOuterUV",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetInnerUV",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetPadding",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetMinSize",
+                        "excluded": false
                     }
                 ]
             }
