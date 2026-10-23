@@ -18,11 +18,13 @@ namespace Playable
         [LunaPlaygroundAsset("Background Music")] [SerializeField]
         private AudioClip _backgroundMusic;
 
-        [SerializeField]
-        private Texture2D _backgroundTexture;
+        [SerializeField] private Texture2D _backgroundTexture;
 
         [SerializeField] private Button _btnBlock;
         [SerializeField] private Image _background;
+
+        [LunaPlaygroundField("Applovin")] [SerializeField]
+        private bool _isApplovin;
 
         [Header("UI Field")] [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
@@ -40,7 +42,11 @@ namespace Playable
 
         private void Start()
         {
-            if (_btnBlock != null) { _btnBlock.onClick.AddListener(EndGame); _btnBlock.gameObject.SetActive(false); }
+            if (_btnBlock != null)
+            {
+                _btnBlock.onClick.AddListener(ShowCTA);
+                _btnBlock.gameObject.SetActive(false);
+            }
 
             if (_backgroundTexture && _background != null) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
@@ -57,10 +63,11 @@ namespace Playable
                 StopCoroutine(_endGameCountdown);
                 _endGameCountdown = null;
             }
+
             Debug.Log("End Game");
             if (_btnBlock != null) _btnBlock.gameObject.SetActive(true);
             Luna.Unity.LifeCycle.GameEnded();
-            Luna.Unity.Playable.InstallFullGame();
+            if (!_isApplovin) Luna.Unity.Playable.InstallFullGame();
         }
 
         public void CountEvent()
@@ -71,6 +78,11 @@ namespace Playable
             {
                 EndGame();
             }
+        }
+
+        private void ShowCTA()
+        {
+            Luna.Unity.Playable.InstallFullGame();
         }
 
         public void CountdownEndGame()
