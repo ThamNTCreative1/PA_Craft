@@ -40,6 +40,7 @@ namespace Playable
         [Header("Efx")] [SerializeField] private float _duration = 0.5f;
 
         private Sequence _animSequence;
+        private Tween _efxTween;
 
         public bool IsPlaying => gameObject.activeSelf;
 
@@ -47,7 +48,7 @@ namespace Playable
         {
             gameObject.SetActive(true);
 
-            _animSequence?.Kill();
+            KillTweens();
             _animSequence = DOTween.Sequence();
 
             transform.localScale = Vector3.one;
@@ -68,14 +69,34 @@ namespace Playable
             _animSequence.SetLoops(-1, LoopType.Restart);
 
             _efx.localScale = Vector3.zero;
-            _efx.DOScale(Vector3.one, _duration).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart);
+            _efxTween = _efx.DOScale(Vector3.one, _duration).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart);
         }
 
         public void Stop()
         {
+            KillTweens();
+            if (this != null)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+
+        private void OnDisable()
+        {
+            KillTweens();
+        }
+
+        private void OnDestroy()
+        {
+            KillTweens();
+        }
+
+        private void KillTweens()
+        {
             _animSequence?.Kill();
             _animSequence = null;
-            gameObject.SetActive(false);
+            _efxTween?.Kill();
+            _efxTween = null;
         }
     }
 }

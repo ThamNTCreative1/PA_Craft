@@ -1,0 +1,98 @@
+{
+  "measurement": "Luna package:stats, TARGET_PLATFORM=playground, STATS=true",
+  "before_bytes": 5826451.333333334,
+  "after_bytes": 4695238,
+  "target_bytes": 5000000,
+  "below_target": true,
+  "upload_zip_bytes": 8222858,
+  "upload_zip_note": "Upload archive includes source assets and cache; it is not the final network HTML. Network-specific HTML size has not been measured.",
+  "asset_bytes_after": 3633444,
+  "mesh_simplification_reduction_percent": {
+    "verity": 45,
+    "arm_blue": 25,
+    "arm_red": 25,
+    "wings": 45,
+    "ring": 15
+  },
+  "monster_tris_after": {
+    "Arms": 29346,
+    "Galaxy": 11514,
+    "Lava": 11682,
+    "Wings": 16606
+  },
+  "validation": [
+    "Full Luna project:build succeeded",
+    "Exported body meshes compared visually in Blender in bind pose",
+    "luna.json diff check passed"
+  ],
+  "asset_breakdown": [
+    {
+      "type": "meshes",
+      "bytes": 1761988
+    },
+    {
+      "type": "textures",
+      "bytes": 1126215
+    },
+    {
+      "type": "animation-clips",
+      "bytes": 451963
+    },
+    {
+      "type": "sounds",
+      "bytes": 121672
+    },
+    {
+      "type": "prefabs",
+      "bytes": 42130
+    },
+    {
+      "type": "sprites",
+      "bytes": 24642
+    },
+    {
+      "type": "cubemaps",
+      "bytes": 24277
+    },
+    {
+      "type": "materials",
+      "bytes": 20470
+    },
+    {
+      "type": "scriptable-objects",
+      "bytes": 15928
+    },
+    {
+      "type": "fonts",
+      "bytes": 15341
+    },
+    {
+      "type": "scenes",
+      "bytes": 15281
+    },
+    {
+      "type": "shaders",
+      "bytes": 8257
+    },
+    {
+      "type": "animator-controllers",
+      "bytes": 2103
+    },
+    {
+      "type": "resources",
+      "bytes": 1515
+    },
+    {
+      "type": "project-settings",
+      "bytes": 868
+    },
+    {
+      "type": "text-assets",
+      "bytes": 581
+    },
+    {
+      "type": "animator-override-controllers",
+      "bytes": 213
+    }
+  ]
+}

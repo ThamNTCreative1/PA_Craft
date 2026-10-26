@@ -19,6 +19,12 @@ namespace Playable
         [SerializeField] private Animator _animator;
         [SerializeField] private Animator _animatorHorse;
 
+        [Header("Alternative Player Model")]
+        [SerializeField] private Transform _base03Model;
+        [SerializeField] private Animator _base03Animator;
+        private Transform _defaultModel;
+        private Animator _defaultAnimator;
+
         [Header("Animation")] [SerializeField] private string _speedParam = "Speed";
         [SerializeField] private string _isJumpParam = "isJump";
         [SerializeField] private string _isFlyParam = "isFly";
@@ -189,6 +195,8 @@ namespace Playable
             }
 
             _hasAnimator = _animator != null;
+            _defaultModel = _modelPlayer;
+            _defaultAnimator = _animator;
             _hasHorseAnimator = _animatorHorse != null;
 
             if (_hasAnimator)
@@ -215,6 +223,26 @@ namespace Playable
             // Cache trước để ProbeGround() khỏi đọc property + tính lại phép trừ/nhân mỗi FixedUpdate.
             _groundCheckBottomOffset = (_capsuleCollider.height * 0.5f) - _capsuleCollider.radius;
             _groundCheckLegacySphereRadius = _capsuleCollider.radius * 0.95f;
+        }
+
+        // Applied once by MapController at startup, before player input is processed.
+        public void SelectPlayerModel(bool useBase03)
+        {
+            if (_defaultModel == null || (useBase03 && (_base03Model == null || _base03Animator == null)))
+            {
+                return;
+            }
+
+            _defaultModel.gameObject.SetActive(!useBase03);
+            if (_base03Model != null)
+            {
+                _base03Model.gameObject.SetActive(useBase03);
+            }
+
+            _modelPlayer = useBase03 ? _base03Model : _defaultModel;
+            _animator = useBase03 ? _base03Animator : _defaultAnimator;
+            _hasAnimator = _animator != null;
+            _appliedSpeed = -1f;
         }
 
         private void Start()

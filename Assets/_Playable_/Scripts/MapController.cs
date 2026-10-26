@@ -27,6 +27,11 @@ namespace Playable
         [SerializeField] private List<HotbarItem> _hotbarItems = new List<HotbarItem>();
         [SerializeField] private Monster _prefabMonster;
 
+        [Header("Luna Player")]
+        [LunaPlaygroundField("Use Red Player")]
+        [Tooltip("Off: current S_Base_06 player. On: S_Base_03 player.")]
+        [SerializeField] private bool _useBase03Player;
+
         [Header("Spawn Monster")]
         [Tooltip("2 vị trí cố định (đặt sẵn trong Editor) để hand tutorial trỏ tới và player tap vào để spawn")]
         [SerializeField]
@@ -133,6 +138,11 @@ namespace Playable
 
         private void Start()
         {
+            if (_playerController != null)
+            {
+                _playerController.SelectPlayerModel(_useBase03Player);
+            }
+
             // [SCALE DEBUG] theo dõi Screen.width/height trong 5s đầu xem có ổn định ngay không
             _screenSizeLogUntil = Time.time + 5f;
             LogScreenSizeIfChanged();
@@ -211,7 +221,10 @@ namespace Playable
 
         private void OnDestroy()
         {
-            _tutorialPointer?.Stop();
+            if (_tutorialPointer != null)
+            {
+                _tutorialPointer.Stop();
+            }
 
             if (_playerController != null)
             {
@@ -314,6 +327,8 @@ namespace Playable
 
         private void GoToSpawnStep(int index)
         {
+            // The hotbar's release selects a monster; spawning requires a new press.
+            ResetPointerTracking();
             SetHotbarHighlighted(-1);
             _tutorialStep = index == 0 ? TutorialStep.WaitSpawn0 : TutorialStep.WaitSpawn1;
             _currentSpawnIndex = index;
@@ -416,6 +431,11 @@ namespace Playable
                 return;
             }
 
+            if (IsPointerOverUI(screenPosition))
+            {
+                return;
+            }
+
             if (!IsTapOnTarget(screenPosition))
             {
                 return;
@@ -469,7 +489,10 @@ namespace Playable
                 return;
             }
 
-            string colorHex = ColorUtility.ToHtmlStringRGB(_monsterNameHintColor);
+            Color hintColor = _prefabMonster.name == "Verity Lava"
+                ? Color.red
+                : _monsterNameHintColor;
+            string colorHex = ColorUtility.ToHtmlStringRGB(hintColor);
 
             ShowHintText($"Tap to spawn <color=#{colorHex}><i>{_prefabMonster.name}</i></color>");
         }
@@ -514,7 +537,10 @@ namespace Playable
             SetHotbarHighlighted(-1);
             _currentPhase = Phase.Gameplay;
 
-            _tutorialPointer?.Stop();
+            if (_tutorialPointer != null)
+            {
+                _tutorialPointer.Stop();
+            }
 
             if (_blur != null)
             {
@@ -702,6 +728,12 @@ namespace Playable
         {
             _pointerDownPosition = position;
             _isPointerDown = true;
+            _isSwipe = false;
+        }
+
+        private void ResetPointerTracking()
+        {
+            _isPointerDown = false;
             _isSwipe = false;
         }
 

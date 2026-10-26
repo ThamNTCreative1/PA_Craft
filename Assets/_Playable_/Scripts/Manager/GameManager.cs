@@ -18,6 +18,9 @@ namespace Playable
         [LunaPlaygroundField("End Time")] [SerializeField]
         private int _endTime = 30;
 
+        [LunaPlaygroundField("Applovin")] [SerializeField]
+        private bool _isApplovin;
+
         [LunaPlaygroundAsset("Background Music")] [SerializeField]
         private AudioClip _backgroundMusic;
 
@@ -39,7 +42,7 @@ namespace Playable
 
         private void Start()
         {
-            _btnBlock.onClick.AddListener(EndGame);
+            _btnBlock.onClick.AddListener(ShowCTA);
             _btnBlock.gameObject.SetActive(false);
 
             if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);
@@ -53,8 +56,14 @@ namespace Playable
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
             Luna.Unity.LifeCycle.GameEnded();
+            if (!_isApplovin) Luna.Unity.Playable.InstallFullGame();
+        }
+
+        private void ShowCTA()
+        {
             Luna.Unity.Playable.InstallFullGame();
         }
+
 
         public void CountEvent()
         {

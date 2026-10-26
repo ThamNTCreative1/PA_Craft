@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 35800,
-    "creativeName": "C1_2610_HuyNQ_CEBB_V13_NgocNDL",
+    "creativeName": "C1_2610_HuyNQ_CEBB_V15_NgocNDL",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -37838,6 +37838,10 @@
                     {
                         "name": "CountdownEndGame",
                         "excluded": false
+                    },
+                    {
+                        "name": "ShowCTA",
+                        "excluded": false
                     }
                 ]
             },
@@ -38628,6 +38632,10 @@
                     {
                         "name": "RotateTowards$1",
                         "excluded": false
+                    },
+                    {
+                        "name": "SelectPlayerModel",
+                        "excluded": false
                     }
                 ]
             },
@@ -38990,6 +38998,18 @@
                     {
                         "name": "Stop",
                         "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "KillTweens",
+                        "excluded": false
                     }
                 ]
             },
@@ -39155,6 +39175,10 @@
                     },
                     {
                         "name": "SetHotbarHighlighted",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetPointerTracking",
                         "excluded": false
                     }
                 ]
@@ -39595,6 +39619,156 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/3D Model/Map/forest 1/forest_2_by_creepercoastal-RGB.png"
+                    },
+                    {
+                        "maxWidth": 256,
+                        "maxHeight": 256,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/Icon Verity/2.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/nick-rossi-gam322-nrossi-m11-lava.jpg"
+                    },
+                    {
+                        "maxWidth": 256,
+                        "maxHeight": 256,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/Icon Verity/1.png"
+                    },
+                    {
+                        "maxWidth": 256,
+                        "maxHeight": 256,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/Icon Verity/4.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/head_diff_000_a_whi.001_baseColor.png"
+                    },
+                    {
+                        "maxWidth": 256,
+                        "maxHeight": 256,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/Icon Verity/yellow.png"
+                    },
+                    {
+                        "maxWidth": 256,
+                        "maxHeight": 256,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/Icon Verity/3.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/texture_verity_arm.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/texture_verity_wings.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/materialsmodelsblastverityvteeth_baseColor_galaxy.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/materialsmodelsblastverityvteeth_baseColor.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/texture_galaxy.png"
+                    },
+                    {
+                        "maxWidth": 128,
+                        "maxHeight": 128,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/texture_arm_blue.png"
+                    },
+                    {
+                        "maxWidth": 128,
+                        "maxHeight": 128,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/texture_arm_red.png"
+                    },
+                    {
+                        "maxWidth": 128,
+                        "maxHeight": 128,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/horn_texture.png"
                     }
                 ]
             },
@@ -39806,6 +39980,41 @@
                         "simplificationPercentage": 30,
                         "linkCloseVertices": true,
                         "name": "Assets/Texture/Model_3D/forest/Forest.obj"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 45,
+                        "linkCloseVertices": true,
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/verity.fbx"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 25,
+                        "linkCloseVertices": true,
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/arm_blue.fbx"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 25,
+                        "linkCloseVertices": true,
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/arm_red.fbx"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 45,
+                        "linkCloseVertices": true,
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/wings.fbx"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 15,
+                        "linkCloseVertices": true,
+                        "name": "Assets/Game/Models/Mobs/model_verity_basic/ring.fbx"
                     }
                 ]
             },
