@@ -1,0 +1,26 @@
+Keyboard cup progression
+Source project: D:/Clone Resources/tsunami-2
+Source configuration: Assets/MiniGames/KeyboardEscape/Data/Keyborad Escape Speed Config.asset
+Local defaults: baseLevelExpValue = 100; levelExpMultiplyValue = 1.118.
+Source formula: GameController.GetLevelExp(level) = base * multiplier^(level - 1).
+Source LevelUp flow resets currentExp to zero and increments level; copied for cup progress. UI rounds displayed requirement as in KeyboradEscapeSpeed_UIExpFrame.
+
+Playable behavior:
+- One cup per entered key while grounded and running. Returning to an earlier key earns another cup.
+- Staying on the same key does not repeatedly award cups. Airborne frames do not award cups.
+- Total cups persist across level transitions and death/respawn for the current play session.
+- First level requires 100 cups; next requires 112 whole cups (source threshold 111.8), then 125 (124.9924).
+- Progress level does not modify configured Player Speed or the final-stage trophy win condition.
+- Existing Trophy Frame and EXP Frame graphics reused, plus a reusable +1 popup with the existing trophy icon.
+- No per-key colliders, scripts, or runtime object spawning added.
+
+Luna export compatibility:
+- Exported DTO omitted Bounds in EscapeKeyChunk. Replaced runtime bounds data with explicit Vector3 center/extents and migrated all 70 chunks.
+- This fixes proximity lookup for cup rewards/key audio and chunk visibility away from the origin.
+
+Validation:
+- 21 Unity Play Mode checks passed (functional-checks.txt).
+- 16 checks passed on the final, freshly extracted Luna package (cups-check.txt), including physical forward/backward joystick movement, stationary/airborne rejection, level rollover, UI labels/fill/+1 popup, respawn retention, and final trophy win.
+- Browser test fixture first verifies exported End Time 30 and Player Speed 5, then extends End Time to 120 only in browser memory to accommodate slow software rendering. Scene/default configuration is unchanged.
+- Logic exercised with software WebGL at 960x540; UI also captured at 1920x1080 and 1080x1920 (luna-cups-landscape.png, luna-cups-portrait.png).
+- No browser runtime or shader errors. Final reported playable size: 4,685,156 bytes (4.69 MB decimal), below 5,000,000.

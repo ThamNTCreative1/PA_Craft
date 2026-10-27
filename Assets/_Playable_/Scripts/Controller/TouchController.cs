@@ -14,6 +14,8 @@ namespace Playable
         [Header("Look")]
         [SerializeField] private float _dragSensitivity = 1f;
         [SerializeField] private bool _useUnscaledDelta = true;
+        [SerializeField] private bool _normalizeByDeltaTime = true;
+        public bool externalPointerInput;
 
         private RectTransform _rectTransform;
         private int _pointerId = int.MinValue;
@@ -63,31 +65,46 @@ namespace Playable
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            _pointerId = eventData.pointerId;
-            _lastPointerPosition = eventData.position;
+            if (!externalPointerInput) BeginPointer(eventData.pointerId, eventData.position);
+        }
+
+        public void BeginPointer(int id, Vector2 position)
+        {
+            _pointerId = id;
+            _lastPointerPosition = position;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (eventData.pointerId != _pointerId)
+            if (!externalPointerInput) MovePointer(eventData.pointerId, eventData.position);
+        }
+
+        public void MovePointer(int id, Vector2 position)
+        {
+            if (id != _pointerId)
             {
                 return;
             }
 
-            Vector2 pointerDelta = eventData.position - _lastPointerPosition;
-            _lastPointerPosition = eventData.position;
+            Vector2 pointerDelta = position - _lastPointerPosition;
+            _lastPointerPosition = position;
 
             float deltaTime = _useUnscaledDelta
                 ? Mathf.Max(Time.unscaledDeltaTime, 0.0001f)
                 : Mathf.Max(Time.deltaTime, 0.0001f);
 
-            Vector2 normalizedDelta = pointerDelta * (_dragSensitivity / (deltaTime * 60f));
+            Vector2 normalizedDelta = pointerDelta * (_normalizeByDeltaTime ? _dragSensitivity / (deltaTime * 60f) : _dragSensitivity);
             OnLookDelta?.Invoke(normalizedDelta);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (eventData.pointerId != _pointerId)
+            if (!externalPointerInput) EndPointer(eventData.pointerId);
+        }
+
+        public void EndPointer(int id)
+        {
+            if (id != _pointerId)
             {
                 return;
             }

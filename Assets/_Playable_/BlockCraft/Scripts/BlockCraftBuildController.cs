@@ -151,10 +151,10 @@ namespace Playable
 
         private void RefreshButtons()
         {
-            bool enabled = !_completed && _builtRows + _pendingCount + (_building ? 1 : 0) < BuildLimit &&
+            bool canBuild = !_completed && _builtRows + _pendingCount + (_building ? 1 : 0) < BuildLimit &&
                 (_gameManager == null || !_gameManager.HasEnded);
             for (int i = 0; i < _materialButtons.Length; i++)
-                _materialButtons[i].interactable = enabled;
+                _materialButtons[i].interactable = canBuild;
         }
 
         private void Download()

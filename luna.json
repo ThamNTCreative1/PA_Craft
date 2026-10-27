@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 29023,
-    "creativeName": "C1_2610_HuyNQ_UAC_V79_ThuLH",
+    "applicationID": 43326,
+    "creativeName": "C1_2610_HuyNQ_MKSR_V04_TrangHTT",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -129,12 +129,11 @@
                 "Assets/Resources/DOTweenSettings.asset",
                 "Assets/TextMesh Pro/Resources/TMP Settings.asset",
                 "Assets/TextMesh Pro/Fonts/FFFFORWA SDF.asset",
-                "Assets/Game/Audios/SoundFX/weapons/fire.ogg",
                 "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset"
             ]
         },
         "scenes": [
-            "Assets/_Playable_/Scenes/BuildingSelection.unity"
+            "Assets/_Playable_/Scenes/Gameplay.unity"
         ],
         "disabledScenes": [],
         "startupScene": 0,
@@ -160,7 +159,7 @@
         },
         "enableRealtimeShadows": true,
         "enableLunaCompilerV2": false,
-        "optimiseShaderVariantsExport": true,
+        "optimiseShaderVariantsExport": false,
         "enableMecanimWASM": true,
         "minify": true,
         "forceUncompressed": false,
@@ -201,9 +200,9 @@
                 "forceIncluded": true
             }
         ],
-        "disableRuntimeAnalysisForCode": false,
-        "disableRuntimeAnalysisForShaders": false,
-        "useShadersCache": true,
+        "disableRuntimeAnalysisForCode": true,
+        "disableRuntimeAnalysisForShaders": true,
+        "useShadersCache": false,
         "usePreservativeDynamicBatching": true,
         "preventUpdatingRAListWhenRAIsDisabled": false,
         "unusedClasses": [
@@ -8166,6 +8165,82 @@
             {
                 "name": "FixedJoystick",
                 "excluded": false
+            },
+            {
+                "name": "Minigames.KeyboardEscape.Gameplay.KeyboardGenerator",
+                "excluded": true
+            },
+            {
+                "name": "Playable.CameraController",
+                "excluded": true
+            },
+            {
+                "name": "Playable.HandTutorial",
+                "excluded": true
+            },
+            {
+                "name": "Playable.LavaCorridorRespawn",
+                "excluded": true
+            },
+            {
+                "name": "Playable.PlayerController",
+                "excluded": true
+            },
+            {
+                "name": "TankAndHealerStudioAssets.BasicInputDisplay",
+                "excluded": true
+            },
+            {
+                "name": "TankAndHealerStudioAssets.JoystickPrefabDisplay",
+                "excluded": true
+            },
+            {
+                "name": "TankAndHealerStudioAssets.PositionOverrideExample",
+                "excluded": true
+            },
+            {
+                "name": "TankAndHealerStudioAssets.RelativeCameraRotationExample",
+                "excluded": true
+            },
+            {
+                "name": "TankAndHealerStudioAssets.TapCountExample",
+                "excluded": true
+            },
+            {
+                "name": "UltimateJoystick",
+                "excluded": true
+            },
+            {
+                "name": "Minigames.KeyboardEscape.Gameplay.KeyboardColorPreset",
+                "excluded": true
+            },
+            {
+                "name": "Minigames.KeyboardEscape.Gameplay.KeyboardGenerator.KeyForwardAxis",
+                "excluded": true
+            },
+            {
+                "name": "Playable.CameraController.ViewMode",
+                "excluded": true
+            },
+            {
+                "name": "TankAndHealerStudioAssets.RelativeCameraRotationExample.MovementCalculations",
+                "excluded": true
+            },
+            {
+                "name": "UltimateJoystick.Anchor",
+                "excluded": true
+            },
+            {
+                "name": "UltimateJoystick.Axis",
+                "excluded": true
+            },
+            {
+                "name": "UltimateJoystick.InputHandling",
+                "excluded": true
+            },
+            {
+                "name": "UltimateJoystick.TensionType",
+                "excluded": true
             }
         ],
         "unusedMethods": [
@@ -15057,7 +15132,7 @@
                     },
                     {
                         "name": "xMax#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "xMin#get",
@@ -15065,7 +15140,7 @@
                     },
                     {
                         "name": "xMin#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "y#get",
@@ -15077,7 +15152,7 @@
                     },
                     {
                         "name": "yMax#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "yMin#get",
@@ -15085,7 +15160,7 @@
                     },
                     {
                         "name": "yMin#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "$ctor2",
@@ -16451,7 +16526,7 @@
                     },
                     {
                         "name": "Rotate$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "RotateAround",
@@ -18471,7 +18546,7 @@
                     },
                     {
                         "name": "OnTransformParentChanged",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PixelAdjustPoint",
@@ -18557,7 +18632,7 @@
                     },
                     {
                         "name": "OnTransformParentChanged",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ParentMaskStateChanged",
@@ -18813,7 +18888,7 @@
                     },
                     {
                         "name": "texture#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "uvRect#get",
@@ -23375,7 +23450,7 @@
                     },
                     {
                         "name": "SetPosition",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetPositions",
@@ -23497,7 +23572,7 @@
                     },
                     {
                         "name": "radius#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "radius#set",
@@ -23505,7 +23580,7 @@
                     },
                     {
                         "name": "center#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "center#set",
@@ -27927,7 +28002,11 @@
                     },
                     {
                         "name": "Stop",
-                        "excluded": true
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tick\",this)}this.c$-=t;if(this.c$<=0){pc.Application.getApplication().events.off(\"update",
+                        "excluded": false
                     }
                 ]
             },
@@ -28491,7 +28570,7 @@
                     },
                     {
                         "name": "missingGlyphCharacter#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "missingGlyphCharacter#set",
@@ -28539,7 +28618,7 @@
                     },
                     {
                         "name": "defaultSpriteAsset#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "defaultSpriteAssetPath#get",
@@ -29315,7 +29394,7 @@
                     },
                     {
                         "name": "fallbackFontAssetTable#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "fallbackFontAssetTable#set",
@@ -29549,7 +29628,7 @@
                     },
                     {
                         "name": "spriteCharacterLookupTable#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "spriteCharacterLookupTable#set",
@@ -29569,7 +29648,7 @@
                     },
                     {
                         "name": "UpdateLookupTables",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSpriteIndexFromHashcode",
@@ -29619,7 +29698,7 @@
                     },
                     {
                         "name": "hashCode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "$ctor3",
@@ -30053,7 +30132,7 @@
                     },
                     {
                         "name": "GetSpriteCharacterFromSpriteAsset",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSpriteCharacterFromSpriteAsset_Internal",
@@ -34409,7 +34488,7 @@
                     },
                     {
                         "name": "value#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "onUnitSphere#get",
@@ -37539,7 +37618,15 @@
                     },
                     {
                         "name": "OnDisable",
-                        "excluded": true
+                        "excluded": false
+                    },
+                    {
+                        "name": "Inside",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
                     }
                 ]
             },
@@ -37635,6 +37722,26 @@
                     },
                     {
                         "name": "ShowBlock",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayerSpeed#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReplayCount#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayWinSound",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayResultSound",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryAgain",
                         "excluded": false
                     }
                 ]
@@ -39418,40 +39525,6 @@
                 ]
             },
             {
-                "className": "Playable.ResponsiveCanvasScaler",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnValidate",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ApplyScaleSettings",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GetMatchValue",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "UnityEngine.Animation",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -40892,6 +40965,608 @@
                         "excluded": true
                     }
                 ]
+            },
+            {
+                "className": "Minigames.KeyboardEscape.Gameplay.KeyboardEscape_BallTrap",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GenerateBall",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FixedUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CheckPlayerContact",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RestartRound",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeCupProgress",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "RequiredCups#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AddKeyboardCup",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshUI",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "InitializePopups",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CreatePopup",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetPopup",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetProgress",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeGame",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CameraSwiped",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MovementSwiped",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Begin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CollectHelmet",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hit",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Respawn",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CollectCup",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Celebrate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TimeExpired",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopPlay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ReplaysUsed#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RestartRound",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeGiant",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Move",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetPosition",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeHazard",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "OnTriggerEnter",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeHUD",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyLayout",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeKeyboardBatches",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "DistanceSquared",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshVisibility",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeKeyChunk",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeLookInput",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplyDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetView",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapePickup",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnTriggerEnter",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapePlayerInput",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "UICamera#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ProcessTouch",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PointerDown",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PointerMove",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PointerUp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ContainsJoystick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Contains",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ForgetTouch",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetLook",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetMovement",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnApplicationFocus",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnApplicationPause",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeTutorialHands",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Layout",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.ScooterPlayer",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Jump",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Teleport",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnTriggerEnter",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnTriggerExit",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TouchController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnRectTransformDimensionsChange",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RefreshLayout",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerDown",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginPointer",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MovePointer",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerUp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndPointer",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CacheRectTransform",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Minigames.KeyboardEscape.Gameplay.KeyNote",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Init",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetGradient",
+                        "excluded": true
+                    },
+                    {
+                        "name": "HandleScaleMesh",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RunKeyDown",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RunKeyUp",
+                        "excluded": true
+                    },
+                    {
+                        "name": "DelayedKeyUp",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapeCupProgress.GainPopup",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapePlayerBody",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Move",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MoveHorizontal",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MoveVertical",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReportSolidHazard",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.KeyboardEscape.EscapePlayerShatter",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Burst",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Restore",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.WinScreenConfetti",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Clear",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    }
+                ]
             }
         ],
         "stubberDataList": [],
@@ -41239,6 +41914,16 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/BuildingSelection/FFFFORWA SDF.asset"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/KeyboardEscape/Source/TextMesh Pro/Fonts/Customs/museo-sans-rounded-cufonfonts/MuseoSansRounded1000 SDF.asset"
                     }
                 ]
             },
@@ -41432,6 +42117,16 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/Sound/Push-Long-Version(chosic.com).mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:30.000",
+                        "lengthInSeconds": 30.0,
+                        "bitrate": 64,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/KE_Music.mp3"
                     }
                 ]
             },

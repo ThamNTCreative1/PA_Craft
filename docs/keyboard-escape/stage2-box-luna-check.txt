@@ -1,0 +1,14 @@
+WARNING Please avoid using the method: "FontEngine.LoadFontFace(Font, int)" and try and work around its functionality. If you are unable to, please open a support request.
+WARNING Please avoid using the method: "UnityEngine.DrivenRectTransformTracker.Clear" and try and work around its functionality. If you are unable to, please open a support request.
+WARNING Please avoid using the method: "UnityEngine.DrivenRectTransformTracker.Add" and try and work around its functionality. If you are unable to, please open a support request.
+PASS TutorialGuide removed
+FIXTURE damage suppressed only during floor traversal tests.
+TRAVEL 90 {"position":{"x":4.7,"y":-0.18769989013672034,"z":110.65949999928473},"moving":true,"input":{"x":0,"y":1}}
+PASS Joystick crosses stage 2 from z=90
+TRAVEL 130 {"position":{"x":4.7,"y":-0.18770000040510887,"z":150.67450000107283},"moving":true,"input":{"x":0,"y":1}}
+PASS Joystick crosses stage 2 from z=130
+PASS Jump still raises player with box movement
+PASS Helmet physical pickup still works
+PASS Shield consumes one hit without death
+PASS Stage 3 cup collection ends gameplay
+PASS No browser runtime errors

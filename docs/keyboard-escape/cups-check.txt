@@ -1,0 +1,22 @@
+AUDIO [{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/KE_Music.mp3","duration":30},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/KE_hurt-4.mp3","duration":0.504},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_2.ogg","duration":0.3091041666666667},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_4.ogg","duration":0.2945833333333333},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_5.ogg","duration":0.2771875},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_3.ogg","duration":0.2655625},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_6.ogg","duration":0.3700625},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_7.ogg","duration":0.3032916666666667},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_1.ogg","duration":0.22783333333333333},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_9.ogg","duration":0.2510625},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_11.ogg","duration":0.312},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_8.ogg","duration":0.21},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_10.ogg","duration":0.2916875}]
+WARNING Please avoid using the method: "FontEngine.LoadFontFace(Font, int)" and try and work around its functionality. If you are unable to, please open a support request.
+WARNING Please avoid using the method: "UnityEngine.DrivenRectTransformTracker.Clear" and try and work around its functionality. If you are unable to, please open a support request.
+WARNING Please avoid using the method: "UnityEngine.DrivenRectTransformTracker.Add" and try and work around its functionality. If you are unable to, please open a support request.
+PASS End Time begins immediately in Luna
+PASS default Player Speed 5 and End Time 30 exported
+FIXTURE End Time extended to 120 only in the test browser; exported default verified as 30.
+PASS no cups for standing at home
+STANDING {"total":1,"current":1,"level":1,"required":100,"fill":0.01}
+PASS one cup for entering a key; standing still does not farm cups
+PASS joystick movement across keys earns cups
+PASS walking back over previous keys earns cups again
+PASS stopping after revisiting does not add repeated cups
+PASS no cups while airborne above keyboard
+PASS 100 cups resets bar and advances to source level 2
+PASS cup total, progress fill and floating +1 UI update together
+PASS next 112 cups advances to source level 3
+PASS cup progress preserves configured speed and does not end gameplay
+PASS earned cups remain after death and respawn
+PASS only final stage trophy completes gameplay
+PASS no cup rewards after game ends
+PASS no Luna runtime or shader errors

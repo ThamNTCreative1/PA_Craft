@@ -1,0 +1,54 @@
+Keyboard Escape validation - 2026-10-27
+Scene: Assets/_Playable_/Scenes/Gameplay.unity
+
+Current changes:
+- Batched 5,262 KeyNote objects into 70 spatial mesh chunks, retaining the existing atlas, colors, press feedback, and key sounds.
+- Renderers reduced from 6,243 to 1,051; colliders from 6,227 to 965. Existing floors and obstacle collision/logic retained.
+- Camera far plane 500 units to retain distant map geometry; key chunk visibility distance remains 180 units.
+- Joystick moves the scooter; the existing TouchController handles camera rotation with pixel-based sensitivity independent of frame duration.
+- Independent finger ownership supports joystick + camera and joystick + Jump. First-observed Moved/Stationary touches are recognized, avoiding lost Began phases on slow Luna frames.
+- Camera tutorial animates the existing hand along an infinity path; movement tutorial animates a hand over the joystick. Both hide once the movement tutorial completes; tutorials run independently of the opening countdown.
+- Original music exported at 64 kbps; source audio unchanged. All 13 clips decode successfully.
+- End Time remains 30 seconds; Luna Player Speed remains exposed with default 5.
+
+Validation:
+- 21 Unity Play Mode functional checks passed (functional-checks.txt).
+- 23 Luna browser checks passed (controls-check.txt): tutorial transition/hand animation, immediate opening countdown and End Time, joystick movement and jump height in 1080x1920 and 1920x1080, joystick does not rotate camera, simultaneous movement + camera and movement + jump, release resets input, audio decode, no runtime/shader errors.
+- Stage 4 giants, helmet, respawn, cup/fireworks/CTA checked in Unity Play Mode. Browser checks cover opening gameplay and controls.
+- No Unity Console errors. Non-fatal Luna SDK warnings remain for FontEngine.LoadFontFace and DrivenRectTransformTracker Add/Clear.
+
+Performance comparison:
+- Chrome headless, SwiftShader software WebGL, 1920x1080, opening camera, 60 sampled frames.
+- Earlier key-batching comparison at far clip 160: median draw calls 2607 -> 273.
+- Prior presentation build at far clip 500 (before explicit Vector3 chunk bounds and cup progression): median draw calls 915; still 64.9% below original 2607.
+- Earlier batched far-160 median frame duration: 116.6 ms. Current far-500: median 133.3 ms, p95 150.1 ms. Original baseline: median 166.7 ms, p95 216.6 ms.
+- These are software-renderer measurements, not mobile hardware FPS. Baseline also overlapped build CPU activity; draw-call reduction is the stronger comparable result.
+- Full measurements: performance-baseline.json, performance-after.json, performance-presentation.json.
+
+Final Luna reported playable payload: 4,685,156 bytes (4.69 MB decimal; 4.47 MiB), below 5,000,000 bytes.
+Upload ZIP: LunaTemp/stage4/create-hub/C1_2610_HuyNQ_UAC_V79_ThuLH_build.zip
+ZIP size: 8,461,278 bytes including pipeline caches; ZIP is not the reported playable payload.
+Build log and stats: luna-build.log, luna-stats.json.
+Local build only; not uploaded or deployed. Physical mobile performance has not been measured.
+
+Original scene backup before batching: Library/KeyboardEscapeBackups/Gameplay.before-key-batching.unity
+At default speed 5, the 363-unit course requires at least 73 seconds before obstacles; user chose to retain End Time and tune Player Speed through Luna.
+
+Presentation and pickup update:
+- The blue rectangular gap was distant geometry clipped by far plane 160; far plane 500 restores the map behind the doorway. Verified before/after camera renders and exported browser screenshots.
+- Replaced all four HELMET world-space labels with the supplied red_helmet.glb geometry (3,790 triangles, shared merged mesh/material and existing palette texture).
+- Active protection uses a transparent animated rim shield around the player and scooter. Consuming the protection hides the shield; ending gameplay also hides it.
+- Luna CharacterController missed trigger callbacks when driving through the helmet. Added direct sphere/capsule overlap using the existing collider radius/center and scale; original trigger callback retained. Cup pickup uses the same fallback.
+- Browser physical-drive pickup and cup overlap checks passed: helmet-check.txt.
+- Infinity center is aligned with joystick Y. Camera text is immediately above infinity; movement text immediately above joystick, adjusted for both orientations.
+- Hint font 46 -> 64; opening countdown font 100 -> 200.
+- Both 3-2-1-Start and GameManager End Time now begin at scene entry. Player movement unlocks at Start; tutorial interaction does not restart either countdown. End Time remains 30 seconds.
+- Screenshots: luna-entry-countdown.png, luna-infinity-portrait.png, luna-portrait.png, luna-red-helmet.png, luna-helmet-shield.png, luna-helmet-shield-landscape.png.
+
+Keyboard cup progression added:
+- Total cup counter, +1 cup popup, and original source EXP bar graphics adapted for cups.
+- Re-entering keys earns cups again; stationary and airborne frames do not farm cups. Transient loss of grounded contact retains the previous key.
+- Thresholds use source defaults: 100 * 1.118^(level - 1). Level-up resets bar, total cups persist.
+- Final stage trophy remains the win condition; speed and End Time configuration remain unchanged.
+- Explicit Vector3 chunk bounds fix Luna serialization for key lookup/audio/visibility. Previous performance figures predate this correction and were not remeasured in this task.
+- 16 final Luna cup feature checks passed; see cups-check.txt and cup-progression.txt for source details and test fixture limitations.

@@ -1,0 +1,33 @@
+AUDIO [{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/KE_hurt-4.mp3","duration":0.504},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/KE_Music.mp3","duration":30},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_4.ogg","duration":0.2945833333333333},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_2.ogg","duration":0.3091041666666667},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_5.ogg","duration":0.2771875},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_7.ogg","duration":0.3032916666666667},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_6.ogg","duration":0.3700625},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_1.ogg","duration":0.22783333333333333},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_3.ogg","duration":0.2655625},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_9.ogg","duration":0.2510625},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_11.ogg","duration":0.312},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_10.ogg","duration":0.2916875},{"name":"Assets/_Playable_/KeyboardEscape/Source/MiniGames/KeyboardEscape/Sounds/SwitchSounds/Default/Creamy_8.ogg","duration":0.21}]
+WARNING Please avoid using the method: "FontEngine.LoadFontFace(Font, int)" and try and work around its functionality. If you are unable to, please open a support request.
+WARNING Please avoid using the method: "UnityEngine.DrivenRectTransformTracker.Clear" and try and work around its functionality. If you are unable to, please open a support request.
+WARNING Please avoid using the method: "UnityEngine.DrivenRectTransformTracker.Add" and try and work around its functionality. If you are unable to, please open a support request.
+PASS End Time begins immediately in Luna
+PASS default Player Speed 5 and End Time 30 exported
+DELEGATE [{"type":"function","keys":["$method","$scope","equals"],"array":false}]
+PASS 3-2-1 countdown begins on entry without input
+PASS infinity hand animates during camera tutorial
+PASS infinity aligns vertically with joystick in portrait
+PASS TouchController camera swipe advances tutorial
+PASS movement tutorial shows joystick hand
+PASS tutorial does not reset End Time
+PASS hands hide once movement tutorial completes
+PASS joystick does not rotate camera 1080
+MOVEMENT {"size":{"width":1080,"height":1920},"before":{"x":3.180000066757202,"y":0.18730315566062927,"z":-13.34000015258789,"grounded":true,"canMove":true,"input":{"x":0,"y":0},"time":19.289199999987932},"after":{"x":3.7473668679691334,"y":0.08715860771653682,"z":-11.045469313312315,"grounded":true,"canMove":true,"input":{"x":0,"y":0.5533596837944664},"time":17.889199999987913},"distance":2.363636363636364}
+PASS joystick moves player 1080x1920
+JUMP {"size":{"width":1080,"height":1920},"ground":{"x":3.7473668679691334,"y":0.08715860771653682,"z":-11.045469313312315,"grounded":true,"canMove":true,"input":{"x":0,"y":0.5533596837944664},"time":17.889199999987913},"jumped":{"x":3.8137810420240417,"y":0.9326027335650419,"z":-10.77687874684193,"grounded":true,"canMove":true,"input":{"x":0,"y":0},"time":17.58919999998791}}
+PASS Jump raises player 1080x1920
+PASS joystick does not rotate camera 1920
+MOVEMENT {"size":{"width":1920,"height":1080},"before":{"x":3.180000066757202,"y":0.08716762248421599,"z":-13.34000015258789,"grounded":true,"canMove":true,"input":{"x":0,"y":0},"time":16.516800000011738},"after":{"x":3.7473668679691334,"y":0.08715860771653682,"z":-11.045469313312315,"grounded":true,"canMove":true,"input":{"x":0,"y":0.5533596837944664},"time":15.116800000011734},"distance":2.363636363636364}
+PASS joystick moves player 1920x1080
+JUMP {"size":{"width":1920,"height":1080},"ground":{"x":3.7473668679691334,"y":0.08715860771653682,"z":-11.045469313312315,"grounded":true,"canMove":true,"input":{"x":0,"y":0.5533596837944664},"time":15.116800000011734},"jumped":{"x":3.8137810420240417,"y":0.9326027335650419,"z":-10.77687874684193,"grounded":true,"canMove":true,"input":{"x":0,"y":0},"time":14.816800000011735}}
+PASS Jump raises player 1920x1080
+PASS second touch rotates camera while joystick remains held
+PASS second touch jumps while joystick finger remains held
+RELEASE {"x":4.5859072986470935,"y":1.8872643684701513,"z":-10.102003619935035,"grounded":false,"canMove":true,"input":{"x":0,"y":0},"time":12.065399999916377}
+PASS releasing touches stops joystick
+PASS End Time continues through tutorial and controls
+PASS collecting red helmet shows shield and hides pickup
+PASS one impact consumes shield without killing player
+PASS all exported audio clips decode
+PASS no browser runtime or shader errors
