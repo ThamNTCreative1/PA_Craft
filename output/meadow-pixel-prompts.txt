@@ -1,0 +1,9 @@
+Mode: built-in image_gen, transparent_background=true, separate generation calls.
+
+GRASS
+Use case: stylized-concept. Game sprite texture, one isolated upright tuft of green grass, Minecraft-like 16x16 pixel art enlarged with nearest-neighbor hard square pixels. Front view flat silhouette, 7 uneven thin blades with stair-step pointed tips, dark and medium green only, 4-color palette, no smooth shading, no highlights, no antialiasing. Actual transparent background, transparent gaps between blades. Root at bottom center, tuft occupies almost full square canvas with tiny safe border. No ground, no shadow, no text, no frame. Intended for alpha-cutout texture on crossed planes in a voxel game.
+
+FLOWER
+Use case: stylized-concept. Game sprite texture: one yellow dandelion on an upright green stem with two small diagonal green leaves. Minecraft-like 16x16 pixel art enlarged with nearest-neighbor hard square pixel blocks, very low resolution aesthetic. Flat front-facing 2D sprite. Blossom a compact stepped yellow cluster near upper center, green stem down to bottom center. 5 flat colors total (2 yellows, 3 greens), no gradients, no lighting highlights, no antialiasing, no smooth curves. Actual transparent background. Fill square canvas vertically with tiny safety border. No grass tuft, no ground, no pot, no shadow, no text, no frame. Intended alpha-cutout texture on two crossed upright planes in voxel game.
+
+Unity imports: max 32x32, Point filter, mipmaps disabled, alpha cutout 0.5, double-sided shader. Original generated PNGs retained as source assets.
