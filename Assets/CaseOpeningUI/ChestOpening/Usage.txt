@@ -1,0 +1,12 @@
+Chest opening UI assets
+
+Drag ChestOpeningUI.prefab under a Canvas in the scene.
+The Animator starts in Closed. Set trigger Open to play; Reset returns to Closed.
+ChestOpen.anim lasts 1.2 seconds and holds the final frame (no loop).
+Edit key timing in the Animation window to synchronize with audio.
+The original atlas, ChestOpeningInbetweens.png and ChestOpeningInbetweensV2.png contain eighteen transparent sprites total, with custom row rectangles.
+The clip also animates Image RectTransform height and vertical offset to align the body base.
+Use a parent RectTransform for layout, positioning and uniform scaling.
+Assets are pre-authored; no runtime UI construction or asset lookup is required.
+This eighteen-pose sprite animation is an approximation, not a continuous 3D lid animation. Generated frames may have small differences in shape or texture.
+Gameplay and audio integration are not changed by this asset package.

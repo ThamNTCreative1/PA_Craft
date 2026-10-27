@@ -1,0 +1,110 @@
+{
+    "BuildID": "b77b3703-e869-4e87-b991-321c8c196a6a",
+    "Command": "project:upload",
+    "ProjectID": "de7cc81c337b93e45867de51bca3fa5c",
+    "ProjectStateHash": "d42cc9dff52af27a52a48f348d6aa28c5b3855509a7aecc9d2f5a6e89cf9c613",
+    "StageCompletedAt": 3,
+    "EarliestFatalError": 0,
+    "StartTime": 1793065471957,
+    "EndTime": 1793065551853,
+    "PlaygroundUserID": 36785,
+    "OperatingSystem": "win32",
+    "UnityPackageID": null,
+    "TargetPlatform": "playground",
+    "UnityVersion": "6000.0.78f1",
+    "LunaVersion": "7.2.0",
+    "LogCount": 4,
+    "Logs": [
+        {
+            "LogID": "bc2e0897-df73-4422-ae52-c3eb2356c647",
+            "Order": 4,
+            "Timestamp": 1793065552098,
+            "Stage": 3,
+            "ErrorType": 3,
+            "ErrorCode": "LP3007",
+            "Description": "You are not using any custom events",
+            "Details": [
+                "You are not using any custom events. It is recommended to use custom events to have a better understanding of the playable."
+            ],
+            "DescriptionValues": [
+                ""
+            ],
+            "DetailsValues": [
+                ""
+            ],
+            "LogCount": 1,
+            "LinePosition": null,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "268bb783-c03d-400c-9b07-97d130bcad76",
+            "Order": 0,
+            "Timestamp": 1793065481111,
+            "Stage": 1,
+            "ErrorType": 2,
+            "ErrorCode": "LP1014",
+            "Description": "We recommend running Runtime Analysis to find and remove all unused code",
+            "Details": [
+                "Navigate to the Runtime Analysis → Code tab to enable code stripping. Before uploading the playable, please make sure to have played all scenario’s of the playable in a development build to make Runtime Analysis work properly."
+            ],
+            "DescriptionValues": [],
+            "DetailsValues": [],
+            "LogCount": 1,
+            "LinePosition": 0,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "1eb0fefb-881f-4494-9033-99570060cbaf",
+            "Order": 1,
+            "Timestamp": 1793065481125,
+            "Stage": 1,
+            "ErrorType": 0,
+            "ErrorCode": "LP1032",
+            "Description": "Package(s) is not supported in Luna",
+            "Details": [
+                "Currently package(s) com.unity.timeline are not supported in Luna. We recommend you to remove it and workaround it's functionality."
+            ],
+            "DescriptionValues": [
+                "com.unity.timeline (1.8.12)"
+            ],
+            "DetailsValues": [
+                "com.unity.timeline"
+            ],
+            "LogCount": 1,
+            "LinePosition": 0,
+            "FilePath": "F:/UnityProjects/TE_V03/Packages\\manifest.json",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "004681e6-04a1-458f-8027-dabeadf42c3b",
+            "Order": 2,
+            "Timestamp": 1793065481127,
+            "Stage": 1,
+            "ErrorType": 3,
+            "ErrorCode": "LP1002",
+            "Description": "Repeat wrap mode used on a texture with non power-of-two dimensions, this might not be rendered correctly.",
+            "Details": [
+                "Repeat wrap mode used on 'a39dc507-caee-4454-b079-bf2f61cd1724' texture at 'Assets/CaseOpeningUI/UI/a39dc507-caee-4454-b079-bf2f61cd1724.png' with non power-of-two dimensions, this might not be rendered correctly."
+            ],
+            "DescriptionValues": [],
+            "DetailsValues": [
+                "a39dc507-caee-4454-b079-bf2f61cd1724",
+                "Assets/CaseOpeningUI/UI/a39dc507-caee-4454-b079-bf2f61cd1724.png"
+            ],
+            "LogCount": 1,
+            "LinePosition": 0,
+            "FilePath": "Assets/CaseOpeningUI/UI/a39dc507-caee-4454-b079-bf2f61cd1724.png",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        }
+    ]
+}
