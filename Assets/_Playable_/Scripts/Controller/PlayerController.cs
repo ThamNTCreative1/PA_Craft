@@ -120,6 +120,20 @@ namespace Playable
             }
         }
 
+        public void ShowHomeIdle()
+        {
+            _moveInput = Vector2.zero;
+            Velocity = Vector3.zero;
+            _airborneTime = 0f;
+            _jumpBufferTimer = 0f;
+            _appliedSpeed = 0f;
+            _appliedJumpPlayer = false;
+            if (!_hasAnimator) return;
+            _animator.SetFloat(_speedParamHash, 0f);
+            _animator.SetBool(_isJumpParamHash, false);
+            _animator.CrossFadeInFixedTime("Idle", .1f);
+        }
+
         public void ResetPlayer(Vector3 position, Quaternion rotation)
         {
             SetCarryingEgg(false);

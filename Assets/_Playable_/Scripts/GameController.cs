@@ -58,6 +58,7 @@ namespace Playable
         private bool _insidePurpleGarden;
         private bool _insideDesert;
         private float _restartTimer;
+        private float _homeEnteredAt = -1f;
 
         public GameState State { get; private set; }
 
@@ -133,20 +134,34 @@ namespace Playable
 
         private void CheckFinishFlag()
         {
-            if (State != GameState.Escaping || _egg == null || !_egg.IsHeld ||
-                _playerTransform == null || _home == null) return;
+            if (State == GameState.Won || State == GameState.Lost ||
+                _playerTransform == null) return;
 
-            // Only the inside of this pen is Home, not the entire width of the map.
+            if (State != GameState.Escaping || _egg == null || !_egg.IsHeld)
+            {
+                _homeEnteredAt = -1f;
+                return;
+            }
+
+            bool inside = false;
             if (_homeZone != null)
             {
-                if (ContainsXZ(_homeZone, _playerTransform.position)) Win();
+                inside = ContainsXZ(_homeZone, _playerTransform.position);
             }
-            else
+            else if (_home != null)
             {
                 Vector3 offset = _playerTransform.position - _home.position;
                 offset.y = 0f;
-                if (offset.sqrMagnitude <= 4f) Win();
+                inside = offset.sqrMagnitude <= 4f;
             }
+            if (!inside)
+            {
+                _homeEnteredAt = -1f;
+                return;
+            }
+            // Holding the stolen egg confirms the return journey.
+            if (_homeEnteredAt < 0f) _homeEnteredAt = Time.time;
+            if (Time.time - _homeEnteredAt >= 1f) Win();
         }
 
         private static bool ContainsXZ(BoxCollider zone, Vector3 position)
@@ -219,6 +234,7 @@ namespace Playable
             if (!_initialized || !_started || _player == null || _monster == null || _egg == null) return;
 
             _restartTimer = 0f;
+            _homeEnteredAt = -1f;
             _homeRouteIndex = 0;
             if (GameManager.Instance != null) GameManager.Instance.ResetGameplayCtas();
             SetActiveIfChanged(_title, true);
@@ -254,11 +270,12 @@ namespace Playable
 
         private void Win()
         {
-            if (State != GameState.Escaping) return;
+            if (State != GameState.Escaping || _egg == null || !_egg.IsHeld) return;
             SetState(GameState.Won);
             StopPlayer();
+            _player.ShowHomeIdle();
             _monster.Stop();
-            if (GameManager.Instance != null) GameManager.Instance.ShowWinPanel();
+            if (GameManager.Instance != null) GameManager.Instance.CompleteHome();
             else Debug.LogError("GameManager is required to show the win panel.", this);
         }
 

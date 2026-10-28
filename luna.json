@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 43297,
-    "creativeName": "C1_2610_HuyNQ_SAEHR_V05_NgocNDL",
+    "applicationID": 43486,
+    "creativeName": "C1_2610_HuyNQ_EHRA_V01_AnhPP",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -16639,7 +16639,7 @@
                     },
                     {
                         "name": "SetAsLastSibling",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSiblingIndex",
@@ -33501,7 +33501,7 @@
                     },
                     {
                         "name": "speed#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "angularVelocity#get",
@@ -33917,7 +33917,7 @@
                     },
                     {
                         "name": "CrossFadeInFixedTime$4",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "CrossFadeInFixedTime$5",
@@ -33945,7 +33945,7 @@
                     },
                     {
                         "name": "CrossFadeInFixedTime$3",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetIKHintPosition",
@@ -37790,6 +37790,10 @@
                     {
                         "name": "TryShowGameplayCTA",
                         "excluded": false
+                    },
+                    {
+                        "name": "CompleteHome",
+                        "excluded": false
                     }
                 ]
             },
@@ -38796,6 +38800,10 @@
                     {
                         "name": "IsTargetInCourtyard",
                         "excluded": false
+                    },
+                    {
+                        "name": "RandomDuration",
+                        "excluded": false
                     }
                 ]
             },
@@ -38897,6 +38905,10 @@
                     },
                     {
                         "name": "UpdateAnimator",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowHomeIdle",
                         "excluded": false
                     }
                 ]
@@ -39245,6 +39257,70 @@
                     },
                     {
                         "name": "OnDisable",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.GuardHeadSmoke",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.HomeRewardPopup",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowOpen",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Open",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Layout",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Install",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hide",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopTutorial",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDestroy",
                         "excluded": true
                     }
                 ]

@@ -11,7 +11,8 @@ namespace Playable
         {
             Steal,
             PurpleGarden,
-            Desert
+            Desert,
+            Home
         }
 
         public static GameManager Instance;
@@ -24,6 +25,12 @@ namespace Playable
 
         [LunaPlaygroundField("CTA On Desert", 3, "CTA")] [SerializeField]
         private bool _ctaOnDesert;
+
+        [LunaPlaygroundField("CTA On Home", 4, "CTA")] [SerializeField]
+        private bool _ctaOnHome;
+
+        [SerializeField] private HomeRewardPopup _homeRewardPopup;
+        private Coroutine _endCountdown;
 
         [Header("End Game")] [LunaPlaygroundField("End Time", 1, "End Game")] [SerializeField]
         private int _endTime = 30;
@@ -80,13 +87,32 @@ namespace Playable
         public void ResetGameplayCtas()
         {
             _shownGameplayCtas = 0;
+            if (_homeRewardPopup != null) _homeRewardPopup.Hide();
+        }
+
+        public void CompleteHome()
+        {
+            if (_ctaOnHome)
+            {
+                TryShowGameplayCTA(GameplayCtaPoint.Home);
+                return;
+            }
+            if (!_ctaOnSteal && !_ctaOnSakura && !_ctaOnDesert)
+            {
+                if (_endCountdown != null) StopCoroutine(_endCountdown);
+                _endCountdown = null;
+                if (_homeRewardPopup != null) _homeRewardPopup.ShowOpen();
+                return;
+            }
+            ShowWinPanel();
         }
 
         public void TryShowGameplayCTA(GameplayCtaPoint point)
         {
             bool enabled = point == GameplayCtaPoint.Steal ? _ctaOnSteal :
                 point == GameplayCtaPoint.PurpleGarden ? _ctaOnSakura :
-                point == GameplayCtaPoint.Desert && _ctaOnDesert;
+                point == GameplayCtaPoint.Desert ? _ctaOnDesert :
+                point == GameplayCtaPoint.Home && _ctaOnHome;
             int bit = 1 << (int)point;
             if (!enabled || (_shownGameplayCtas & bit) != 0) return;
             _shownGameplayCtas |= bit;
@@ -107,7 +133,7 @@ namespace Playable
         {
             // Zero disables the timer for creatives driven by gameplay checkpoints.
             if (_endTime <= 0) return;
-            StartCoroutine(IECountdownEndGame());
+            _endCountdown = StartCoroutine(IECountdownEndGame());
         }
 
         private IEnumerator IECountdownEndGame()
