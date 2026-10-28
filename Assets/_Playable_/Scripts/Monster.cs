@@ -11,7 +11,8 @@ namespace Playable
             Chasing,
             Attacking,
             WaitingToChase,
-            Patrolling
+            Patrolling,
+            PatrolResting
         }
 
         [Header("Movement")] [LunaPlaygroundField("Monster Speed", 2, "Gameplay")] [SerializeField, Min(0f)]
@@ -27,14 +28,20 @@ namespace Playable
 
         [Header("Nest Patrol")] [SerializeField]
         private Transform _patrolCenter;
+        [SerializeField] private bool _sleepUntilEggTaken;
 
         [SerializeField] private Vector2 _patrolRadii = new Vector2(18f, 22f);
         [SerializeField, Min(0f)] private float _patrolSpeed = 8f;
+        [SerializeField, Min(0f)] private float _patrolAnimationSpeed = .6f;
         private float _patrolAngle;
         private float _patrolHeight;
+        [SerializeField] private Vector2 _patrolWalkDuration = new Vector2(3f, 6f);
+        [SerializeField] private Vector2 _patrolRestDuration = new Vector2(1.5f, 3f);
+        private float _patrolPhaseRemaining;
 
         [Header("Animation")] [SerializeField] private Animator _animator;
         [SerializeField] private string _isRunningParam = "IsRun";
+        [SerializeField] private string _isWalkingParam = "";
         [SerializeField] private string _attackTriggerParam = "Attack";
 
         private Transform _target;
@@ -43,6 +50,8 @@ namespace Playable
         private int _attackTriggerHash;
         private bool _hasRunParameter;
         private bool _hasAttackParameter;
+        private int _isWalkingHash;
+        private bool _hasWalkParameter;
 
         public MonsterState State { get; private set; } = MonsterState.Idle;
         public float AttackDistance => _attackDistance;
@@ -67,6 +76,8 @@ namespace Playable
             // parameter names instead so animation commands are not silently skipped.
             _hasRunParameter = _animator != null && !string.IsNullOrEmpty(_isRunningParam);
             _hasAttackParameter = _animator != null && !string.IsNullOrEmpty(_attackTriggerParam);
+            _hasWalkParameter = _animator != null && !string.IsNullOrEmpty(_isWalkingParam);
+            if (_hasWalkParameter) _isWalkingHash = Animator.StringToHash(_isWalkingParam);
         }
 
         private void Update()
@@ -78,8 +89,28 @@ namespace Playable
                 return;
             }
 
+            if (State == MonsterState.PatrolResting)
+            {
+                _patrolPhaseRemaining -= Time.deltaTime;
+                if (_patrolPhaseRemaining <= 0f)
+                {
+                    State = MonsterState.Patrolling;
+                    _patrolPhaseRemaining = RandomDuration(_patrolWalkDuration);
+                    SetRunning(_patrolSpeed > 0f);
+                }
+                return;
+            }
+
             if (State == MonsterState.Patrolling)
             {
+                _patrolPhaseRemaining -= Time.deltaTime;
+                if (_patrolPhaseRemaining <= 0f)
+                {
+                    State = MonsterState.PatrolResting;
+                    _patrolPhaseRemaining = RandomDuration(_patrolRestDuration);
+                    SetRunning(false);
+                    return;
+                }
                 UpdatePatrol(Time.deltaTime);
                 return;
             }
@@ -148,6 +179,7 @@ namespace Playable
 
         public void Stop()
         {
+            _patrolPhaseRemaining = 0f;
             _target = null;
             _chaseDelayRemaining = 0f;
             State = MonsterState.Idle;
@@ -170,6 +202,11 @@ namespace Playable
 
         public void StartPatrolling()
         {
+            if (_sleepUntilEggTaken)
+            {
+                Stop();
+                return;
+            }
             if (_patrolCenter == null) return;
             _target = null;
             _patrolHeight = transform.position.y;
@@ -177,7 +214,14 @@ namespace Playable
             _patrolAngle = Mathf.Atan2(offset.z / Mathf.Max(.1f, _patrolRadii.y),
                 offset.x / Mathf.Max(.1f, _patrolRadii.x));
             State = MonsterState.Patrolling;
+            _patrolPhaseRemaining = RandomDuration(_patrolWalkDuration);
             SetRunning(_patrolSpeed > 0f);
+        }
+
+        private static float RandomDuration(Vector2 range)
+        {
+            float minimum = Mathf.Max(.1f, range.x);
+            return UnityEngine.Random.Range(minimum, Mathf.Max(minimum, range.y));
         }
 
         private void UpdatePatrol(float deltaTime)
@@ -220,10 +264,14 @@ namespace Playable
 
         private void SetRunning(bool isRunning)
         {
+            if (_animator != null)
+                _animator.speed = isRunning && State == MonsterState.Patrolling ? _patrolAnimationSpeed : 1f;
             if (_hasRunParameter)
             {
-                _animator.SetBool(_isRunningHash, isRunning);
+                _animator.SetBool(_isRunningHash, isRunning && (!_hasWalkParameter || State != MonsterState.Patrolling));
             }
+            if (_hasWalkParameter)
+                _animator.SetBool(_isWalkingHash, isRunning && State == MonsterState.Patrolling);
         }
     }
 }
