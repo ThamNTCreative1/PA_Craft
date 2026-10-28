@@ -34,6 +34,7 @@ namespace Playable
         [SerializeField] private WinPanel _winPanel;
 
         private int _quantityEvent = 0;
+        public bool HasEnded { get; private set; }
 
         private void Awake()
         {
@@ -44,6 +45,14 @@ namespace Playable
         {
             _btnBlock.onClick.AddListener(ShowCTA);
             _btnBlock.gameObject.SetActive(false);
+            // Tutorial controls use their own sorting canvases. CTA must receive
+            // clicks above them even when the event limit is reached mid-tutorial.
+            Canvas ctaCanvas = _btnBlock.GetComponent<Canvas>();
+            if (ctaCanvas == null) ctaCanvas = _btnBlock.gameObject.AddComponent<Canvas>();
+            ctaCanvas.overrideSorting = true;
+            ctaCanvas.sortingOrder = 32760;
+            if (_btnBlock.GetComponent<GraphicRaycaster>() == null)
+                _btnBlock.gameObject.AddComponent<GraphicRaycaster>();
 
             if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
@@ -53,6 +62,8 @@ namespace Playable
 
         public void EndGame()
         {
+            if (HasEnded) return;
+            HasEnded = true;
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
             Luna.Unity.LifeCycle.GameEnded();
@@ -66,7 +77,7 @@ namespace Playable
 
         public void CountEvent()
         {
-            if (_ignoreCountEvent) return;
+            if (_ignoreCountEvent || HasEnded) return;
             _quantityEvent++;
             if (_quantityEvent >= _totalEvent)
             {

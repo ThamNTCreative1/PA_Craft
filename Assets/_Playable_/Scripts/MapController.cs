@@ -177,6 +177,7 @@ namespace Playable
 
         private void Update()
         {
+            if (StopForCTA()) return;
             // [SCALE DEBUG] log mỗi khi Screen size đổi trong 5s đầu
             if (Time.time <= _screenSizeLogUntil)
             {
@@ -221,6 +222,7 @@ namespace Playable
 
         public void SelectMonster(Monster monster, HotbarItem source)
         {
+            if (StopForCTA()) return;
             // Bấm lại đúng hotbar đang chọn -> bỏ chọn, không còn quái nào để spawn cho tới khi chọn
             // lại 1 hotbar khác.
             if (_selectedHotbarItem == source)
@@ -240,6 +242,8 @@ namespace Playable
             }
 
             GameManager.Instance.CountEvent();
+
+            if (StopForCTA()) return;
 
             if (_currentPhase != Phase.Tutorial)
             {
@@ -261,6 +265,15 @@ namespace Playable
         }
 
         #region Tutorial
+
+        private bool StopForCTA()
+        {
+            if (GameManager.Instance == null || !GameManager.Instance.HasEnded) return false;
+            SetTransformButtonHighlighted(false);
+            EnterGameplay();
+            enabled = false;
+            return true;
+        }
 
         private bool IsSpawnWaitStep()
         {
@@ -610,8 +623,7 @@ namespace Playable
             monster.Spawn(worldPosition, _monsterWanderRadius);
             _spawnedMonsterCount++;
             GameManager.Instance.CountEvent();
-
-            return true;
+            return !StopForCTA();
         }
 
         /// <summary>
