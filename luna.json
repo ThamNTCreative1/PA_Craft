@@ -3800,23 +3800,11 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.Animation",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.Joint",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.ReflectionProbe",
                 "excluded": true
             },
             {
                 "name": "UnityEngine.Rendering.SortingGroup",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.Rigidbody2D",
                 "excluded": true
             },
             {
@@ -3832,47 +3820,7 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.CapsuleCollider2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.CharacterJoint",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.CompositeCollider2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.ConfigurableJoint",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.EdgeCollider2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.Effector2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.FixedJoint",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.HingeJoint",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.PolygonCollider2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.SpringJoint",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WheelCollider",
                 "excluded": true
             },
             {
@@ -3888,15 +3836,7 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.Joint2D",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.FlareLayer",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.PlatformEffector2D",
                 "excluded": true
             },
             {
@@ -3908,47 +3848,7 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.AnchoredJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.RelativeJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.TargetJoint2D",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.TextMesh",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.DistanceJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.FixedJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.FrictionJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.HingeJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.SliderJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.SpringJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WheelJoint2D",
                 "excluded": true
             },
             {
@@ -16679,7 +16579,7 @@
                     },
                     {
                         "name": "SetAsLastSibling",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSiblingIndex",
@@ -24197,11 +24097,11 @@
                     },
                     {
                         "name": "interactable#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ignoreParentGroups#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnDidApplyAnimationProperties",
@@ -39350,6 +39250,1448 @@
                     {
                         "name": "GetMinSize",
                         "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Animation",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "clip#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "clip#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "clips#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "clips#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "wrapMode#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "wrapMode#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "getItem",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsPlaying",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetEnumerator",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddClip",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Play$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateClipWrapMode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Stop",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Stop$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Rewind",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddTime",
+                        "excluded": true
+                    },
+                    {
+                        "name": "TriggerEvents",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Sample",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CrossFade",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Joint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "rigidbody#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedBody#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedBody#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "enableCollision#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "enableCollision#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "massScale#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "massScale#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedMassScale#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedMassScale#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NullifySecondBodyConstraints",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ResetAllRows",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ComputeJacobianAxes",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetAngularConstraint",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetLinearConstraint",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetupHardPositionalConstraint",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CorrectErrorSpring",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SeparateSwingTwist",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplySpringToRow",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplyAngularBouncinessToRow",
+                        "excluded": true
+                    },
+                    {
+                        "name": "QuarterAnglePair",
+                        "excluded": true
+                    },
+                    {
+                        "name": "HalfAnglePair",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NormalizeAngle",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NormalizeAngle360",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateBodyValues",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Rigidbody2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "velocity#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "velocity#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearVelocity#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearVelocity#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularVelocity#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularVelocity#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "attachedColliderCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "mass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "mass#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useAutoMass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useAutoMass#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "inertia#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "inertia#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "drag#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "drag#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearDamping#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearDamping#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularDrag#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularDrag#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularDamping#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularDamping#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "position#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "position#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "gravityScale#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "gravityScale#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "collisionDetectionMode#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "collisionDetectionMode#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "simulated#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "simulated#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "bodyType#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "bodyType#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "isKinematic#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "isKinematic#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useFullKinematicContacts#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useFullKinematicContacts#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "freezeRotation#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "freezeRotation#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "constraints#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "constraints#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "centerOfMass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "centerOfMass#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "rotation#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "rotation#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "sharedMaterial#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "sharedMaterial#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddForce",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddForceAtPosition",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddRelativeForce",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddTorque",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MoveRotation",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MoveRotation$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "WakeUp",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MovePosition$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MovePosition",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetAttachedColliders",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetRotation",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetRotation$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetContacts$2",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetContacts",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetContacts$3",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetContacts$1",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.CapsuleCollider2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "direction#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "direction#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "size#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "size#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.CharacterJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.ConfigurableJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetUpLinearLimitOnAxis",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetUpLinearDriveOnAxis",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetUpAngularDriveAroundAxis",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.EdgeCollider2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "points#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "points#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "edgeRadius#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "edgeRadius#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "pointCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Effector2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "useColliderMask#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useColliderMask#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "colliderMask#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "colliderMask#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.FixedJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.HingeJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplySpring",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ComputePhi",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplyMotor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.PolygonCollider2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "m_Points#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "m_Points#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "points#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "points#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "pathCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "pathCount#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetPath$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetTotalPointCount",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.SpringJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Reset",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelCollider",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "brakeTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "brakeTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motorTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motorTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "steerAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "steerAngle#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "radius#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "radius#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "mass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "mass#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "isGrounded#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "suspensionDistance#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "suspensionDistance#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "rpm#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "sprungMass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "FixedUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetGroundHit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetWorldPose",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateHit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateSuspension",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateWheel",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateFriction",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IntegrateForces",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetupCurve",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CalculateWheelParams",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Joint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "enableCollision#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "enableCollision#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "attachedRigidbody#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedBody#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedBody#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "reactionForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "reactionTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetReactionForce",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetReactionTorque",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.PlatformEffector2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.AnchoredJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "autoConfigureConnectedAnchor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureConnectedAnchor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "anchor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "anchor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedAnchor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedAnchor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.RelativeJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "angularOffset#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularOffset#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearOffset#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearOffset#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureOffset#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureOffset#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "correctionScale#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "correctionScale#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "target#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.TargetJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "autoConfigureTarget#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureTarget#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "target#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "target#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "anchor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "anchor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.DistanceJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "distance#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "distance#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxDistanceOnly#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxDistanceOnly#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureDistance#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureDistance#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.FixedJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "frequency#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "referenceAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.FrictionJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "maxForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.HingeJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "useLimits#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useLimits#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limits#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limits#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.SliderJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "angle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angle#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "referenceAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureAngle#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useLimits#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useLimits#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limits#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limits#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limitState#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointTranslation#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointSpeed#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetMotorForce",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.SpringJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "distance#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "distance#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "suspension#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "suspension#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointSpeed#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointTranslation#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointLinearSpeed#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetMotorTorque",
+                        "excluded": true
                     }
                 ]
             }

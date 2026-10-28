@@ -34,6 +34,7 @@ namespace Playable
         [SerializeField] private WinPanel _winPanel;
 
         private int _quantityEvent = 0;
+        private bool _hasEnded;
 
         private void Awake()
         {
@@ -42,6 +43,14 @@ namespace Playable
 
         private void Start()
         {
+            // Keep CTA above tutorial canvases, including highlighted hotbar buttons.
+            Canvas ctaCanvas = _btnBlock.GetComponent<Canvas>();
+            if (ctaCanvas == null) ctaCanvas = _btnBlock.gameObject.AddComponent<Canvas>();
+            ctaCanvas.overrideSorting = true;
+            ctaCanvas.sortingOrder = short.MaxValue;
+            if (_btnBlock.GetComponent<GraphicRaycaster>() == null)
+                _btnBlock.gameObject.AddComponent<GraphicRaycaster>();
+
             _btnBlock.onClick.AddListener(ShowCTA);
             _btnBlock.gameObject.SetActive(false);
 
@@ -49,25 +58,50 @@ namespace Playable
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
             CountdownEndGame();
         }
-
+        
 
         public void EndGame()
         {
+            if (_hasEnded) return;
+            _hasEnded = true;
+
             Debug.Log("End Game");
+            // Let the CTA receive input even while tutorial UI groups are locked.
+            CanvasGroup ctaGroup = _btnBlock.GetComponent<CanvasGroup>();
+            if (ctaGroup == null) ctaGroup = _btnBlock.gameObject.AddComponent<CanvasGroup>();
+            ctaGroup.ignoreParentGroups = true;
+            ctaGroup.interactable = true;
+            ctaGroup.blocksRaycasts = true;
+            ctaGroup.alpha = 1f;
+            _btnBlock.transform.SetAsLastSibling();
             _btnBlock.gameObject.SetActive(true);
+            Canvas ctaCanvas = _btnBlock.GetComponent<Canvas>();
+            ctaCanvas.enabled = true;
+            ctaCanvas.overrideSorting = true;
+            ctaCanvas.sortingOrder = short.MaxValue;
+            _btnBlock.enabled = true;
+            _btnBlock.interactable = true;
+            if (_btnBlock.targetGraphic != null)
+            {
+                _btnBlock.targetGraphic.raycastTarget = true;
+                // The fullscreen blocker is transparent but must remain a raycast target.
+                _btnBlock.targetGraphic.canvasRenderer.cullTransparentMesh = false;
+                _btnBlock.targetGraphic.SetAllDirty();
+            }
             Luna.Unity.LifeCycle.GameEnded();
-            if (!_isApplovin) Luna.Unity.Playable.InstallFullGame();
+            if ( !_isApplovin) Luna.Unity.Playable.InstallFullGame();
         }
 
         private void ShowCTA()
         {
+            Debug.Log("CTA clicked");
             Luna.Unity.Playable.InstallFullGame();
         }
 
 
         public void CountEvent()
         {
-            if (_ignoreCountEvent) return;
+            if (_ignoreCountEvent || _hasEnded) return;
             _quantityEvent++;
             if (_quantityEvent >= _totalEvent)
             {
