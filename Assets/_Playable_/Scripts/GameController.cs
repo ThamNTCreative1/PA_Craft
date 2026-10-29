@@ -152,18 +152,7 @@ namespace Playable
                 return;
             }
 
-            bool inside = false;
-            if (_homeZone != null)
-            {
-                inside = ContainsXZ(_homeZone, _playerTransform.position);
-            }
-            else if (_home != null)
-            {
-                Vector3 offset = _playerTransform.position - _home.position;
-                offset.y = 0f;
-                inside = offset.sqrMagnitude <= 4f;
-            }
-            if (!inside)
+            if (!IsPlayerAtHome())
             {
                 _homeEnteredAt = -1f;
                 return;
@@ -171,6 +160,16 @@ namespace Playable
             // Holding the stolen egg confirms the return journey.
             if (_homeEnteredAt < 0f) _homeEnteredAt = Time.time;
             if (Time.time - _homeEnteredAt >= 1f) Win();
+        }
+
+        private bool IsPlayerAtHome()
+        {
+            if (_playerTransform == null) return false;
+            if (_homeZone != null) return ContainsXZ(_homeZone, _playerTransform.position);
+            if (_home == null) return false;
+            Vector3 offset = _playerTransform.position - _home.position;
+            offset.y = 0f;
+            return offset.sqrMagnitude <= 4f;
         }
 
         private static bool ContainsXZ(BoxCollider zone, Vector3 position)
@@ -277,6 +276,12 @@ namespace Playable
             // Resolve arrival first if the monster callback runs before our Update this frame.
             CheckFinishFlag();
             if (State != GameState.Escaping) return;
+            // Home is safe immediately, including the delay before the reward opens.
+            if (IsPlayerAtHome())
+            {
+                _monster.ChaseToHomeEntrance();
+                return;
+            }
             SetState(GameState.Lost);
             _failPanelTimer = Mathf.Max(0f, _restartDelay);
             StopPlayer();
@@ -290,7 +295,7 @@ namespace Playable
             SetState(GameState.Won);
             StopPlayer();
             _player.ShowHomeIdle();
-            _monster.Stop();
+            _monster.ChaseToHomeEntrance();
             if (GameManager.Instance != null) GameManager.Instance.CompleteHome();
             else Debug.LogError("GameManager is required to show the win panel.", this);
         }

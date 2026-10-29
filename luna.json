@@ -7496,10 +7496,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.UI.ClipperRegistry",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.UI.Clipping",
                 "excluded": true
             },
@@ -17687,7 +17683,7 @@
                     },
                     {
                         "name": "offsetMin#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "offsetMax#get",
@@ -17695,7 +17691,7 @@
                     },
                     {
                         "name": "offsetMax#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetSizeWithCurrentAnchors",
@@ -18021,7 +18017,7 @@
                     },
                     {
                         "name": "init",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "getItem",
@@ -18037,7 +18033,7 @@
                     },
                     {
                         "name": "AddUnique",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "remove",
@@ -18623,7 +18619,7 @@
                     },
                     {
                         "name": "OnTransformParentChanged",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PixelAdjustPoint",
@@ -18709,7 +18705,7 @@
                     },
                     {
                         "name": "OnTransformParentChanged",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ParentMaskStateChanged",
@@ -24339,11 +24335,11 @@
                     },
                     {
                         "name": "Notify2DMaskStateChanged",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "IsDescendantOrSelf",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetRectMasksForClip",
@@ -24825,7 +24821,7 @@
                     },
                     {
                         "name": "OnEnable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnDisable",
@@ -24841,7 +24837,7 @@
                     },
                     {
                         "name": "AddClippable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "RemoveClippable",
@@ -32439,7 +32435,7 @@
                     },
                     {
                         "name": "Insert",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PrependInterval",
@@ -33917,7 +33913,7 @@
                     },
                     {
                         "name": "CrossFadeInFixedTime$5",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "CrossFadeInFixedTime$6",
@@ -33973,7 +33969,7 @@
                     },
                     {
                         "name": "HasState",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "InterruptMatchTarget",
@@ -37721,15 +37717,15 @@
                     },
                     {
                         "name": "Awake",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnEnable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Retry",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnDisable",
@@ -37919,6 +37915,10 @@
                     },
                     {
                         "name": "CanShowTutorial#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsPlayerAtHome",
                         "excluded": false
                     }
                 ]
@@ -38840,6 +38840,22 @@
                     {
                         "name": "PlayVoice",
                         "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ChaseToHomeEntrance",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateHomeApproach",
+                        "excluded": false
                     }
                 ]
             },
@@ -39397,11 +39413,11 @@
                     },
                     {
                         "name": "Awake",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Show",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Hide",
@@ -39409,6 +39425,36 @@
                     },
                     {
                         "name": "OnDisable",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.UI.ClipperRegistry",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "instance#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Register",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Unregister",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Cull",
                         "excluded": true
                     }
                 ]

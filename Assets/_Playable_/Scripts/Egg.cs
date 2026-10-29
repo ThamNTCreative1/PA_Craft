@@ -10,6 +10,8 @@ namespace Playable
         [Tooltip("Pickup trigger radius in the egg's local units.")]
         [SerializeField, Min(0.01f)] private float _stealRadius = 2f;
         [SerializeField] private Vector3 _triggerCenter = Vector3.zero;
+        [Tooltip("Solid collider used while carried. Keep it on the egg without a separate Rigidbody so it joins the player's body.")]
+        [SerializeField] private Collider _carryCollider;
 
         private readonly List<Collider> _playerContacts = new List<Collider>(4);
         private PlayerController _player;
@@ -42,6 +44,8 @@ namespace Playable
             _colliders = GetComponentsInChildren<Collider>(true);
             _colliderStates = new bool[_colliders.Length];
             for (int i = 0; i < _colliders.Length; i++) _colliderStates[i] = _colliders[i].enabled;
+            // The nest egg must not block the player from reaching its pickup trigger.
+            if (_carryCollider != null) _carryCollider.enabled = false;
             _body = GetComponent<Rigidbody>();
             if (_body != null)
             {
@@ -129,9 +133,12 @@ namespace Playable
                 _body.isKinematic = true;
                 _body.useGravity = false;
             }
-            transform.SetParent(holdPoint, false);
+            // Keep the egg's world scale when attaching it to the player's hand.
+            transform.SetParent(holdPoint, true);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
+            // Enable after reparenting so this shape moves and collides with the player.
+            if (_carryCollider != null) _carryCollider.enabled = true;
             return true;
         }
 
@@ -157,6 +164,7 @@ namespace Playable
             }
             for (int i = 0; i < _colliders.Length; i++)
                 if (_colliders[i] != null) _colliders[i].enabled = _colliderStates[i];
+            if (_carryCollider != null) _carryCollider.enabled = false;
             _pickupTrigger.gameObject.SetActive(true);
         }
 

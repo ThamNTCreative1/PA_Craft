@@ -12,7 +12,8 @@ namespace Playable
             Attacking,
             WaitingToChase,
             Patrolling,
-            PatrolResting
+            PatrolResting,
+            ApproachingHome
         }
 
         [Header("Movement")] [LunaPlaygroundField("Monster Speed", 2, "Gameplay")] [SerializeField, Min(0f)]
@@ -26,8 +27,10 @@ namespace Playable
         [SerializeField, Min(0f)] private float _chaseDelay = 1f;
 
         [Header("Safe Area")]
-        [Tooltip("Stop chasing when the player enters this courtyard's XZ bounds.")]
+        [Tooltip("Protect the player inside these XZ bounds and finish the chase at the home entrance.")]
         [SerializeField] private Renderer _grassCourtyard;
+        [Tooltip("Final position outside the home gate. The monster cannot attack while approaching it.")]
+        [SerializeField] private Transform _homeChaseStopPoint;
 
         [Header("Nest Patrol")] [SerializeField]
         private Transform _patrolCenter;
@@ -37,6 +40,7 @@ namespace Playable
         [SerializeField] private AudioSource _voiceSource;
         [SerializeField] private AudioClip _chaseRoar;
         [SerializeField] private AudioClip _biteSound;
+        [SerializeField] private AudioSource _chaseFootstepSource;
 
         [SerializeField] private Vector2 _patrolRadii = new Vector2(18f, 22f);
         [SerializeField, Min(0f)] private float _patrolSpeed = 8f;
@@ -71,6 +75,11 @@ namespace Playable
         private void Awake()
         {
             _bodyCollider = GetComponent<Collider>();
+            if (_chaseFootstepSource != null)
+            {
+                _chaseFootstepSource.playOnAwake = false;
+                _chaseFootstepSource.loop = true;
+            }
             if (_animator == null)
             {
                 _animator = GetComponentInChildren<Animator>();
@@ -92,12 +101,41 @@ namespace Playable
             if (_hasWalkParameter) _isWalkingHash = Animator.StringToHash(_isWalkingParam);
         }
 
+        private void LateUpdate()
+        {
+            if (_chaseFootstepSource == null) return;
+
+            // Use a separate loop so footsteps can play alongside the chase roar.
+            bool isChasing = _moveSpeed > 0f &&
+                ((State == MonsterState.Chasing && _target != null) ||
+                 (State == MonsterState.ApproachingHome && _homeChaseStopPoint != null));
+            if (isChasing)
+            {
+                if (!_chaseFootstepSource.isPlaying && _chaseFootstepSource.clip != null)
+                    _chaseFootstepSource.Play();
+            }
+            else if (_chaseFootstepSource.isPlaying)
+            {
+                _chaseFootstepSource.Stop();
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (_chaseFootstepSource != null) _chaseFootstepSource.Stop();
+        }
+
         private void Update()
         {
             if ((State == MonsterState.WaitingToChase || State == MonsterState.Chasing) &&
                 IsTargetInCourtyard())
             {
-                Stop();
+                ChaseToHomeEntrance();
+            }
+
+            if (State == MonsterState.ApproachingHome)
+            {
+                UpdateHomeApproach();
                 return;
             }
 
@@ -183,9 +221,49 @@ namespace Playable
             if (_target == null || _grassCourtyard == null) return false;
             Bounds bounds = _grassCourtyard.bounds;
             Vector3 position = _target.position;
-            // Ignore height so jumping into the courtyard also ends the chase.
+            // Ignore height so jumping into the courtyard also protects the player.
             return position.x >= bounds.min.x && position.x <= bounds.max.x &&
                    position.z >= bounds.min.z && position.z <= bounds.max.z;
+        }
+
+        public void ChaseToHomeEntrance()
+        {
+            if (_homeChaseStopPoint == null)
+            {
+                Stop();
+                return;
+            }
+            if (State == MonsterState.ApproachingHome) return;
+
+            _target = null;
+            _targetCollider = null;
+            _chaseDelayRemaining = 0f;
+            State = MonsterState.ApproachingHome;
+            SetRunning(_moveSpeed > 0f);
+        }
+
+        private void UpdateHomeApproach()
+        {
+            if (_homeChaseStopPoint == null)
+            {
+                Stop();
+                return;
+            }
+
+            Vector3 offset = _homeChaseStopPoint.position - transform.position;
+            offset.y = 0f;
+            float travel = Mathf.Max(0f, _moveSpeed) * Time.deltaTime;
+            if (offset.magnitude <= Mathf.Max(.05f, travel))
+            {
+                transform.position += offset;
+                Stop();
+                return;
+            }
+
+            Vector3 direction = offset.normalized;
+            transform.position += direction * travel;
+            transform.rotation = Quaternion.Slerp(transform.rotation,
+                Quaternion.LookRotation(direction), _rotationSpeed * Time.deltaTime);
         }
 
         public void StartChasing(Transform target)
@@ -208,6 +286,7 @@ namespace Playable
         public void Stop()
         {
             if (_voiceSource != null) _voiceSource.Stop();
+            if (_chaseFootstepSource != null) _chaseFootstepSource.Stop();
             _patrolPhaseRemaining = 0f;
             _target = null;
             _targetCollider = null;
@@ -284,6 +363,7 @@ namespace Playable
         private void Attack()
         {
             State = MonsterState.Attacking;
+            if (_chaseFootstepSource != null) _chaseFootstepSource.Stop();
             SetRunning(false);
             PlayVoice(_biteSound);
 

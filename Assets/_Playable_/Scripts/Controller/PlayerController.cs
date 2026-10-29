@@ -68,6 +68,9 @@ namespace Playable
         private float _coyoteTimer;
         private float _jumpBufferTimer;
         private float _airborneTime;
+#if !UNITY_LUNA
+        private float _normalDepenetrationSpeed;
+#endif
 
         public bool IsGrounded => _isGrounded;
         public bool IsCarryingEgg { get; private set; }
@@ -78,7 +81,11 @@ namespace Playable
             set
             {
                 _isWorking = value;
-                if (!value && _footstepSource != null) _footstepSource.Stop();
+                if (!value)
+                {
+                    if (_footstepSource != null) _footstepSource.Stop();
+                    ShowHomeIdle();
+                }
             }
         }
 
@@ -103,6 +110,10 @@ namespace Playable
                 ? CollisionDetectionMode.Continuous
                 : CollisionDetectionMode.Discrete;
             _rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+#if !UNITY_LUNA
+            // Playworks does not expose this PhysX solver setting.
+            _normalDepenetrationSpeed = _rigidbody.maxDepenetrationVelocity;
+#endif
 
             if (_animator == null)
             {
@@ -124,6 +135,16 @@ namespace Playable
         public void SetCarryingEgg(bool isCarrying)
         {
             IsCarryingEgg = isCarrying;
+            // The held egg extends ahead of the player and also sweeps sideways when turning.
+            _rigidbody.collisionDetectionMode = isCarrying
+                ? CollisionDetectionMode.ContinuousSpeculative
+                : (_useContinuousCollision ? CollisionDetectionMode.Continuous : CollisionDetectionMode.Discrete);
+#if !UNITY_LUNA
+            // PhysX-only tuning; Playworks still uses the carry collider and continuous detection above.
+            _rigidbody.maxDepenetrationVelocity = isCarrying
+                ? Mathf.Max(_normalDepenetrationSpeed, 100f)
+                : _normalDepenetrationSpeed;
+#endif
 
             if (_hasAnimator && HasAnimatorParameter(_animator, _isCarryingEggParamHash))
             {
@@ -142,7 +163,10 @@ namespace Playable
             if (!_hasAnimator) return;
             _animator.SetFloat(_speedParamHash, 0f);
             _animator.SetBool(_isJumpParamHash, false);
-            _animator.CrossFadeInFixedTime("Idle", .1f);
+            string idleState = IsCarryingEgg ? "Base Layer.CarryIdle" : "Base Layer.Idle";
+            if (!_animator.HasState(0, Animator.StringToHash(idleState)))
+                idleState = "Base Layer.Idle";
+            _animator.CrossFadeInFixedTime(idleState, .1f, 0);
         }
 
         public void ResetPlayer(Vector3 position, Quaternion rotation)
@@ -167,7 +191,7 @@ namespace Playable
 
             if (_btnJump != null) _btnJump.gameObject.SetActive(true);
 
-            UpdateAnimator();
+            ShowHomeIdle();
             if (_cameraController != null) _cameraController.SetTarget(this);
         }
 
