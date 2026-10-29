@@ -201,7 +201,7 @@
                 "forceIncluded": true
             }
         ],
-        "disableRuntimeAnalysisForCode": false,
+        "disableRuntimeAnalysisForCode": true,
         "disableRuntimeAnalysisForShaders": false,
         "useShadersCache": true,
         "usePreservativeDynamicBatching": true,
@@ -7517,10 +7517,6 @@
             },
             {
                 "name": "UnityEngine.UI.Dropdown.OptionDataList",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.UI.RectangularVertexClipper",
                 "excluded": true
             },
             {
@@ -24821,11 +24817,11 @@
                     },
                     {
                         "name": "init",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ctor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnEnable",
@@ -37718,6 +37714,26 @@
                     {
                         "name": "Show",
                         "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Retry",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
                     }
                 ]
             },
@@ -37794,6 +37810,14 @@
                     {
                         "name": "CompleteHome",
                         "excluded": false
+                    },
+                    {
+                        "name": "IsFirstAttempt#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RetryGame",
+                        "excluded": true
                     }
                 ]
             },
@@ -37891,6 +37915,10 @@
                     },
                     {
                         "name": "UpdateHomeRoute",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CanShowTutorial#get",
                         "excluded": false
                     }
                 ]
@@ -38804,6 +38832,14 @@
                     {
                         "name": "RandomDuration",
                         "excluded": false
+                    },
+                    {
+                        "name": "SetSleeping",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayVoice",
+                        "excluded": false
                     }
                 ]
             },
@@ -38909,6 +38945,10 @@
                     },
                     {
                         "name": "ShowHomeIdle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateFootsteps",
                         "excluded": false
                     }
                 ]
@@ -39075,7 +39115,7 @@
                     },
                     {
                         "name": "JoystickBase#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Joystick#get",
@@ -39240,10 +39280,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
                         "name": "HideMovementTutorial",
                         "excluded": false
                     },
@@ -39258,6 +39294,18 @@
                     {
                         "name": "OnDisable",
                         "excluded": true
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleLook",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
                     }
                 ]
             },
@@ -39321,6 +39369,46 @@
                     },
                     {
                         "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.UI.RectangularVertexClipper",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetCanvasRect",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.BloodOverlay",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Show",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Hide",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
                         "excluded": true
                     }
                 ]

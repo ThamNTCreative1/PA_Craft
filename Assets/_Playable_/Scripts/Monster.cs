@@ -20,6 +20,9 @@ namespace Playable
 
         [SerializeField] private float _rotationSpeed = 10f;
         [SerializeField] private float _attackDistance = 1.5f;
+        [SerializeField, Min(0f)] private float _attackContactPadding = .75f;
+        private Collider _bodyCollider;
+        private Collider _targetCollider;
         [SerializeField, Min(0f)] private float _chaseDelay = 1f;
 
         [Header("Safe Area")]
@@ -28,7 +31,12 @@ namespace Playable
 
         [Header("Nest Patrol")] [SerializeField]
         private Transform _patrolCenter;
-        [SerializeField] private bool _sleepUntilEggTaken;
+        [SerializeField] private bool _sleepUntilEggTaken = true;
+
+        [Header("Sound")]
+        [SerializeField] private AudioSource _voiceSource;
+        [SerializeField] private AudioClip _chaseRoar;
+        [SerializeField] private AudioClip _biteSound;
 
         [SerializeField] private Vector2 _patrolRadii = new Vector2(18f, 22f);
         [SerializeField, Min(0f)] private float _patrolSpeed = 8f;
@@ -42,14 +50,17 @@ namespace Playable
         [Header("Animation")] [SerializeField] private Animator _animator;
         [SerializeField] private string _isRunningParam = "IsRun";
         [SerializeField] private string _isWalkingParam = "";
-        [SerializeField] private string _attackTriggerParam = "Attack";
+        [SerializeField] private string _idleState = "Idle";
+        [SerializeField] private string _sleepState = "Sleep";
+        [SerializeField] private float _sleepHeightOffset;
+        [SerializeField] private Transform _sleepLookTarget;
+        private Vector3 _modelLocalPosition;
+        private Quaternion _modelLocalRotation;
 
         private Transform _target;
         private float _chaseDelayRemaining;
         private int _isRunningHash;
-        private int _attackTriggerHash;
         private bool _hasRunParameter;
-        private bool _hasAttackParameter;
         private int _isWalkingHash;
         private bool _hasWalkParameter;
 
@@ -59,6 +70,7 @@ namespace Playable
 
         private void Awake()
         {
+            _bodyCollider = GetComponent<Collider>();
             if (_animator == null)
             {
                 _animator = GetComponentInChildren<Animator>();
@@ -68,14 +80,14 @@ namespace Playable
             {
                 // Movement is driven by this controller, not animation root motion.
                 _animator.applyRootMotion = false;
+                _modelLocalPosition = _animator.transform.localPosition;
+                _modelLocalRotation = _animator.transform.localRotation;
             }
 
             _isRunningHash = Animator.StringToHash(_isRunningParam);
-            _attackTriggerHash = Animator.StringToHash(_attackTriggerParam);
             // Luna returns an empty array for Animator.parameters. Use the configured
             // parameter names instead so animation commands are not silently skipped.
             _hasRunParameter = _animator != null && !string.IsNullOrEmpty(_isRunningParam);
-            _hasAttackParameter = _animator != null && !string.IsNullOrEmpty(_attackTriggerParam);
             _hasWalkParameter = _animator != null && !string.IsNullOrEmpty(_isWalkingParam);
             if (_hasWalkParameter) _isWalkingHash = Animator.StringToHash(_isWalkingParam);
         }
@@ -128,6 +140,7 @@ namespace Playable
 
                 State = MonsterState.Chasing;
                 SetRunning(true);
+                PlayVoice(_chaseRoar);
             }
 
             if (State != MonsterState.Chasing || _target == null)
@@ -135,18 +148,30 @@ namespace Playable
                 return;
             }
 
-            Vector3 offset = _target.position - transform.position;
+            Vector3 targetCenter = _targetCollider != null ? _targetCollider.bounds.center : _target.position;
+            Vector3 bodyCenter = _bodyCollider != null ? _bodyCollider.bounds.center : transform.position;
+            Vector3 offset = targetCenter - bodyCenter;
             offset.y = 0f;
+            // Resolve contact from both collider sizes, including this frame's movement below.
+            Vector3 bodyExtents = _bodyCollider != null ? _bodyCollider.bounds.extents : Vector3.zero;
+            Vector3 targetExtents = _targetCollider != null ? _targetCollider.bounds.extents : Vector3.zero;
+            float bodyRadius = Mathf.Max(bodyExtents.x, bodyExtents.z);
+            float targetRadius = Mathf.Max(targetExtents.x, targetExtents.z);
+            float contactDistance = Mathf.Max(_attackDistance,
+                bodyRadius + targetRadius + _attackContactPadding);
+            float distance = offset.magnitude;
+            float travel = Mathf.Max(0f, _moveSpeed) * Time.deltaTime;
 
-            if (offset.sqrMagnitude <= _attackDistance * _attackDistance)
+            // Resolve contact in this frame, including the distance covered by the lunge.
+            if (distance <= contactDistance + travel)
             {
+                transform.position += offset.normalized * Mathf.Max(0f, distance - contactDistance);
                 Attack();
                 return;
             }
 
             Vector3 direction = offset.normalized;
-            transform.position += direction * Mathf.Min(Mathf.Max(0f, _moveSpeed) * Time.deltaTime,
-                Mathf.Max(0f, offset.magnitude - _attackDistance));
+            transform.position += direction * travel;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 Quaternion.LookRotation(direction),
@@ -172,18 +197,24 @@ namespace Playable
             }
 
             _target = target;
+            _targetCollider = target.GetComponent<Collider>();
+            SetSleeping(false);
             _chaseDelayRemaining = Mathf.Max(0f, _chaseDelay);
             State = _chaseDelayRemaining > 0f ? MonsterState.WaitingToChase : MonsterState.Chasing;
             SetRunning(State == MonsterState.Chasing);
+            if (State == MonsterState.Chasing) PlayVoice(_chaseRoar);
         }
 
         public void Stop()
         {
+            if (_voiceSource != null) _voiceSource.Stop();
             _patrolPhaseRemaining = 0f;
             _target = null;
+            _targetCollider = null;
             _chaseDelayRemaining = 0f;
             State = MonsterState.Idle;
             SetRunning(false);
+            SetSleeping(false);
         }
 
         public void ResetMonster(Vector3 position, Quaternion rotation)
@@ -205,6 +236,7 @@ namespace Playable
             if (_sleepUntilEggTaken)
             {
                 Stop();
+                SetSleeping(true);
                 return;
             }
             if (_patrolCenter == null) return;
@@ -253,13 +285,36 @@ namespace Playable
         {
             State = MonsterState.Attacking;
             SetRunning(false);
+            PlayVoice(_biteSound);
 
-            if (_hasAttackParameter)
-            {
-                _animator.SetTrigger(_attackTriggerHash);
-            }
+            SetSleeping(false);
 
             OnPlayerReached?.Invoke();
+        }
+
+        private void SetSleeping(bool sleeping)
+        {
+            if (_animator == null) return;
+            if (sleeping && _sleepLookTarget != null)
+            {
+                Vector3 direction = _sleepLookTarget.position - transform.position;
+                direction.y = 0f;
+                if (direction.sqrMagnitude > .0001f)
+                    transform.rotation = Quaternion.LookRotation(direction);
+            }
+            _animator.transform.localPosition = _modelLocalPosition +
+                (sleeping ? Vector3.up * _sleepHeightOffset : Vector3.zero);
+            _animator.transform.localRotation = sleeping
+                ? _modelLocalRotation * Quaternion.Euler(0f, 0f, -90f)
+                : _modelLocalRotation;
+            _animator.Play(sleeping ? _sleepState : _idleState, 0, 0f);
+        }
+
+        private void PlayVoice(AudioClip clip)
+        {
+            if (_voiceSource == null || clip == null) return;
+            _voiceSource.Stop();
+            _voiceSource.PlayOneShot(clip);
         }
 
         private void SetRunning(bool isRunning)

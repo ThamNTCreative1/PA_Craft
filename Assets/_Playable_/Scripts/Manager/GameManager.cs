@@ -54,6 +54,9 @@ namespace Playable
 
         private int _shownGameplayCtas;
         private int _quantityEvent = 0;
+        private int _retryCount;
+        public bool IsFirstAttempt => _retryCount == 0;
+        [SerializeField] private GameController _gameController;
 
         private void Awake()
         {
@@ -162,10 +165,29 @@ namespace Playable
 
         public void ShowFailPanel()
         {
-            EndGame();
-            if (!_isApplovin) DOVirtual.DelayedCall(1, ShowCTA);
+            // Keep Retry accessible; failure is not the final CTA until retries run out.
+            if (_endCountdown != null) StopCoroutine(_endCountdown);
+            _endCountdown = null;
             if (_failPanel == null) return;
             _failPanel.Show();
+        }
+
+        public void RetryGame()
+        {
+            if (_failPanel == null || !_failPanel.gameObject.activeSelf) return;
+            if (_retryCount >= 3)
+            {
+                EndGame();
+                ShowCTA();
+                return;
+            }
+            if (_gameController == null) return;
+            _retryCount++;
+            _failPanel.gameObject.SetActive(false);
+            _btnBlock.gameObject.SetActive(false);
+            _quantityEvent = 0;
+            _gameController.ResetGame();
+            CountdownEndGame();
         }
     }
 }

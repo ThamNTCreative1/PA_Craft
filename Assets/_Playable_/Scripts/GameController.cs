@@ -57,10 +57,15 @@ namespace Playable
         private int _homeRouteIndex;
         private bool _insidePurpleGarden;
         private bool _insideDesert;
-        private float _restartTimer;
+        private float _failPanelTimer;
+        private bool _failPanelShown;
+
+        [Header("Caught feedback")]
+        [SerializeField] private BloodOverlay _bloodOverlay;
         private float _homeEnteredAt = -1f;
 
         public GameState State { get; private set; }
+        private bool CanShowTutorial => GameManager.Instance == null || GameManager.Instance.IsFirstAttempt;
 
         private void Awake()
         {
@@ -121,8 +126,12 @@ namespace Playable
 
             if (State == GameState.Lost)
             {
-                _restartTimer -= Time.deltaTime;
-                if (_restartTimer <= 0f) ResetGame();
+                _failPanelTimer -= Time.deltaTime;
+                if (!_failPanelShown && _failPanelTimer <= 0f)
+                {
+                    _failPanelShown = true;
+                    if (GameManager.Instance != null) GameManager.Instance.ShowFailPanel();
+                }
                 return;
             }
 
@@ -233,7 +242,9 @@ namespace Playable
             // Start runs after Player/Monster Awake, avoiding initialization-order dependencies.
             if (!_initialized || !_started || _player == null || _monster == null || _egg == null) return;
 
-            _restartTimer = 0f;
+            _failPanelTimer = 0f;
+            _failPanelShown = false;
+            if (_bloodOverlay != null) _bloodOverlay.Hide();
             _homeEnteredAt = -1f;
             _homeRouteIndex = 0;
             if (GameManager.Instance != null) GameManager.Instance.ResetGameplayCtas();
@@ -247,7 +258,11 @@ namespace Playable
             _egg.ResetEgg();
             HideTutorial();
             SetState(GameState.LookingForEgg);
-            if (_handTutorial != null) _handTutorial.ShowMovementTutorial();
+            if (_handTutorial != null)
+            {
+                if (CanShowTutorial) _handTutorial.ShowMovementTutorial();
+                else _handTutorial.HideAll();
+            }
             RefreshUI();
             RefreshTutorial();
         }
@@ -263,8 +278,9 @@ namespace Playable
             CheckFinishFlag();
             if (State != GameState.Escaping) return;
             SetState(GameState.Lost);
-            _restartTimer = Mathf.Max(0f, _restartDelay);
+            _failPanelTimer = Mathf.Max(0f, _restartDelay);
             StopPlayer();
+            if (_bloodOverlay != null) _bloodOverlay.Show();
             // The monster remains in Attacking until the round resets.
         }
 
@@ -292,7 +308,7 @@ namespace Playable
             if (_tutorialLineIndicator == null) return;
 
             Transform target = null;
-            if (_initialized && _started && isActiveAndEnabled && _playerTransform != null)
+            if (CanShowTutorial && _initialized && _started && isActiveAndEnabled && _playerTransform != null)
             {
                 if (State == GameState.LookingForEgg || State == GameState.CanStealEgg)
                     target = _egg != null ? _egg.transform : null;
@@ -314,8 +330,8 @@ namespace Playable
         {
             if (_handTutorial != null)
             {
-                _handTutorial.SetStealHintVisible(State == GameState.CanStealEgg);
-                if (State == GameState.Escaping || State == GameState.Lost || State == GameState.Won)
+                _handTutorial.SetStealHintVisible(CanShowTutorial && State == GameState.CanStealEgg);
+                if (!CanShowTutorial || State == GameState.Escaping || State == GameState.Lost || State == GameState.Won)
                     _handTutorial.HideMovementTutorial();
             }
 

@@ -23,6 +23,13 @@ namespace Playable
         [Header("Input")]
         [SerializeField] private Button _btnJump;
 
+        [Header("Footsteps")]
+        [SerializeField] private AudioSource _footstepSource;
+        [SerializeField] private AudioClip[] _footstepClips;
+        [SerializeField, Min(.1f)] private float _footstepInterval = .28f;
+        private float _footstepTimer;
+        private int _footstepIndex;
+
         [Header("Movement")]
         [LunaPlaygroundField("Player Move Speed", 1, "Gameplay")] [SerializeField, Min(0f)] private float _moveSpeed = 4f;
         [SerializeField] private float _rotationSmooth = 12f;
@@ -68,7 +75,11 @@ namespace Playable
         public bool IsWorking
         {
             get => _isWorking;
-            set => _isWorking = value;
+            set
+            {
+                _isWorking = value;
+                if (!value && _footstepSource != null) _footstepSource.Stop();
+            }
         }
 
         private void Awake()
@@ -195,6 +206,7 @@ namespace Playable
 
         private void OnDisable()
         {
+            if (_footstepSource != null) _footstepSource.Stop();
             if (_btnJump != null) _btnJump.onClick.RemoveListener(OnJumpButtonPressed);
         }
 
@@ -222,6 +234,21 @@ namespace Playable
 #endif
 
             UpdateAnimator();
+            UpdateFootsteps();
+        }
+
+        private void UpdateFootsteps()
+        {
+            if (!_isGrounded || _moveInput.sqrMagnitude < .01f)
+            {
+                _footstepTimer = 0f;
+                return;
+            }
+            _footstepTimer -= Time.deltaTime;
+            if (_footstepTimer > 0f || _footstepSource == null || _footstepClips == null || _footstepClips.Length == 0) return;
+            _footstepTimer = _footstepInterval;
+            AudioClip clip = _footstepClips[_footstepIndex++ % _footstepClips.Length];
+            if (clip != null) _footstepSource.PlayOneShot(clip);
         }
 
         private void FixedUpdate()
