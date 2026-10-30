@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2986086143968715070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2209097536944958332}
+  - component: {fileID: 5168794296188962718}
+  - component: {fileID: 4127590771373652270}
+  - component: {fileID: 1708399291732612357}
+  m_Layer: 0
+  m_Name: TR_Segment_03
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2209097536944958332
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986086143968715070}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5168794296188962718
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986086143968715070}
+  m_Mesh: {fileID: 4300000, guid: 0c1f7a5858133e54ea60c47e97374df5, type: 2}
+--- !u!23 &4127590771373652270
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986086143968715070}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: aaa0a8a07619a1444879f68c36e8a21f, type: 2}
+  - {fileID: 2100000, guid: 2af696424b4825e4ea78345da032e996, type: 2}
+  - {fileID: 2100000, guid: 91e1a8284abbfaf4d8a2a15d8c43476a, type: 2}
+  - {fileID: 2100000, guid: 3d6b274779c296146bdc7b38bf9cdb31, type: 2}
+  - {fileID: 2100000, guid: fbf3f6d76d92e6b4a89fa9a1f29c177b, type: 2}
+  - {fileID: 2100000, guid: 11cdeb5ab08ff3b4caa338fd35f02ada, type: 2}
+  - {fileID: 2100000, guid: 603f352025ffb4a448ef7b556319eee7, type: 2}
+  - {fileID: 2100000, guid: 22f36c8f966b3c2438c789388d1d023f, type: 2}
+  - {fileID: 2100000, guid: 819628cdeb68a504ea48e486d7272818, type: 2}
+  - {fileID: 2100000, guid: 33c34cc9bd0f6c44e80e1d2247469c74, type: 2}
+  - {fileID: 2100000, guid: 4cd01950d973cf148a95312e5ea47e1d, type: 2}
+  - {fileID: 2100000, guid: fb677a18617b16e4c8791326e70c8580, type: 2}
+  - {fileID: 2100000, guid: 360a09e632296cd4686f61a25093dfee, type: 2}
+  - {fileID: 2100000, guid: dfdd55ff3ef7a0241926962c6eb003ee, type: 2}
+  - {fileID: 2100000, guid: 1839d376f0d25a046835e1b42ffd4a7d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1708399291732612357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986086143968715070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf3f92326a65d340859419aca8ab516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  length: 16
+  poolIndex: 0

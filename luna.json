@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 43297,
-    "creativeName": "C1_2610_HuyNQ_SAEHR_V06_NgocNDL",
+    "applicationID": 43685,
+    "creativeName": "C1_2610_HuyNQ_OBP_V02_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -79,7 +79,9 @@
             "msbuildWin64": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
             "externalSources": [],
             "externalJSLibraries": [],
-            "scriptingDefines": [],
+            "scriptingDefines": [
+                "TR_LUNA_TMP_UV"
+            ],
             "msbuildVersion": "18.9",
             "monoVersion": "9.0.3",
             "dotnetVersion": ""
@@ -3084,10 +3086,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEditor.Animations.ChildMotion",
-                "excluded": true
-            },
-            {
                 "name": "UnityEditor.MenuItem",
                 "excluded": true
             },
@@ -3637,10 +3635,6 @@
             },
             {
                 "name": "Luna.Unity.DTO.UnityEngine.Components.WheelCollider",
-                "excluded": true
-            },
-            {
-                "name": "UnityEditor.Animations.BlendTree",
                 "excluded": true
             },
             {
@@ -8288,10 +8282,6 @@
                 "excluded": false
             },
             {
-                "name": "Playable.PlayerAction",
-                "excluded": false
-            },
-            {
                 "name": "TankAndHealerStudioAssets.RelativeCameraRotationExample.MovementCalculations",
                 "excluded": true
             },
@@ -8317,6 +8307,14 @@
             },
             {
                 "name": "Playable.EggRaisingController.Phase",
+                "excluded": false
+            },
+            {
+                "name": "Playable.TempleRun.ObstacleKind",
+                "excluded": false
+            },
+            {
+                "name": "Playable.TempleRun.RunnerGameManager.State",
                 "excluded": false
             }
         ],
@@ -18855,7 +18853,7 @@
                     },
                     {
                         "name": "enabled#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "pixelsPerUnitMultiplier#get",
@@ -19583,7 +19581,7 @@
                     },
                     {
                         "name": "ToPlaycanvasKeyCode",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ToUnityKeyCode",
@@ -34561,7 +34559,7 @@
                     },
                     {
                         "name": "value#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "onUnitSphere#get",
@@ -37602,39 +37600,17 @@
                     {
                         "name": "PlayOneShot",
                         "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.ResponsiveCanvasScaler",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
                     },
                     {
                         "name": "Update",
                         "excluded": false
                     },
                     {
-                        "name": "OnValidate",
+                        "name": "OnDestroy",
                         "excluded": true
                     },
                     {
-                        "name": "ApplyScaleSettings",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GetMatchValue",
+                        "name": "SetMusicVolume",
                         "excluded": false
                     }
                 ]
@@ -39470,24 +39446,6 @@
                 ]
             },
             {
-                "className": "Playable.EggCtaLayout",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.EggRaisingController",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -39623,6 +39581,648 @@
                     },
                     {
                         "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEditor.Animations.ChildMotion",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEditor.Animations.BlendTree",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "children#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "children#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "length#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "length#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetSamplers",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetParameters",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RecalculatePositionLimits",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NormalizeWeights",
+                        "excluded": true
+                    },
+                    {
+                        "name": "BlendSamplers",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Sample",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PullOrphanEvents",
+                        "excluded": true
+                    },
+                    {
+                        "name": "WeightForIndex",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Simple1DSampler",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GradientBandInterpolationSampler",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PolarGradientInterpolator",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PolarGradientBandInterpolationSampler",
+                        "excluded": true
+                    },
+                    {
+                        "name": "DirectSampler",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SimpleDirectional2DSampler",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.EditorPreviewHider",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerButtonPulse",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerCamera",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "IsIntroPlaying#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetRun",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Snap",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayIntro",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShiftZ",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Shake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerChaser",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Snap",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetRun",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Catch",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Stop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShiftZ",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GroundHeight",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerCoin",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "BaseY#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsCollecting#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Place",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Collect",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShiftZ",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerGameManager",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ReplaysRemaining#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Coins#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetState",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateSpeed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateTutorialTimer",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateJumpTutorial",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StartCountdown",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPlayerInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnLaneChangeInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnJumpInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPlayerJump",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPlayerLand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPlayerBump",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnCoinCollected",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPlayerCrash",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShiftZ",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndGame",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Replay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowCTA",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifyGameEnded",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayStartAudio",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateAudio",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "BeginIntroView",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsFinalResult#get",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerObstacle",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Min#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Max#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDrawGizmosSelected",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerPlayer",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Speed#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Track#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetRunning",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetSpeed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Revive",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShiftZ",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReadInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ChangeLane",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RequestJump",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FastFall",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Simulate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GroundHeight",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Crash",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateVisuals",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AnimateCrash",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateAnimator",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ProcessSwipe",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerUI",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetDistance",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetCoins",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowMoveHand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowJumpHand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowCountdown",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetCountdown",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ShowEnd",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideEndPanels",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshLayout",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowBloodSplash",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateBloodSpots",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideBloodSplash",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.TrackGenerator",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TravelledDistance#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetRun",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateTrack",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnNextSegment",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetSegment",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnRow",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnJumpTutorialRow",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PickPattern",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnCoinsForRow",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnObstacle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnCoin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CollectCoin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RecycleBehind",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ClearObstacles",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ShiftOrigin",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.TrackSegment",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "StartZ#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EndZ#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
                         "excluded": false
                     }
                 ]
@@ -39980,6 +40580,26 @@
                     {
                         "channels": 1,
                         "startTime": "00:00.000",
+                        "endTime": "00:02.000",
+                        "lengthInSeconds": 2.0,
+                        "bitrate": 128,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/TempleRun/Audio/TR_Fail.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:02.000",
+                        "lengthInSeconds": 2.0,
+                        "bitrate": 128,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/TempleRun/Audio/TR_TimeEnd.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
                         "endTime": "00:30.000",
                         "lengthInSeconds": 30.0,
                         "bitrate": 32,
@@ -40020,8 +40640,8 @@
                     {
                         "channels": 1,
                         "startTime": "00:00.000",
-                        "endTime": "00:30.000",
-                        "lengthInSeconds": 0.0,
+                        "endTime": "00:00.620",
+                        "lengthInSeconds": 0.6200000047683716,
                         "bitrate": 128,
                         "script": "",
                         "ext": "",
@@ -40156,6 +40776,46 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/Sound/Push-Long-Version(chosic.com).mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:30.000",
+                        "lengthInSeconds": 30.0,
+                        "bitrate": 128,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Sound/Epic-Chase(chosic.com).mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:02.716",
+                        "lengthInSeconds": 2.7160000801086427,
+                        "bitrate": 128,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/Sound/505131__mitchanary__monster-roar_8.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:00.473",
+                        "lengthInSeconds": 0.4729999899864197,
+                        "bitrate": 128,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/TempleRun/Audio/TR_Jump.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:00.504",
+                        "lengthInSeconds": 0.5040000081062317,
+                        "bitrate": 128,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/TempleRun/Audio/TR_Hit.mp3"
                     }
                 ]
             },
