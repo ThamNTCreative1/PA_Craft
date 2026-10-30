@@ -7,6 +7,7 @@ public class FailPanel : MonoBehaviour
     [SerializeField] private Button _retryButton;
     [SerializeField] private RectTransform _line;
     [SerializeField] private RectTransform _lineArea;
+    [SerializeField] private bool _installOnClick;
     private Tween _scaleTween;
     private Tween _lineTween;
     private Vector3 _baseScale;
@@ -36,6 +37,11 @@ public class FailPanel : MonoBehaviour
 
     private void Retry()
     {
+        if (_installOnClick)
+        {
+            if (Playable.GameManager.Instance != null) Playable.GameManager.Instance.ShowCTA();
+            return;
+        }
         if (Playable.GameManager.Instance != null) Playable.GameManager.Instance.RetryGame();
     }
 

@@ -16,6 +16,7 @@ namespace Playable
         }
 
         public static GameManager Instance;
+        [SerializeField] private bool _eggRaisingMode;
 
         [Header("Gameplay CTA")] [LunaPlaygroundField("CTA On Steal", 1, "CTA")] [SerializeField]
         private bool _ctaOnSteal;
@@ -31,6 +32,8 @@ namespace Playable
 
         [SerializeField] private HomeRewardPopup _homeRewardPopup;
         private Coroutine _endCountdown;
+        private Tween _pendingCta;
+        private bool _gameEnded;
 
         [Header("End Game")] [LunaPlaygroundField("End Time", 1, "End Game")] [SerializeField]
         private int _endTime = 30;
@@ -70,21 +73,46 @@ namespace Playable
 
             if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
-            CountdownEndGame();
+            if (!_eggRaisingMode) CountdownEndGame();
         }
 
 
         public void EndGame()
         {
+            CancelPendingEnd();
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
-            Luna.Unity.LifeCycle.GameEnded();
+            NotifyGameEnded();
         }
 
         public void ShowCTA()
         {
+            CancelPendingEnd();
             Debug.Log("Show CTA");
             Luna.Unity.Playable.InstallFullGame();
+        }
+
+        public void CompleteEggRaising()
+        {
+            CancelPendingEnd();
+            // The egg CTA panel owns input; keep the full-screen blocker out of its way.
+            _btnBlock.gameObject.SetActive(false);
+            NotifyGameEnded();
+        }
+
+        private void NotifyGameEnded()
+        {
+            if (_gameEnded) return;
+            _gameEnded = true;
+            Luna.Unity.LifeCycle.GameEnded();
+        }
+
+        private void CancelPendingEnd()
+        {
+            if (_endCountdown != null) StopCoroutine(_endCountdown);
+            _endCountdown = null;
+            _pendingCta?.Kill();
+            _pendingCta = null;
         }
 
         public void ResetGameplayCtas()
@@ -102,8 +130,7 @@ namespace Playable
             }
             if (!_ctaOnSteal && !_ctaOnSakura && !_ctaOnDesert)
             {
-                if (_endCountdown != null) StopCoroutine(_endCountdown);
-                _endCountdown = null;
+                CancelPendingEnd();
                 if (_homeRewardPopup != null) _homeRewardPopup.ShowOpen();
                 return;
             }
@@ -134,17 +161,18 @@ namespace Playable
 
         public void CountdownEndGame()
         {
+            CancelPendingEnd();
             // Zero disables the timer for creatives driven by gameplay checkpoints.
-            if (_endTime <= 0) return;
+            if (_eggRaisingMode || _gameEnded || _endTime <= 0) return;
             _endCountdown = StartCoroutine(IECountdownEndGame());
         }
 
         private IEnumerator IECountdownEndGame()
         {
             yield return new WaitForSeconds(_endTime);
+            _endCountdown = null;
             EndGame();
-            yield return new WaitForSeconds(1);
-            if (!_isApplovin) ShowCTA();
+            if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
         }
 
         private Sprite CreateSprite(Texture2D texture)
@@ -158,7 +186,7 @@ namespace Playable
         public void ShowWinPanel()
         {
             EndGame();
-            if (!_isApplovin) DOVirtual.DelayedCall(1, ShowCTA);
+            if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA);
             if (_winPanel == null) return;
             _winPanel.Show();
         }
@@ -166,8 +194,7 @@ namespace Playable
         public void ShowFailPanel()
         {
             // Keep Retry accessible; failure is not the final CTA until retries run out.
-            if (_endCountdown != null) StopCoroutine(_endCountdown);
-            _endCountdown = null;
+            CancelPendingEnd();
             if (_failPanel == null) return;
             _failPanel.Show();
         }
@@ -182,12 +209,20 @@ namespace Playable
                 return;
             }
             if (_gameController == null) return;
+            CancelPendingEnd();
             _retryCount++;
             _failPanel.gameObject.SetActive(false);
             _btnBlock.gameObject.SetActive(false);
             _quantityEvent = 0;
             _gameController.ResetGame();
-            CountdownEndGame();
+            if (!_eggRaisingMode) CountdownEndGame();
+        }
+
+        private void OnDestroy()
+        {
+            CancelPendingEnd();
+            if (_btnBlock != null) _btnBlock.onClick.RemoveListener(ShowCTA);
+            if (Instance == this) Instance = null;
         }
     }
 }

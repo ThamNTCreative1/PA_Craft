@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 43486,
-    "creativeName": "C1_2610_HuyNQ_EHRA_V01_AnhPP",
+    "applicationID": 43297,
+    "creativeName": "C1_2610_HuyNQ_SAEHR_V06_NgocNDL",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -8314,6 +8314,10 @@
             {
                 "name": "Playable.GameManager.GameplayCtaPoint",
                 "excluded": false
+            },
+            {
+                "name": "Playable.EggRaisingController.Phase",
+                "excluded": false
             }
         ],
         "unusedMethods": [
@@ -15209,7 +15213,7 @@
                     },
                     {
                         "name": "xMin#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "xMin#set",
@@ -15229,7 +15233,7 @@
                     },
                     {
                         "name": "yMin#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "yMin#set",
@@ -18551,7 +18555,7 @@
                     },
                     {
                         "name": "mainTexture#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "material#set",
@@ -22025,7 +22029,7 @@
                     },
                     {
                         "name": "materialCount#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "cull#set",
@@ -24421,7 +24425,7 @@
                     },
                     {
                         "name": "currentVertCount#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "$ctor1",
@@ -32221,7 +32225,7 @@
                     },
                     {
                         "name": "IsActive",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "IsBackwards",
@@ -37594,6 +37598,10 @@
                     {
                         "name": "StopSound",
                         "excluded": false
+                    },
+                    {
+                        "name": "PlayOneShot",
+                        "excluded": false
                     }
                 ]
             },
@@ -37813,6 +37821,22 @@
                     },
                     {
                         "name": "RetryGame",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CompleteEggRaising",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifyGameEnded",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CancelPendingEnd",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
                         "excluded": true
                     }
                 ]
@@ -38641,7 +38665,7 @@
                     },
                     {
                         "name": "OnDisable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetTarget",
@@ -39305,7 +39329,7 @@
                     },
                     {
                         "name": "HideAll",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnDisable",
@@ -39317,20 +39341,6 @@
                     },
                     {
                         "name": "HandleLook",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.GuardHeadSmoke",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
                         "excluded": false
                     },
                     {
@@ -39456,6 +39466,164 @@
                     {
                         "name": "Cull",
                         "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.EggCtaLayout",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.EggRaisingController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SelectEgg",
+                        "excluded": false
+                    },
+                    {
+                        "name": "InsidePen",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NearEgg",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateOpenVisibility",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Act",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AddPlacedEggCollider",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Sound",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateHeldEggRotation",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.EggSelectionPanel",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopHint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayHint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Layout",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.HatchCountdownOutline",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Progress#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Progress#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPopulateMesh",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PenWanderer",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Bind",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetWalking",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
                     }
                 ]
             }
@@ -40016,6 +40184,62 @@
                         "simplificationPercentage": 30,
                         "linkCloseVertices": true,
                         "name": "Assets/Texture/Model_3D/forest/Forest.obj"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 85,
+                        "linkCloseVertices": true,
+                        "name": "Assets/_Playable_/3D Model/Monster/Steal an eggg/yeti_obj/block_wing.obj"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": false,
+                        "simplificationPercentage": 30,
+                        "linkCloseVertices": true,
+                        "name": "Assets/_Playable_/3D Model/Monster/Steal an eggg/kingkong_obj/winged_vine_egg.obj"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": false,
+                        "simplificationPercentage": 30,
+                        "linkCloseVertices": true,
+                        "name": "Assets/_Playable_/3D Model/Monster/Steal an eggg/verity_obj/grin_egg.obj"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": false,
+                        "simplificationPercentage": 30,
+                        "linkCloseVertices": true,
+                        "name": "Assets/_Playable_/3D Model/Monster/Steal an eggg/onitiget_obj/armored_egg.obj"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 80,
+                        "linkCloseVertices": true,
+                        "name": "Assets/Game/Models/NewMob/Verity/Verity.fbx"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 40,
+                        "linkCloseVertices": true,
+                        "name": "Assets/MiniGames/StealAnEgg/Models/Monsters/Yeti.fbx"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 40,
+                        "linkCloseVertices": true,
+                        "name": "Assets/MiniGames/StealAnEgg/Models/ProtectMonster/titan_Temple_Guard.fbx"
+                    },
+                    {
+                        "halfPrecision": true,
+                        "useSimplification": true,
+                        "simplificationPercentage": 30,
+                        "linkCloseVertices": true,
+                        "name": "Assets/Mesh/tripo_node_608d4a7a-9910-427b-92e4-e1e4c7493527.asset"
                     }
                 ]
             },

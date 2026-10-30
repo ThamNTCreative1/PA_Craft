@@ -36,6 +36,11 @@ namespace Playable
             _audioSound.Play();
         }
 
+        public void PlayOneShot(AudioClip clip, float volume = 1f)
+        {
+            if (clip != null && _audioSound != null) _audioSound.PlayOneShot(clip, volume);
+        }
+
         public void StopSound()
         {
             _audioSound.Stop();
