@@ -13,7 +13,7 @@ namespace Playable
         private void Update()
         {
             // Check globally, including during the intro when player input is disabled.
-            bool interacted = Input.GetMouseButtonUp(0) || Input.anyKeyDown;
+            bool interacted = Input.GetMouseButtonDown(0) || Input.GetMouseButtonUp(0) || Input.anyKeyDown;
             if (!interacted) return;
             if (_musicRequested && _audioMusic != null && _audioMusic.clip != null && !_audioMusic.isPlaying)
                 _audioMusic.Play();

@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 43685,
-    "creativeName": "C1_2610_HuyNQ_OBP_V02_ThuLH",
+    "applicationID": 29023,
+    "creativeName": "C1_2610_HuyNQ_UACV81_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -17121,11 +17121,11 @@
                     },
                     {
                         "name": "_aspect#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "aspect#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "aspect#set",
@@ -18865,7 +18865,7 @@
                     },
                     {
                         "name": "pixelsPerUnit#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "multipliedPixelsPerUnit#get",
@@ -20847,7 +20847,7 @@
                     },
                     {
                         "name": "safeArea#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "currentResolution#get",
@@ -21811,7 +21811,7 @@
                     },
                     {
                         "name": "pixelsPerUnit#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "packed#get",
@@ -24073,7 +24073,7 @@
                     },
                     {
                         "name": "referencePixelsPerUnit#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sortingLayerName#get",
@@ -31941,7 +31941,7 @@
                     },
                     {
                         "name": "DOLocalJump",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DOPath$1",
@@ -39678,34 +39678,6 @@
                 ]
             },
             {
-                "className": "Playable.TempleRun.EditorPreviewHider",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.TempleRun.RunnerButtonPulse",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.TempleRun.RunnerCamera",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -40223,6 +40195,98 @@
                     },
                     {
                         "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.DemoResponsiveUI",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshLayout",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.PixelStatusIcon",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "OnPopulateMesh",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerDemoIntro",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowCTA",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginRun",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerHotbar",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Select",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
                         "excluded": false
                     }
                 ]
