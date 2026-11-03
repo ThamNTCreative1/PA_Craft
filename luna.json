@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 29023,
-    "creativeName": "C1_2610_HuyNQ_UACV81_ThuLH",
+    "creativeName": "C1_2611_HuyNQ_UAC_V82_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -8299,10 +8299,6 @@
             },
             {
                 "name": "UltimateJoystick.TensionType",
-                "excluded": false
-            },
-            {
-                "name": "Playable.GameManager.GameplayCtaPoint",
                 "excluded": false
             },
             {
@@ -18793,7 +18789,7 @@
                     },
                     {
                         "name": "type#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "fillMethod#get",
@@ -18841,7 +18837,7 @@
                     },
                     {
                         "name": "preserveAspect#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "material#set",
@@ -37780,14 +37776,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "ResetGameplayCtas",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryShowGameplayCTA",
-                        "excluded": false
-                    },
-                    {
                         "name": "CompleteHome",
                         "excluded": false
                     },
@@ -37814,6 +37802,18 @@
                     {
                         "name": "OnDestroy",
                         "excluded": true
+                    },
+                    {
+                        "name": "EndTime#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetHomeReward",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SelectionBackground#get",
+                        "excluded": false
                     }
                 ]
             },
@@ -37899,14 +37899,6 @@
                     },
                     {
                         "name": "ContainsXZ",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CheckMapCTA",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CheckMapZone",
                         "excluded": false
                     },
                     {
@@ -40200,51 +40192,11 @@
                 ]
             },
             {
-                "className": "Playable.TempleRun.DemoResponsiveUI",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RefreshLayout",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.TempleRun.PixelStatusIcon",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "OnPopulateMesh",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.TempleRun.RunnerDemoIntro",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
                         "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
                         "excluded": false
                     },
                     {
@@ -40264,7 +40216,23 @@
                         "excluded": true
                     },
                     {
-                        "name": "OnDisable",
+                        "name": "SelectHider",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SelectSeeker",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SelectRole",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Expire",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
                         "excluded": true
                     }
                 ]
@@ -40287,6 +40255,130 @@
                     },
                     {
                         "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ResponsiveCanvasScaler",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnValidate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplyScaleSettings",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetMatchValue",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.HideSeekActor",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Begin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Stop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.HideSeekTapSurface",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "OnPointerDown",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.HideSeekView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Place",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetControl",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowSelection",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowGameplay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetTime",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshLayout",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyOrientation",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopTutorials",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetSelectionBackground",
                         "excluded": false
                     }
                 ]
@@ -40627,6 +40719,126 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/2D Texture/V08 - ChoosePetHouse (Assets playable) (NgocBTU) (AnhNTN) (HuyNQ) (1)/cat_bg_1.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/Font/Montserrat-Black SDF.asset"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/UI/icon-smiley-yellow.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/UI/icon-seeker-red.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/UI/Joystick/AllAxis_Outline.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/UI/Joystick/AllAxis_Plain.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/TempleRun/UI/Sprites/hand.png"
+                    },
+                    {
+                        "maxWidth": 1024,
+                        "maxHeight": 1024,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/UI/button-jump-alpha30.png"
+                    },
+                    {
+                        "maxWidth": 1024,
+                        "maxHeight": 1024,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/UI/button-character-alpha30.png"
+                    },
+                    {
+                        "maxWidth": 1024,
+                        "maxHeight": 1024,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/UI/button-paint-alpha30.png"
+                    },
+                    {
+                        "maxWidth": 460,
+                        "maxHeight": 460,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/button-hider.png"
+                    },
+                    {
+                        "maxWidth": 1024,
+                        "maxHeight": 1024,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/2D Texture/button-sneeker.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/Font/Arial Rounded MT Bold Regular SDF.asset"
                     }
                 ]
             },

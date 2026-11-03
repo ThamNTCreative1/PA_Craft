@@ -7,28 +7,8 @@ namespace Playable
 {
     public class GameManager : MonoBehaviour
     {
-        public enum GameplayCtaPoint
-        {
-            Steal,
-            PurpleGarden,
-            Desert,
-            Home
-        }
-
         public static GameManager Instance;
         [SerializeField] private bool _eggRaisingMode;
-
-        [Header("Gameplay CTA")] [LunaPlaygroundField("CTA On Steal", 1, "CTA")] [SerializeField]
-        private bool _ctaOnSteal;
-
-        [LunaPlaygroundField("CTA On Sakura", 2, "CTA")] [SerializeField]
-        private bool _ctaOnSakura;
-
-        [LunaPlaygroundField("CTA On Desert", 3, "CTA")] [SerializeField]
-        private bool _ctaOnDesert;
-
-        [LunaPlaygroundField("CTA On Home", 4, "CTA")] [SerializeField]
-        private bool _ctaOnHome;
 
         [SerializeField] private HomeRewardPopup _homeRewardPopup;
         private Coroutine _endCountdown;
@@ -37,6 +17,8 @@ namespace Playable
 
         [Header("End Game")] [LunaPlaygroundField("End Time", 1, "End Game")] [SerializeField]
         private int _endTime = 30;
+        [SerializeField] private bool _tapToCtaMode;
+        public int EndTime => _endTime;
 
         [LunaPlaygroundField("Total Event For CTA", 2, "End Game")] [SerializeField]
         private int _totalEvent;
@@ -47,6 +29,10 @@ namespace Playable
         [LunaPlaygroundAsset("Background Texture", 2, "Audio & Visual")] [SerializeField]
         private Texture2D _backgroundTexture;
 
+        [LunaPlaygroundAsset("Selection Background", 3, "Audio & Visual")]
+        [SerializeField] private Texture2D _selectionBackground;
+        public Texture2D SelectionBackground => _selectionBackground;
+
         [Header("Ad Network")] [LunaPlaygroundField("Applovin", 1, "Ad Network")] [SerializeField]
         private bool _isApplovin;
 
@@ -55,7 +41,6 @@ namespace Playable
         [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
 
-        private int _shownGameplayCtas;
         private int _quantityEvent = 0;
         private int _retryCount;
         public bool IsFirstAttempt => _retryCount == 0;
@@ -68,6 +53,7 @@ namespace Playable
 
         private void Start()
         {
+            if (_tapToCtaMode) return;
             _btnBlock.onClick.AddListener(ShowCTA);
             _btnBlock.gameObject.SetActive(false);
 
@@ -115,39 +101,15 @@ namespace Playable
             _pendingCta = null;
         }
 
-        public void ResetGameplayCtas()
+        public void ResetHomeReward()
         {
-            _shownGameplayCtas = 0;
             if (_homeRewardPopup != null) _homeRewardPopup.Hide();
         }
 
         public void CompleteHome()
         {
-            if (_ctaOnHome)
-            {
-                TryShowGameplayCTA(GameplayCtaPoint.Home);
-                return;
-            }
-            if (!_ctaOnSteal && !_ctaOnSakura && !_ctaOnDesert)
-            {
-                CancelPendingEnd();
-                if (_homeRewardPopup != null) _homeRewardPopup.ShowOpen();
-                return;
-            }
-            ShowWinPanel();
-        }
-
-        public void TryShowGameplayCTA(GameplayCtaPoint point)
-        {
-            bool enabled = point == GameplayCtaPoint.Steal ? _ctaOnSteal :
-                point == GameplayCtaPoint.PurpleGarden ? _ctaOnSakura :
-                point == GameplayCtaPoint.Desert ? _ctaOnDesert :
-                point == GameplayCtaPoint.Home && _ctaOnHome;
-            int bit = 1 << (int)point;
-            if (!enabled || (_shownGameplayCtas & bit) != 0) return;
-            _shownGameplayCtas |= bit;
-            EndGame();
-            ShowCTA();
+            CancelPendingEnd();
+            if (_homeRewardPopup != null) _homeRewardPopup.ShowOpen();
         }
 
         public void CountEvent()
