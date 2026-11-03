@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &5527508697014966175
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.289959
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.6219057
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.26543656
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.83473
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.5506594
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_Name
+      value: S1_gun
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4578435713567409341}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6674871807100846861}
+  m_SourcePrefab: {fileID: 100100000, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+--- !u!1 &4644563676835654350 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d98d431a41908ff428549c0ea95791ef, type: 3}
+  m_PrefabInstance: {fileID: 5527508697014966175}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4578435713567409341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644563676835654350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5d65d9dcccc80d4982e6e5deeea1ddf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponData:
+    damage: 2
+    attackSpeed: 6
+    attackRange: 200
+    startAttackDelay: 0.1
+  projectilePrefab: {fileID: -5780099143870567328, guid: 5919cbc9950317a4387f6a6439026068, type: 3}
+  projectileSpeed: 50
+  muzzleEffect: {fileID: 3204542068909087444, guid: d46d9e99804c76349a98be3f1dc23555, type: 3}
+  poolSize: 20
+  muzzleOffset: {x: 0, y: 1, z: 0}
+  tintColorEnable: 1
+  tintColor: {r: 0.2901961, g: 1, b: 0.3529412, a: 1}
+  shootSound:
+    clip: {fileID: 8300000, guid: 4b0824f0ab840cd43b10c793a57ba6e5, type: 3}
+    channel: 2
+    volume: 1
+    loop: 0
+    delay: 0
+--- !u!114 &-6674871807100846861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644563676835654350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5d65d9dcccc80d4982e6e5deeea1ddf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponData:
+    damage: 10
+    attackSpeed: 1
+    attackRange: 10
+    startAttackDelay: 0
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 10
+  muzzleEffect: {fileID: 0}
+  poolSize: 20
+  muzzleOffset: {x: 0, y: 0, z: 0}
+  tintColorEnable: 0
+  tintColor: {r: 0, g: 0, b: 0, a: 0}
+  shootSound:
+    clip: {fileID: 0}
+    channel: 2
+    volume: 1
+    loop: 1
+    delay: 0
