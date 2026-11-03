@@ -1,0 +1,79 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public partial class LunaController
+{
+    [SerializeField] private RectTransform inventoryGrid,inventoryContent,inventoryListPanel,inventoryDetails;
+    [SerializeField] private Button[] inventorySlots,quickSlots;
+    [SerializeField] private Text inventoryEmpty,inventoryName,inventoryWeight;
+    [SerializeField] private Image inventoryPreview;
+    [SerializeField] private Sprite[] inventoryEggIcons;
+    [SerializeField] private string[] inventoryEggNames;
+    [SerializeField] private Sprite inventoryBatIcon;
+    private int inventoryPage;
+    private bool inventoryVisible;
+    private bool inventoryBatSelected;
+    private Egg inventorySelection;
+    private int EggCount {get{return bag.Count+(IsCarrying && carried.safe?1:0);}}
+    private int InventoryCount {get{return EggCount+(tutorialCompleted?1:0);}}
+    private Egg InventoryEgg(int index){int n=index-(tutorialCompleted?1:0);if(n<0)return null;if(n<bag.Count)return bag[n];return n==bag.Count && IsCarrying && carried.safe?carried:null;}
+    private Sprite EggIcon(Egg egg)
+    {
+        var rule=egg!=null?Rule(egg):null;
+        if(rule!=null)for(int i=0;i<inventoryEggNames.Length;i++)if(inventoryEggNames[i]==rule.name)return inventoryEggIcons[i];
+        return null;
+    }
+    private bool CanUseInventory {get{return !paused && !IsKnockedDown && !openingEgg && !training && !pendingPet && !EndCardVisible && (!IsCarrying || carried.safe);}}
+    private void BindInventoryUI()
+    {
+        if(!inventoryGrid)return;
+        for(int i=0;i<inventorySlots.Length;i++){int slot=i;BindSceneButton(inventorySlots[i].transform,()=>{bool bat=tutorialCompleted && slot==0;inventoryBatSelected=bat;inventorySelection=bat?null:InventoryEgg(slot);RefreshInventoryUI();});}
+        for(int i=0;i<quickSlots.Length;i++){int slot=i;BindSceneButton(quickSlots[i].transform,()=>SelectInventoryEgg(slot));}
+        BindSceneButton(inventoryGrid.Find("Collapse"),()=>panel.SetActive(false));
+        BindSceneButton(inventoryGrid.Find("Details/CTA"),Install);
+    }
+    private void EquipInventoryEgg(Egg selected)
+    {
+        if(selected==carried)return;
+        if(IsCarrying){Egg held=carried;carried=null;held.transform.SetParent(null);held.transform.gameObject.SetActive(false);bag.Add(held);}
+        bag.Remove(selected);selected.transform.gameObject.SetActive(true);TakeEgg(selected);dropButton.gameObject.SetActive(false);
+    }
+    private void SelectInventoryEgg(int index)
+    {
+        if(tutorialCompleted && index==0){inventoryBatSelected=true;inventorySelection=null;RefreshInventoryUI();return;}
+        Egg selected=InventoryEgg(index);if(selected==null || !CanUseInventory)return;
+        if(selected==carried){carried=null;selected.transform.SetParent(null);selected.transform.gameObject.SetActive(false);bag.Add(selected);}
+        else EquipInventoryEgg(selected);
+        UpdateCarryAnimation();RefreshInventoryUI();
+    }
+    private void RefreshInventoryUI()
+    {
+        if(!inventoryGrid)return;
+        int count=InventoryCount;
+        if(inventorySelection!=null && !bag.Contains(inventorySelection) && inventorySelection!=carried)inventorySelection=null;
+        for(int i=0;i<quickSlots.Length;i++)UpdateInventorySlot(quickSlots[i],InventoryEgg(i),false,tutorialCompleted && i==0);
+        int visible=Mathf.Min(count,quickSlots.Length);
+        var bagRect=(RectTransform)bagButton.transform;bagRect.anchorMin=bagRect.anchorMax=new Vector2(.5f,.26f);bagRect.anchoredPosition=new Vector2(visible*51,0);
+        for(int i=0;i<visible;i++)((RectTransform)quickSlots[i].transform).anchoredPosition=new Vector2(-visible*51+i*102,0);
+        if(!inventoryVisible || !panel.activeSelf)return;
+        for(int i=0;i<inventorySlots.Length;i++)UpdateInventorySlot(inventorySlots[i],InventoryEgg(i),false,tutorialCompleted && i==0);
+        inventoryContent.sizeDelta=new Vector2(0,Mathf.Max(3,Mathf.CeilToInt(count/4f))*130+12);
+        inventoryEmpty.gameObject.SetActive(count==0);
+        bool hasSelection=inventorySelection!=null;
+        inventoryDetails.gameObject.SetActive(hasSelection);
+        // The grid itself is centered on screen; the details drawer stays to its right.
+        inventoryPreview.gameObject.SetActive(inventorySelection!=null);inventoryPreview.sprite=EggIcon(inventorySelection);
+        inventoryName.text=inventorySelection!=null?"???":"";
+        inventoryWeight.text=inventorySelection!=null?"Download to play the full game":"";
+        Transform cta=inventoryGrid.Find("Details/CTA");
+        cta.GetComponent<Button>().interactable=inventorySelection!=null && CanUseInventory;
+        cta.Find("Label").GetComponent<Text>().text="DOWNLOAD NOW";
+    }
+    private void UpdateInventorySlot(Button button,Egg egg,bool showEmpty,bool isBat=false)
+    {
+        button.gameObject.SetActive(showEmpty || egg!=null || isBat);button.interactable=egg!=null || isBat;
+        Image icon=button.transform.Find("Icon").GetComponent<Image>();icon.gameObject.SetActive(egg!=null || isBat);icon.sprite=isBat?inventoryBatIcon:EggIcon(egg);
+        button.transform.Find("Label").gameObject.SetActive(false);
+        Image outline=button.transform.Find("Selection").GetComponent<Image>();outline.gameObject.SetActive(isBat?inventoryBatSelected:egg!=null && (egg==inventorySelection || egg==carried));outline.color=egg==carried?new Color(.2f,.8f,1):isBat?new Color(.1f,.65f,1):Color.white;
+    }
+}

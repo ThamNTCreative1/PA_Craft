@@ -1,0 +1,104 @@
+using System.Linq;
+using UnityEditor;
+using UnityEditor.Animations;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+
+public static class StealEggCompactPlayerAnimator
+{
+    public const string Path = "Assets/PlayableGenerated/PlayerDirect.controller";
+    [MenuItem("Steal Egg/Use compact player animations")]
+    public static void Apply()
+    {
+        if (EditorApplication.isPlaying) throw new System.InvalidOperationException("Exit Play Mode first.");
+        var source = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/MiniGames/StealAnEgg/Animation/Character/SAE_MinigameCharacterController.controller");
+        var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(Path);
+        if (!controller)
+        {
+            controller = AnimatorController.CreateAnimatorControllerAtPath(Path);
+            foreach (string name in new[] { "Forward", "MoveSpeed", "Jump", "JumpLeg" }) controller.AddParameter(name, AnimatorControllerParameterType.Float);
+            controller.AddParameter("OnGround", AnimatorControllerParameterType.Bool);
+            var machine = controller.layers[0].stateMachine;
+            string[] names = { "Idle", "Walk", "Run", "Jump", "Fall" };
+            string[] clips = { "Happy Idle", "HumanoidWalk", "HumanoidRun", "HumanoidJumpUp", "HumanoidFall" };
+            var states = new AnimatorState[5];
+            for (int i = 0; i < states.Length; i++)
+            {
+                states[i] = machine.AddState(names[i], new Vector3(260, 50 + i * 90));
+                states[i].motion = source.animationClips.First(c => c.name == clips[i]);
+                states[i].speed = 1;
+                states[i].writeDefaultValues = true;
+            }
+            machine.defaultState = states[0];
+            for (int i = 0; i < states.Length; i++)
+                for (int j = 0; j < states.Length; j++)
+                {
+                    if (i == j) continue;
+                    var transition = states[i].AddTransition(states[j]);
+                    transition.hasExitTime = false; transition.hasFixedDuration = true; transition.duration = .08f;
+                    transition.AddCondition(j < 3 ? AnimatorConditionMode.If : AnimatorConditionMode.IfNot, 0, "OnGround");
+                    if (j == 0) transition.AddCondition(AnimatorConditionMode.Less, .15f, "Forward");
+                    if (j == 1) { transition.AddCondition(AnimatorConditionMode.Greater, .15f, "Forward"); transition.AddCondition(AnimatorConditionMode.Less, .75f, "Forward"); }
+                    if (j == 2) transition.AddCondition(AnimatorConditionMode.Greater, .75f, "Forward");
+                    if (j == 3) transition.AddCondition(AnimatorConditionMode.Greater, 0, "Jump");
+                    if (j == 4) transition.AddCondition(AnimatorConditionMode.Less, 0, "Jump");
+                }
+            controller.AddLayer("Stealing");
+            var layers = controller.layers;
+            layers[1].avatarMask = source.layers.First(l => l.name == "Stealing").avatarMask;
+            layers[1].defaultWeight = 0;
+            var carry = layers[1].stateMachine.AddState("Carry egg");
+            carry.motion = source.animationClips.First(c => c.name == "StealPose");
+            layers[1].stateMachine.defaultState = carry;
+            controller.layers = layers;
+            EditorUtility.SetDirty(controller);
+        }
+        // Stolen eggs use both hands; owned inventory items use the right hand.
+        var carryLayers = controller.layers;
+        int carryIndex = System.Array.FindIndex(carryLayers, l => l.name == "Stealing");
+        carryLayers[carryIndex].avatarMask = source.layers.First(l => l.name == "Stealing").avatarMask;
+        foreach (var state in carryLayers[carryIndex].stateMachine.states)
+        {
+            state.state.motion = source.animationClips.First(c => c.name == "StealPose");
+            state.state.name = "Carry stolen egg two hands";
+            EditorUtility.SetDirty(state.state);
+        }
+        controller.layers = carryLayers;
+        if(!controller.layers.Any(l=>l.name=="OwnedCarry"))controller.AddLayer("OwnedCarry");
+        var ownedLayers=controller.layers;
+        int ownedIndex=System.Array.FindIndex(ownedLayers,l=>l.name=="OwnedCarry");
+        ownedLayers[ownedIndex].avatarMask=source.layers.First(l=>l.name=="Taking").avatarMask;
+        ownedLayers[ownedIndex].defaultWeight=0;
+        var ownedState=ownedLayers[ownedIndex].stateMachine.defaultState;
+        if(!ownedState)ownedState=ownedLayers[ownedIndex].stateMachine.AddState("Carry owned item one hand");
+        ownedState.motion=source.animationClips.First(c=>c.name=="Take");
+        ownedLayers[ownedIndex].stateMachine.defaultState=ownedState;
+        controller.layers=ownedLayers;
+        EditorUtility.SetDirty(ownedState);
+        EditorUtility.SetDirty(controller);
+        var game = Object.FindFirstObjectByType<LunaController>();
+        game.playerAnimator.runtimeAnimatorController = controller;
+        const string npcPath = "Assets/PlayableGenerated/ShopNpcIdle.controller";
+        var npcController = AssetDatabase.LoadAssetAtPath<AnimatorController>(npcPath);
+        if (!npcController)
+        {
+            npcController = AnimatorController.CreateAnimatorControllerAtPath(npcPath);
+            var idle = npcController.layers[0].stateMachine.AddState("Idle");
+            idle.motion = source.animationClips.First(c => c.name == "Happy Idle");
+            npcController.layers[0].stateMachine.defaultState = idle;
+            EditorUtility.SetDirty(npcController);
+        }
+        foreach (var animator in Object.FindObjectsByType<Animator>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            if (animator.name == "NPC.base_character" && animator.runtimeAnimatorController &&
+                AssetDatabase.GetAssetPath(animator.runtimeAnimatorController) == "Assets/MiniGames/Commons/Animations/MinigameCharacterController.controller")
+            {
+                animator.runtimeAnimatorController = npcController;
+                EditorUtility.SetDirty(animator);
+            }
+        EditorUtility.SetDirty(game.playerAnimator);
+        EditorSceneManager.MarkSceneDirty(game.gameObject.scene);
+        EditorSceneManager.SaveScene(game.gameObject.scene);
+        AssetDatabase.SaveAssets();
+        StealEggLunaMeshFilter.Apply();
+    }
+}

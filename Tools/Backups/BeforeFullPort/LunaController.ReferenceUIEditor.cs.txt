@@ -1,0 +1,148 @@
+#if UNITY_EDITOR
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEditor;
+
+public partial class LunaController
+{
+    // Editor authoring only. Every control is serialized into the scene.
+    public void RebuildReferenceUI()
+    {
+        if(Application.isPlaying)throw new System.InvalidOperationException("Stop Play mode before authoring UI.");
+        Transform previous=safeUI.Find("Reference HUD");
+        if(previous)DestroyImmediate(previous.gameObject);
+        RectTransform hud=Rect("Reference HUD",safeUI,Vector2.zero,Vector2.one);
+        CanvasScaler scaler=safeUI.GetComponentInParent<CanvasScaler>();
+        scaler.referenceResolution=new Vector2(1920,864);scaler.matchWidthOrHeight=1;
+        Transform source=safeUI.Find("Original game HUD/Panel");
+        foreach(Transform child in source)child.gameObject.SetActive(child==originalFunctions);
+        source.GetComponent<Image>().raycastTarget=false;
+        // Keep contextual egg actions, while replacing the permanent HUD.
+        ReferenceCounter(source.Find("MoneyFrame"),hud,"Money",new Vector2(.46f,.94f),moneyIcon,new Color(.1f,1,.3f));
+        originalMoney=hud.Find("Money/Value").GetComponent<TMPro.TMP_Text>();
+        ReferenceCounter(source.Find("SpeedPowerFrame"),hud,"Speed",new Vector2(.60f,.94f),speedIcon,new Color(.12f,.6f,1));
+        originalSpeed=hud.Find("Speed/Value").GetComponent<TMPro.TMP_Text>();
+        ReferenceIcon(hud,"Trail","Assets/MiniGames/KeyboardEscape/Sprites/UIs/Trail.png",new Vector2(.047f,.84f),90,"Trail");
+        ReferenceIcon(hud,"Index",UIAsset("SAE_Index.png"),new Vector2(.047f,.69f),90,"Index");
+        ReferenceIcon(hud,"Settings",UIAsset("SAE_Setting.png"),new Vector2(.967f,.94f),64,"");
+        ReferenceIcon(hud,"Pets",UIAsset("SAE_Monster.png"),new Vector2(.965f,.75f),90,"Pets");
+        ReferenceIcon(hud,"Eggs",UIAsset("sae_egg (2).png"),new Vector2(.965f,.60f),90,"Eggs");
+        Image badge=ReferenceImage(hud.Find("Index"),"Badge",UIAsset("SAE_Highlight.png"));
+        ReferencePlace(badge.rectTransform,new Vector2(.84f,.83f),Vector2.zero,new Vector2(30,30));
+        RectTransform slow=Rect("Slow Mode",hud,Vector2.zero,Vector2.zero);
+        ReferencePlace(slow,new Vector2(.052f,.54f),Vector2.zero,new Vector2(125,48));
+        Image track=slow.gameObject.AddComponent<Image>();track.sprite=AssetDatabase.LoadAssetAtPath<Sprite>(UIAsset("SAE_Toggle_Back.png"));
+        slow.gameObject.AddComponent<Button>().targetGraphic=track;
+        Image thumb=ReferenceImage(slow,"Thumb",UIAsset("SAE_Toggle.png"));
+        ReferencePlace(thumb.rectTransform,new Vector2(.25f,.5f),Vector2.zero,new Vector2(57,43));
+        Label("Label",slow,"Slow Mode",20,new Vector2(-.2f,-.65f),new Vector2(1.2f,0));
+        Image day=ReferenceImage(hud,"Day",UIAsset("SAE_Sun.png"));
+        ReferencePlace(day.rectTransform,new Vector2(.042f,.94f),Vector2.zero,new Vector2(75,75));
+        Label("Label",day.transform,"DAY",24,new Vector2(1,0),new Vector2(2.4f,1));
+        // Fixed square dimensions keep controls circular on every aspect ratio.
+        ReferencePlace((RectTransform)joystick.transform,new Vector2(.126f,.34f),Vector2.zero,new Vector2(200,200));
+        Image pad=joystick.GetComponent<Image>();pad.sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/MiniGames/Commons/Textures/Ellipse 127.png");pad.color=new Color(1,1,1,.65f);
+        ReferencePlace(joystick.knob,new Vector2(.5f,.5f),Vector2.zero,new Vector2(116,116));
+        Image knob=joystick.knob.GetComponent<Image>();knob.sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/MiniGames/Commons/Textures/Group 857.png");knob.color=Color.white;
+        hintHand.gameObject.SetActive(false);
+        ReferencePlace((RectTransform)jumpButton.transform,new Vector2(.9f,.32f),Vector2.zero,new Vector2(145,145));
+        jumpButton.GetComponent<Image>().sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/MiniGames/Commons/Textures/Ellipse 127.png");
+        jumpButton.GetComponent<Image>().type=Image.Type.Simple;jumpButton.GetComponent<Image>().color=new Color(1,1,1,.7f);
+        Transform oldJump=jumpButton.transform.Find("Icon");if(oldJump)DestroyImmediate(oldJump.gameObject);
+        Image jumpIcon=ReferenceImage(jumpButton.transform,"Icon","Assets/MiniGames/Commons/Textures/jump.png");
+        ReferencePlace(jumpIcon.rectTransform,new Vector2(.5f,.5f),Vector2.zero,new Vector2(106,106));
+        jumpButton.transform.Find("Label").gameObject.SetActive(false);
+        ReferenceIcon(hud,"Hand",UIAsset("Sae_Attack.png"),new Vector2(.827f,.44f),100,"");
+        // Reuse the existing bag callback and label as a compact count badge.
+        ReferencePlace((RectTransform)bagButton.transform,new Vector2(.527f,.26f),Vector2.zero,new Vector2(94,94));
+        Image bagBackground=bagButton.GetComponent<Image>();bagBackground.sprite=AssetDatabase.LoadAssetAtPath<Sprite>(UIAsset("SAE_Inventory_Highlight.png"));bagBackground.color=Color.white;bagBackground.type=Image.Type.Simple;
+        Transform oldIcon=bagButton.transform.Find("Icon");if(oldIcon)DestroyImmediate(oldIcon.gameObject);
+        Image bagIcon=ReferenceImage(bagButton.transform,"Icon",UIAsset("sae_bag.png"));
+        ReferencePlace(bagIcon.rectTransform,new Vector2(.5f,.5f),Vector2.zero,new Vector2(74,74));
+        bagButtonText.transform.SetAsLastSibling();bagButtonText.fontSize=20;
+        Place(bagButtonText.rectTransform,new Vector2(.65f,0),new Vector2(1,.3f));bagButtonText.text="";
+        quickSlots=new Button[6];
+        for(int i=0;i<quickSlots.Length;i++)
+        {
+            quickSlots[i]=AuthorInventorySlot(hud,"Quick Slot "+i,new Vector2(.5f,.26f),Vector2.zero,94);
+            quickSlots[i].gameObject.SetActive(false);
+        }
+        Transform oldInventory=panel.transform.Find("Inventory");if(oldInventory)DestroyImmediate(oldInventory.gameObject);
+        inventoryGrid=Rect("Inventory",panel.transform,new Vector2(.05f,.08f),new Vector2(.95f,.82f));
+        inventoryGrid.anchorMin=Vector2.zero;inventoryGrid.anchorMax=Vector2.one;inventoryGrid.offsetMin=Vector2.zero;inventoryGrid.offsetMax=Vector2.zero;
+        inventorySlots=new Button[24];
+        inventoryListPanel=Box("Grid Window",inventoryGrid,new Vector2(.5f,.5f),new Vector2(.5f,.5f),new Color(.02f,.04f,.035f,.9f));
+        ReferencePlace(inventoryListPanel,new Vector2(.5f,.5f),Vector2.zero,new Vector2(600,340));
+        RectTransform left=inventoryListPanel;
+        left.GetComponent<Image>().sprite=null;left.GetComponent<Image>().type=Image.Type.Simple;
+        RectTransform scroll=Rect("Scroll View",left,Vector2.zero,Vector2.one);scroll.offsetMin=new Vector2(10,10);scroll.offsetMax=new Vector2(-22,-10);
+        Image viewportBg=scroll.gameObject.AddComponent<Image>();viewportBg.color=new Color(.025f,.05f,.02f,.3f);
+        Mask mask=scroll.gameObject.AddComponent<Mask>();mask.showMaskGraphic=false;
+        inventoryContent=Rect("Content",scroll,Vector2.zero,Vector2.one);inventoryContent.anchorMin=new Vector2(0,1);inventoryContent.anchorMax=Vector2.one;inventoryContent.pivot=new Vector2(.5f,1);
+        GridLayoutGroup grid=inventoryContent.gameObject.AddComponent<GridLayoutGroup>();grid.cellSize=new Vector2(120,120);grid.spacing=new Vector2(12,10);grid.constraint=GridLayoutGroup.Constraint.FixedColumnCount;grid.constraintCount=4;grid.padding=new RectOffset(6,6,6,6);
+        ScrollRect scrollRect=scroll.gameObject.AddComponent<ScrollRect>();scrollRect.viewport=scroll;scrollRect.content=inventoryContent;scrollRect.horizontal=false;scrollRect.vertical=true;scrollRect.movementType=ScrollRect.MovementType.Clamped;scrollRect.scrollSensitivity=35;
+        RectTransform scrollTrack=Rect("Scroll Track",left,new Vector2(.96f,.05f),new Vector2(.99f,.95f));
+        Image trackImage=scrollTrack.gameObject.AddComponent<Image>();trackImage.color=new Color(.12f,.15f,.12f,.65f);
+        RectTransform handle=Rect("Handle",scrollTrack,new Vector2(.5f,.8f),new Vector2(.5f,1));handle.offsetMin=new Vector2(-3,0);handle.offsetMax=new Vector2(3,0);
+        Image handleImage=handle.gameObject.AddComponent<Image>();handleImage.color=Color.white;
+        Scrollbar scrollbar=scrollTrack.gameObject.AddComponent<Scrollbar>();scrollbar.handleRect=handle;scrollbar.targetGraphic=handleImage;scrollbar.direction=Scrollbar.Direction.BottomToTop;scrollbar.size=.35f;scrollbar.numberOfSteps=0;
+        scrollRect.verticalScrollbar=scrollbar;scrollRect.verticalScrollbarVisibility=ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
+        for(int i=0;i<inventorySlots.Length;i++)inventorySlots[i]=AuthorInventorySlot(inventoryContent,"Slot "+i,Vector2.zero,Vector2.zero,120);
+        inventoryEmpty=Label("Empty",left,"YOUR BAG IS EMPTY",25,new Vector2(.05f,.4f),new Vector2(.95f,.6f));
+        RectTransform detail=Box("Details",inventoryGrid,new Vector2(.5f,.5f),new Vector2(.5f,.5f),new Color(.02f,.04f,.035f,.72f));inventoryDetails=detail;
+        ReferencePlace(detail,new Vector2(.5f,.5f),new Vector2(440,0),new Vector2(260,340));detail.gameObject.SetActive(false);
+        detail.GetComponent<Image>().sprite=null;detail.GetComponent<Image>().type=Image.Type.Simple;
+        inventoryPreview=ReferenceImage(detail,"Preview",UIAsset("sae_egg (2).png"));ReferencePlace(inventoryPreview.rectTransform,new Vector2(.5f,.72f),Vector2.zero,new Vector2(160,160));
+        inventoryName=Label("Name",detail,"???",22,new Vector2(.04f,.48f),new Vector2(.96f,.59f));
+        inventoryWeight=Label("Download Prompt",detail,"Download to play the full game",16,new Vector2(.04f,.36f),new Vector2(.96f,.47f));
+        Button cta=ButtonText("CTA",detail,"DOWNLOAD NOW",new Vector2(.08f,.06f),new Vector2(.92f,.23f),()=>{});cta.GetComponent<Image>().color=new Color(.2f,.88f,.24f);
+        inventoryGrid.gameObject.SetActive(false);
+        Button collapse=ButtonText("Collapse",inventoryGrid,"v",new Vector2(.5f,.5f),new Vector2(.5f,.5f),()=>{});ReferencePlace((RectTransform)collapse.transform,new Vector2(.5f,.5f),new Vector2(260,200),new Vector2(62,48));collapse.GetComponent<Image>().color=new Color(.84f,.12f,.14f);collapse.transform.SetAsLastSibling();
+        foreach(Graphic graphic in hud.GetComponentsInChildren<Graphic>(true))graphic.raycastTarget=graphic.GetComponent<Button>()!=null;
+        ReferencePlace((RectTransform)panel.transform,new Vector2(.5f,.5f),Vector2.zero,new Vector2(1200,370));
+        if(!panel.transform.Find("Sound"))ButtonText("Sound",panel.transform,"SOUND ON / OFF",new Vector2(.2f,.32f),new Vector2(.8f,.47f),()=>{if(muted)Unmute();else Mute();});
+        inventoryEggNames=new string[]{"Chicken_Egg","Dog_Egg","Bird_Eggs","Burrowing_Owl_Egg","Raccoon_Egg","Bear_Egg","Fox_Egg","Br br br Patapim_Egg","Frog_Egg","Duckling_Egg","Catfish_Egg","Turtle_Egg","Trippi Troppi_Egg","Swan_Egg","Axolotl_Egg","Leviathan_Egg","Jerboa_Egg","Fennec_Eggs","Camel_Egg","FrigoCameri_Egg","Snake_Egg","Scorpion_Egg","Sand_Spider_Egg","Royal_Sphinx_Egg"};
+        inventoryEggIcons=new Sprite[inventoryEggNames.Length];
+        for(int i=0;i<inventoryEggNames.Length;i++)inventoryEggIcons[i]=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/MiniGames/StealAnEgg/Sprites/EggThumbnails/"+inventoryEggNames[i]+".png");
+        inventoryBatIcon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/MiniGames/StealAnEgg/Sprites/Weapons/Batball.png");
+        inventoryPreview.raycastTarget=false;
+        ReferencePlace(inventoryPreview.rectTransform,new Vector2(.5f,.76f),Vector2.zero,new Vector2(140,140));
+        Place(inventoryName.rectTransform,new Vector2(.04f,.42f),new Vector2(.96f,.50f));
+        inventoryWeight.fontSize=14;Place(inventoryWeight.rectTransform,new Vector2(.04f,.32f),new Vector2(.96f,.40f));
+        toast.fontSize=22;Place(toast.rectTransform,new Vector2(.22f,.12f),new Vector2(.78f,.18f));
+        hud.SetSiblingIndex(safeUI.childCount-1);joystick.transform.SetAsLastSibling();jumpButton.transform.SetAsLastSibling();bagButton.transform.SetAsLastSibling();
+        hatchText.transform.SetAsLastSibling();panel.transform.SetAsLastSibling();endCard.transform.SetAsLastSibling();
+        EditorUtility.SetDirty(this);
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
+    }
+    private string UIAsset(string name){return "Assets/MiniGames/StealAnEgg/Sprites/UIs/"+name;}
+    private Button AuthorInventorySlot(Transform parent,string name,Vector2 anchor,Vector2 position,float size)
+    {
+        Button slot=ReferenceIcon(parent,name,UIAsset("SAE_Inventory_Slot.png"),anchor,size,"");
+        ((RectTransform)slot.transform).anchoredPosition=position;
+        Image icon=ReferenceImage(slot.transform,"Icon",UIAsset("sae_egg (2).png"));
+        Place(icon.rectTransform,new Vector2(.06f,.06f),new Vector2(.94f,.94f));icon.gameObject.SetActive(false);
+        Label("Label",slot.transform,"",14,new Vector2(.02f,.02f),new Vector2(.98f,.23f));
+        Image outline=ReferenceImage(slot.transform,"Selection",UIAsset("SAE_Inventory_Highlight.png"));Place(outline.rectTransform,Vector2.zero,Vector2.one);outline.raycastTarget=false;outline.gameObject.SetActive(false);
+        return slot;
+    }
+    private void ReferencePlace(RectTransform rt,Vector2 anchor,Vector2 position,Vector2 size)
+    {rt.anchorMin=rt.anchorMax=anchor;rt.pivot=new Vector2(.5f,.5f);rt.anchoredPosition=position;rt.sizeDelta=size;rt.localScale=Vector3.one;}
+    private Image ReferenceImage(Transform parent,string name,string path)
+    {RectTransform rt=Rect(name,parent,Vector2.zero,Vector2.one);Image img=rt.gameObject.AddComponent<Image>();img.sprite=AssetDatabase.LoadAssetAtPath<Sprite>(path);img.preserveAspect=true;img.raycastTarget=false;return img;}
+    private Button ReferenceIcon(Transform parent,string name,string path,Vector2 anchor,float size,string caption)
+    {
+        Image img=ReferenceImage(parent,name,path);ReferencePlace(img.rectTransform,anchor,Vector2.zero,new Vector2(size,size));
+        Button b=img.gameObject.AddComponent<Button>();b.targetGraphic=img;img.raycastTarget=true;
+        if(caption!="")Label("Label",img.transform,caption,26,new Vector2(-.45f,-.25f),new Vector2(1.45f,.15f));
+        return b;
+    }
+    private void ReferenceCounter(Transform template,Transform parent,string name,Vector2 anchor,Sprite sprite,Color color)
+    {
+        RectTransform rt=Rect(name,parent,Vector2.zero,Vector2.zero);ReferencePlace(rt,anchor,Vector2.zero,new Vector2(220,76));
+        Image icon=ReferenceImage(rt,"Icon",AssetDatabase.GetAssetPath(sprite));ReferencePlace(icon.rectTransform,new Vector2(0,.5f),Vector2.zero,new Vector2(76,76));
+        TMPro.TMP_Text label=Instantiate(template.GetComponentInChildren<TMPro.TMP_Text>(true),rt);label.name="Value";label.gameObject.SetActive(true);
+        Place(label.rectTransform,new Vector2(.2f,0),new Vector2(1,1));label.fontSize=40;label.enableAutoSizing=true;label.fontSizeMin=20;label.fontSizeMax=40;label.color=color;label.alignment=TMPro.TextAlignmentOptions.MidlineLeft;label.raycastTarget=false;
+    }
+}
+#endif

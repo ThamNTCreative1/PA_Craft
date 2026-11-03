@@ -1,0 +1,687 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+/// <summary>Standalone gameplay for the Playworks export; no original game framework dependencies.</summary>
+public partial class LunaController : MonoBehaviour
+{
+    [Serializable] public class Zone
+    {
+        public string name;
+        public Transform root, guardian;
+        public Transform[] nests;
+        public GameObject[] eggPrefabs, petPrefabs;
+        public PlayableEggRules[] eggRules;
+        public float attackDistance=3;
+        public float guardianSpeed=7;
+        [NonSerialized] public Vector3 guardianHome;
+        [NonSerialized] public Quaternion guardianRotation;
+        [NonSerialized] public Animator animator;
+        [NonSerialized] public GameObject warningMark,sleepingEffect;
+    }
+    public enum TutorialStep { FindEgg, BringHome, Incubate, Hatch, Collect, Explore, Equip, Train }
+    public Zone[] zones;
+    public Transform player, home, safePoint;
+    public BoxCollider playerCoopArea;
+    public Transform trainingPoint;
+    public Camera gameCamera;
+    public Animator playerAnimator;
+    public PlayableRagdoll ragdoll;
+    public Font uiFont;
+    public Material guideMaterial;
+    public Sprite roundedSprite, circleSprite;
+    public Sprite moneyIcon,speedIcon;
+    public AudioClip stealSound, deliverSound, hatchSound, caughtSound;
+    public GameObject eggBreakEffect;
+    public float eggOpenDuration=1f;
+    private bool openingEgg;
+    private float eggOpenClock;
+    private Quaternion eggOpenRotation;
+    public GameObject sourceHud;
+    public int capturesForEndCard=3;
+    public float moveSpeed=9, incubationSeconds=5;
+    public float jumpHeight=2.5f, gravity=25f;
+    public float baseMoveSpeed=8,speedPowerMultiplier=.05f,trainingPowerPerTick=10;
+    public float cameraDistance=9,cameraPitch=30;
+    public int startingMoney=100;
+    public float SpeedPower {get;private set;}
+    public bool slowMode;
+    public string androidStoreUrl="", iosStoreUrl="";
+    public TutorialStep Step {get; private set;}
+    public int Delivered {get; private set;}
+    public int Money {get; private set;}
+    public bool IsCarrying {get{return carried!=null;}}
+    public int BagCount {get{return bag.Count;}}
+    public int PlacedPets {get{return pets.Count;}}
+    public bool HasPendingPet {get{return pendingPet!=null;}}
+    public bool EndCardVisible {get{return endCard && endCard.activeSelf;}}
+    private class Egg
+    {
+        public Transform transform;
+        public Vector3 origin, scale;
+        public Quaternion rotation;
+        public Zone zone;
+        public int variant;
+        public bool banked;
+        public bool safe;
+        public bool dropped, retrieved;
+        public float size=1;
+    }
+    private readonly List<Egg> eggs=new List<Egg>();
+    private readonly List<Transform> pets=new List<Transform>();
+    private readonly List<Egg> bag=new List<Egg>();
+    private Transform pendingPet;
+    private int pendingPetIncome,totalIncome;
+    private bool tutorialCompleted, training;
+    private float trainingClock;
+    private int selectedZone;
+    public bool IsKnockedDown {get{return hitZone!=null;}}
+    public float hitWindup=.25f, knockdownDuration=1.6f, getUpDuration=.5f;
+    private Zone hitZone;
+    private float hitClock;
+    private bool hitApplied;
+    private Vector3 hitDirection,modelPosition;
+    private Quaternion modelRotation,attackerRotation;
+    private CharacterController motor;
+    private Egg carried,nearby,incubating;
+    private Transform actionTarget;
+    private Transform carryPoint;
+    private Transform carryHand;
+    private Vector3 spawn,cameraVelocity;
+    private Quaternion spawnRotation;
+    private float verticalSpeed,chaseDelay,catchCooldown,incubationEnd,incomeClock,messageUntil,yaw;
+    private bool ended,sdkStarted,paused;
+    private LineRenderer guide;
+    [SerializeField] private Text instruction,subtitle,moneyText,stageText,actionText,toast,hatchText,panelTitle,panelBody;
+    [SerializeField] private Button actionButton,dropButton;
+    [SerializeField] private Button jumpButton;
+    [SerializeField] private Button bagButton;
+    [SerializeField] private Text bagButtonText;
+    private readonly Dictionary<string,GameObject> originalActions=new Dictionary<string,GameObject>();
+    [SerializeField] private RectTransform originalFunctions;
+    [SerializeField] private TMPro.TMP_Text originalMoney,originalSpeed;
+    [SerializeField] private GameObject endCard,panel;
+    [SerializeField] private RectTransform safeUI,hintHand;
+    [SerializeField] private PlayableJoystick joystick;
+    private AudioSource sound;
+    private bool muted;
+    private readonly Color navy=new Color(.06f,.10f,.22f,.94f);
+
+    private void Awake()
+    {
+        Luna.Unity.LifeCycle.OnPause+=Pause; Luna.Unity.LifeCycle.OnResume+=Resume;
+        Luna.Unity.LifeCycle.OnMute+=Mute; Luna.Unity.LifeCycle.OnUnmute+=Unmute;
+    }
+    private void Start()
+    {
+        spawn=player.position;spawnRotation=player.rotation;
+        Money=startingMoney;
+        sound=gameObject.AddComponent<AudioSource>();sound.playOnAwake=false;sound.volume=muted?0:.65f;
+        motor=player.GetComponent<CharacterController>();
+        if(!motor)motor=player.gameObject.AddComponent<CharacterController>();
+        motor.height=2;motor.radius=.4f;motor.center=Vector3.up;
+        carryPoint=new GameObject("Carried egg").transform;carryPoint.SetParent(player,false);
+        carryPoint.localPosition=new Vector3(0,1.5f,1.1f);
+        if(playerAnimator && playerAnimator.isHuman)carryHand=playerAnimator.GetBoneTransform(HumanBodyBones.RightHand);
+        foreach(Zone zone in zones)
+        {
+            if(zone.guardian) {zone.guardianHome=zone.guardian.position;zone.guardianRotation=zone.guardian.rotation;zone.animator=zone.guardian.GetComponentInChildren<Animator>();}
+            foreach(Transform t in zone.guardian.GetComponentsInChildren<Transform>(true))
+            {if(t.name=="Exclamation_mark")zone.warningMark=t.gameObject;if(t.name=="[VFX] Sleeping")zone.sleepingEffect=t.gameObject;}
+            for(int n=0;n<zone.nests.Length;n++)
+            {
+                if(zone.eggPrefabs.Length==0)continue;
+                int variant=RollEgg(zone);
+                GameObject obj=Instantiate(zone.eggPrefabs[variant],zone.nests[n].position,Quaternion.Euler(0,UnityEngine.Random.Range(0,180),0));
+                obj.name=zone.name+" Egg "+(n+1);DisablePhysics(obj);
+                Egg egg=new Egg();egg.transform=obj.transform;egg.origin=obj.transform.position;egg.rotation=obj.transform.rotation;egg.zone=zone;egg.variant=variant;
+                PlayableEggRules rule=Rule(egg);egg.size=rule!=null?rule.RollSize():1;obj.transform.localScale=Vector3.one*Mathf.Clamp(egg.size/5,1,6);
+                egg.scale=obj.transform.localScale;eggs.Add(egg);
+            }
+        }
+        guide=new GameObject("Tutorial route").AddComponent<LineRenderer>();guide.material=guideMaterial;
+        guide.startWidth=.18f;guide.endWidth=.18f;guide.positionCount=2;guide.useWorldSpace=true;
+        guide.startColor=new Color(1,.88f,.1f);guide.endColor=Color.white;
+        BindSceneUI();SetStep(TutorialStep.FindEgg);
+        gameCamera.transform.position=player.position+Vector3.up*1.65f+Quaternion.Euler(cameraPitch,0,0)*Vector3.back*cameraDistance;gameCamera.transform.rotation=Quaternion.Euler(cameraPitch,0,0);
+        Luna.Unity.LifeCycle.GameLoaded();
+    }
+    private void OnDestroy()
+    {
+        Luna.Unity.LifeCycle.OnPause-=Pause;Luna.Unity.LifeCycle.OnResume-=Resume;
+        Luna.Unity.LifeCycle.OnMute-=Mute;Luna.Unity.LifeCycle.OnUnmute-=Unmute;
+    }
+    private void Pause(){paused=true;}
+    private void Resume(){paused=false;}
+    private void Mute(){muted=true;if(sound)sound.volume=0;}
+    private void Unmute(){muted=false;if(sound)sound.volume=.65f;}
+    private void PlaySound(AudioClip clip){if(sound && clip)sound.PlayOneShot(clip);}
+    private void Update()
+    {
+        if(!player || paused)return;
+        UpdateSafeArea();
+        if(!EndCardVisible && !panel.activeSelf)
+        {
+            if(IsKnockedDown)UpdateKnockdown();else if(training)UpdateTraining();else MovePlayer();
+            if(!IsKnockedDown)UpdateInteraction();UpdateGuardians();
+            if(Input.GetKeyDown(KeyCode.E))Interact();if(Input.GetKeyDown(KeyCode.Q))DropEgg();
+        }
+        else if(playerAnimator)playerAnimator.SetFloat("Forward",0);
+        UpdateIncubation();UpdateGuide();
+        incomeClock+=Time.deltaTime;
+        if(incomeClock>=1 && pets.Count>0){Money+=totalIncome;incomeClock=0;}
+        moneyText.text="$ "+Money;
+        if(originalMoney)originalMoney.text="$"+(Money>=1000?(Money/1000f).ToString("0.#")+"K":Money.ToString());
+        if(originalSpeed)originalSpeed.text=SpeedPower.ToString("0");
+        if(Time.time>messageUntil)toast.text="";
+        if(bagButton)
+        {
+            bagButton.interactable=!EndCardVisible;
+            bagButtonText.text=InventoryCount>0?InventoryCount.ToString():"";
+        }
+        RefreshInventoryUI();
+        hintHand.anchoredPosition=new Vector2(Mathf.Sin(Time.time*2)*25,-30+Mathf.Cos(Time.time*2)*20);
+    }
+    private void LateUpdate()
+    {
+        if(!player || paused)return;
+        if(carryHand && ((IsCarrying && carried.safe) || pendingPet))
+        {
+            carryPoint.position=carryHand.position+Vector3.up*.1f+player.forward*.1f;
+            carryPoint.rotation=player.rotation;
+        }
+        else if(carryPoint){carryPoint.localPosition=new Vector3(0,1.5f,1.1f);carryPoint.localRotation=Quaternion.identity;}
+        if(Input.GetMouseButton(1))yaw+=Input.GetAxis("Mouse X")*3;
+        cameraDistance=Mathf.Clamp(cameraDistance-Input.GetAxis("Mouse ScrollWheel")*1000*Time.deltaTime,9,30);
+        Vector3 target=player.position+Vector3.up*1.65f;
+        gameCamera.transform.position=target+Quaternion.Euler(cameraPitch,yaw,0)*Vector3.back*cameraDistance;
+        gameCamera.transform.LookAt(target);
+        UpdateIncubationLabelPosition();
+        if((originalFunctions || actionButton) && actionTarget && !IsKnockedDown && !panel.activeSelf)
+        {
+            Vector3 top=actionTarget.position+Vector3.up;
+            Renderer[] renderers=actionTarget.GetComponentsInChildren<Renderer>();
+            if(renderers.Length>0)
+            {
+                float maxY=renderers[0].bounds.max.y;
+                for(int i=1;i<renderers.Length;i++)maxY=Mathf.Max(maxY,renderers[i].bounds.max.y);
+                top.y=maxY;
+            }
+            Vector3 screen=gameCamera.WorldToScreenPoint(top+Vector3.up*.25f);
+            if(screen.z>0)
+            {
+                if(originalFunctions)originalFunctions.position=screen;
+                if(actionButton)actionButton.transform.position=screen;
+            }
+        }
+    }
+    public void OrbitCamera(Vector2 delta){if(paused || EndCardVisible)return;yaw+=delta.x*.15f;cameraPitch=Mathf.Clamp(cameraPitch-delta.y*.15f,-10,75);}
+    private void MovePlayer()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))Jump();
+        Vector2 input=Vector2.ClampMagnitude(joystick.Value+new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical")),1);
+        if(input.sqrMagnitude>.01f && !sdkStarted){sdkStarted=true;Luna.Unity.LifeCycle.GameStarted();Track("first_move",1);hintHand.gameObject.SetActive(false);}
+        Vector3 forward=gameCamera.transform.forward;forward.y=0;forward.Normalize();
+        Vector3 right=gameCamera.transform.right;right.y=0;right.Normalize();
+        Vector3 direction=forward*input.y+right*input.x;
+        if(direction.sqrMagnitude>.01f)player.rotation=Quaternion.Slerp(player.rotation,Quaternion.LookRotation(direction),Time.deltaTime*14);
+        if(motor.isGrounded && verticalSpeed<0)verticalSpeed=-2;
+        verticalSpeed-=gravity*Time.deltaTime;
+        CollisionFlags collisions=motor.Move((direction*(slowMode?baseMoveSpeed:moveSpeed)+Vector3.up*verticalSpeed)*Time.deltaTime);
+        if((collisions & CollisionFlags.Above)!=0 && verticalSpeed>0)verticalSpeed=0;
+        if(player.position.y< -12)Respawn();
+        if(playerAnimator)
+        {
+            playerAnimator.SetFloat("Forward",input.magnitude);playerAnimator.SetFloat("MoveSpeed",motor.isGrounded?input.magnitude:1);playerAnimator.SetBool("OnGround",motor.isGrounded);
+            playerAnimator.SetFloat("Jump",verticalSpeed);playerAnimator.SetFloat("JumpLeg",0);
+            UpdateCarryAnimation();
+        }
+    }
+    public void Jump()
+    {
+        if(paused || IsKnockedDown || training || EndCardVisible || (panel && panel.activeSelf))return;
+        if(!motor || !motor.enabled || !motor.isGrounded || verticalSpeed>0)return;
+        verticalSpeed=Mathf.Sqrt(2*Mathf.Max(.01f,gravity)*Mathf.Max(.1f,jumpHeight));
+        if(playerAnimator){playerAnimator.SetBool("OnGround",false);playerAnimator.SetFloat("Jump",verticalSpeed);}
+    }
+    private void UpdateInteraction()
+    {
+        if(openingEgg){SetAction("",false);return;}
+        nearby=null;float best=3.4f;
+        foreach(Egg egg in eggs)if(!egg.banked && !egg.retrieved && egg!=carried && egg.transform)
+        {float d=FlatDistance(player.position,egg.transform.position);if(d<best){best=d;nearby=egg;}}
+        bool atHome=IsInsidePlayerCoop();
+        if(IsCarrying && !carried.safe && player.position.z<=safePoint.position.z)GatherEgg();
+        if(training)SetAction("STOP TRAINING",true);
+        else if(pendingPet && atHome)SetAction("EQUIP PET",true);
+        else if(IsCarrying && carried.safe && atHome && incubating==null)SetAction("INCUBATE",true);
+        else if(IsCarrying)SetAction("BRING IT HOME",false);
+        else if(incubating!=null && Time.time>=incubationEnd && atHome)SetAction("HATCH!",true);
+        else if(trainingPoint && FlatDistance(player.position,trainingPoint.position)<3)SetAction("TRAIN",true);
+        else if(nearby!=null && !pendingPet)SetAction("STEAL",true);
+        else SetAction("",false);
+        dropButton.gameObject.SetActive(IsCarrying && !carried.safe);
+    }
+    private void SetAction(string value,bool enabled)
+    {
+        actionTarget=value=="STEAL" && nearby!=null?nearby.transform:value=="HATCH!" && incubating!=null?incubating.transform:null;
+        actionButton.gameObject.SetActive(originalActions.Count==0 && value!="");actionButton.interactable=enabled;actionText.text=value;
+        foreach(var pair in originalActions)pair.Value.SetActive(pair.Key==value && enabled);
+        if(!actionTarget)
+        {
+            if(originalFunctions)originalFunctions.anchoredPosition=Vector2.zero;
+            if(actionButton)((RectTransform)actionButton.transform).anchoredPosition=Vector2.zero;
+        }
+    }
+    public void Interact()
+    {
+        if(paused || IsKnockedDown || EndCardVisible || panel.activeSelf || openingEgg)return;
+        if(training){training=false;return;}
+        if(pendingPet && IsInsidePlayerCoop()){EquipPet();return;}
+        if(IsCarrying && carried.safe && IsInsidePlayerCoop() && incubating==null){Incubate();return;}
+        if(incubating!=null && Time.time>=incubationEnd && IsInsidePlayerCoop()){Hatch();return;}
+        if(!IsCarrying && trainingPoint && FlatDistance(player.position,trainingPoint.position)<3){BeginTraining();return;}
+        if(!IsCarrying && !pendingPet && nearby!=null && !nearby.banked && !nearby.retrieved)TakeEgg(nearby);
+    }
+    private void TakeEgg(Egg egg)
+    {
+        carried=egg;egg.dropped=false;carried.transform.SetParent(carryPoint,false);carried.transform.localPosition=Vector3.zero;carried.transform.localRotation=Quaternion.identity;
+        UpdateCarryAnimation();
+        if(egg.safe){SetStep(TutorialStep.Incubate);Notify("Take the egg to your coop.");return;}
+        chaseDelay=Time.time+.75f;Track("egg_stolen",Array.IndexOf(zones,egg.zone)+1);SetStep(TutorialStep.BringHome);Notify("THE GUARD IS COMING! RUN HOME!");
+        PlaySound(stealSound);
+    }
+    public void DropEgg()
+    {
+        if(!IsCarrying || carried.safe)return;
+        carried.transform.SetParent(null);carried.transform.position=player.position+player.forward;
+        bool wasSafe=carried.safe;
+        carried.transform.rotation=carried.rotation;carried.dropped=true;carried=null;
+        UpdateCarryAnimation();
+        SetStep(TutorialStep.FindEgg);Notify(wasSafe?"Egg dropped. Pick it up to take it to your coop.":"Egg dropped! The guardian will retrieve it.");
+    }
+    private void RestoreEgg(Egg egg){egg.transform.SetParent(null);egg.transform.position=egg.origin;egg.transform.rotation=egg.rotation;egg.transform.localScale=egg.scale;egg.dropped=false;egg.retrieved=false;egg.transform.gameObject.SetActive(true);}
+    private void GatherEgg()
+    {
+        if(!IsCarrying || carried.safe)return;
+        Egg egg=carried;carried=null;egg.safe=true;egg.banked=true;
+        egg.transform.SetParent(null);egg.transform.gameObject.SetActive(false);bag.Add(egg);
+        dropButton.gameObject.SetActive(false);UpdateCarryAnimation();
+        Delivered++;Track("egg_delivered",Delivered);PlaySound(deliverSound);SetStep(TutorialStep.Incubate);Notify("EGG SAVED! Open BAG to take it to your coop.");
+    }
+    public void ToggleBagEgg()
+    {
+        if(paused || EndCardVisible)return;
+        inventoryPage=0;OpenPanel("INVENTORY");RefreshInventoryUI();
+    }
+    private void Incubate()
+    {
+        if(!IsInsidePlayerCoop())return;
+        if(incubating!=null){Notify("Hatch the egg in your coop first!");return;}
+        if(IsCarrying && carried.safe){incubating=carried;carried=null;}
+        else return;
+        incubating.banked=true;incubating.transform.SetParent(null);incubating.transform.gameObject.SetActive(true);
+        PlaceEggOnCoopFloor(incubating);
+        UpdateCarryAnimation();
+        PlayableEggRules rule=Rule(incubating);
+        incubationEnd=Time.time+(!tutorialCompleted?3:rule!=null?rule.incubationTime:incubationSeconds);SetStep(TutorialStep.Hatch);
+        PlaySound(deliverSound);
+    }
+    private bool IsInsidePlayerCoop()
+    {
+        if(!playerCoopArea || !player)return false;
+        Vector3 local=playerCoopArea.transform.InverseTransformPoint(player.position)-playerCoopArea.center;
+        Vector3 half=playerCoopArea.size*.5f;
+        return Mathf.Abs(local.x)<half.x-.35f && Mathf.Abs(local.z)<half.z-.35f && Mathf.Abs(local.y)<=half.y+.2f;
+    }
+    private void PlaceEggOnCoopFloor(Egg egg)
+    {
+        Vector3 point=player.position+player.forward*1.2f;
+        Vector3 local=playerCoopArea.transform.InverseTransformPoint(point);
+        Vector3 center=playerCoopArea.center,half=playerCoopArea.size*.5f;
+        local.x=Mathf.Clamp(local.x,center.x-half.x+1,center.x+half.x-1);
+        local.z=Mathf.Clamp(local.z,center.z-half.z+1,center.z+half.z-1);
+        local.y=center.y-half.y;
+        point=playerCoopArea.transform.TransformPoint(local);
+        RaycastHit hit;
+        if(Physics.Raycast(point+Vector3.up*2,Vector3.down,out hit,4,~0,QueryTriggerInteraction.Ignore) && !hit.transform.IsChildOf(player))point.y=hit.point.y;
+        egg.transform.rotation=egg.rotation;
+        egg.transform.position=point;
+        bool found=false;Bounds bounds=new Bounds();
+        foreach(Renderer r in egg.transform.GetComponentsInChildren<Renderer>())
+        {
+            if(!r.enabled || r is ParticleSystemRenderer || r is LineRenderer)continue;
+            if(!found){bounds=r.bounds;found=true;}else bounds.Encapsulate(r.bounds);
+        }
+        if(found)egg.transform.position+=Vector3.up*(point.y-bounds.min.y);
+    }
+    private void UpdateIncubation()
+    {
+        if(incubating==null){hatchText.text="";return;}
+        if(openingEgg)
+        {
+            eggOpenClock+=Time.deltaTime;
+            float progress=Mathf.Clamp01(eggOpenClock/Mathf.Max(.1f,eggOpenDuration));
+            incubating.transform.rotation=eggOpenRotation*Quaternion.Euler(0,0,Mathf.Sin(progress*42)*Mathf.Lerp(4,22,progress));
+            hatchText.text="";
+            if(progress>=1)CompleteHatch();
+            return;
+        }
+        float left=Mathf.Max(0,incubationEnd-Time.time);hatchText.text=left>0?Mathf.CeilToInt(left)+"s":"Open";
+        incubating.transform.localRotation=Quaternion.Euler(0,Time.time*20,Mathf.Sin(Time.time*8)*3);
+    }
+    private void UpdateIncubationLabelPosition()
+    {
+        if(!hatchText)return;
+        bool visible=incubating!=null && incubating.transform && !openingEgg && !EndCardVisible && !panel.activeSelf;
+        if(!visible){hatchText.gameObject.SetActive(false);return;}
+        Vector3 top=incubating.transform.position;
+        foreach(Renderer renderer in incubating.transform.GetComponentsInChildren<Renderer>())
+        {
+            if(!renderer.enabled || renderer is ParticleSystemRenderer || renderer is LineRenderer)continue;
+            top.y=Mathf.Max(top.y,renderer.bounds.max.y);
+        }
+        Vector3 screen=gameCamera.WorldToScreenPoint(top+Vector3.up*.35f);
+        hatchText.gameObject.SetActive(screen.z>0);
+        if(screen.z>0)hatchText.rectTransform.position=new Vector3(screen.x,screen.y,0);
+    }
+    private void Hatch()
+    {
+        if(openingEgg || incubating==null || Time.time<incubationEnd)return;
+        openingEgg=true;eggOpenClock=0;eggOpenRotation=incubating.transform.rotation;
+        hatchText.gameObject.SetActive(false);SetAction("",false);PlaySound(hatchSound);
+    }
+    private void CompleteHatch()
+    {
+        openingEgg=false;
+        if(eggBreakEffect)
+        {
+            GameObject effect=Instantiate(eggBreakEffect,incubating.transform.position,Quaternion.identity);
+            effect.transform.localScale=incubating.transform.localScale;
+            effect.SetActive(true);
+            foreach(ParticleSystem particles in effect.GetComponentsInChildren<ParticleSystem>(true))particles.Play();
+            Destroy(effect,4);
+        }
+        Zone zone=incubating.zone;
+        if(zone.petPrefabs.Length>0)
+        {
+            PlayableEggRules rule=Rule(incubating);
+            int index=rule!=null?PlayableEggRules.Pick(rule.petWeights,rule.pets.Length):0;
+            GameObject pet=Instantiate(rule!=null?rule.pets[index]:zone.petPrefabs[incubating.variant%zone.petPrefabs.Length]);DisablePhysics(pet);
+            pet.transform.localScale*=incubating.size;
+            pendingPetIncome=rule!=null?Mathf.Max(1,(int)(rule.petIncome[index]*Mathf.Pow(1.1f,incubating.size))):1;
+            pendingPet=pet.transform;pendingPet.SetParent(carryPoint,false);pendingPet.localPosition=Vector3.zero;
+        }
+        Destroy(incubating.transform.gameObject);
+        incubating.transform=null;incubating=null;
+        Track("egg_hatched",Delivered);SetStep(TutorialStep.Equip);Notify("NEW PET! Place it in your coop to earn income.");
+        UpdateCarryAnimation();
+    }
+    private void UpdateCarryAnimation()
+    {
+        if(!playerAnimator)return;
+        int layer=playerAnimator.GetLayerIndex("Stealing");
+        if(layer>=0)playerAnimator.SetLayerWeight(layer,IsCarrying && !carried.safe?1:0);
+        int ownedLayer=playerAnimator.GetLayerIndex("OwnedCarry");
+        if(ownedLayer>=0)playerAnimator.SetLayerWeight(ownedLayer,(IsCarrying && carried.safe) || pendingPet?1:0);
+    }
+    private void EquipPet()
+    {
+        pendingPet.SetParent(null);pendingPet.position=home.position+new Vector3((pets.Count%3-1)*2,0,2+(pets.Count/3)*2);
+        pets.Add(pendingPet);totalIncome+=pendingPetIncome;pendingPet=null;Track("pet_equipped",pets.Count);
+        UpdateCarryAnimation();
+        SetStep(tutorialCompleted?TutorialStep.Explore:TutorialStep.Train);
+        if(tutorialCompleted && pets.Count>=capturesForEndCard)ShowEndCard();
+    }
+    private void BeginTraining()
+    {
+        training=true;trainingClock=0;motor.enabled=false;player.position=trainingPoint.position;player.rotation=trainingPoint.rotation;motor.enabled=true;
+        joystick.ResetInput();Track("training_started",1);
+    }
+    private void UpdateTraining()
+    {
+        if(joystick.Value.sqrMagnitude>.05f || Input.GetAxisRaw("Horizontal")!=0 || Input.GetAxisRaw("Vertical")!=0){training=false;return;}
+        if(playerAnimator)playerAnimator.SetFloat("Forward",1);
+        trainingClock+=Time.deltaTime;
+        if(trainingClock>=.5f){trainingClock-=.5f;SpeedPower+=trainingPowerPerTick;moveSpeed=baseMoveSpeed+Mathf.Sqrt(SpeedPower)*speedPowerMultiplier;Notify("+"+trainingPowerPerTick+" SPEED POWER");
+            if(Step==TutorialStep.Train && pets.Count>0){tutorialCompleted=true;inventoryBatSelected=true;SetStep(TutorialStep.Explore);Track("tutorial_completed",1);RefreshInventoryUI();Notify("TUTORIAL COMPLETE! BAT UNLOCKED.");}}
+    }
+    private void UpdateGuardians()
+    {
+        foreach(Zone zone in zones)
+        {
+            if(!zone.guardian)continue;
+            if(hitZone==zone)continue;
+            bool chasing=IsCarrying && !carried.safe && carried.zone==zone && Time.time>chaseDelay && Time.time>catchCooldown;
+            Egg dropped=null;
+            foreach(Egg egg in eggs)if(egg.zone==zone && egg.dropped && !egg.safe && !egg.retrieved){dropped=egg;break;}
+            Vector3 destination=chasing?player.position:dropped!=null?dropped.transform.position:zone.guardianHome;destination.y=zone.guardian.position.y;
+            float distance=FlatDistance(zone.guardian.position,destination);
+            if(zone.warningMark)zone.warningMark.SetActive(chasing);
+            if(zone.sleepingEffect)zone.sleepingEffect.SetActive(!chasing && dropped==null && distance<=.3f);
+            if(distance>.3f)
+            {
+                zone.guardian.rotation=Quaternion.Slerp(zone.guardian.rotation,Quaternion.LookRotation(destination-zone.guardian.position),Time.deltaTime*6);
+                float speed=chasing?(moveSpeed<zone.guardianSpeed || distance*distance>zone.attackDistance*zone.attackDistance*8?zone.guardianSpeed*2:moveSpeed):zone.guardianSpeed*4;
+                zone.guardian.position=Vector3.MoveTowards(zone.guardian.position,destination,speed*Time.deltaTime);
+            }
+            else if(!chasing)zone.guardian.rotation=zone.guardianRotation;
+            if(zone.animator)SetAnimatorMovement(zone.animator,distance>.3f?1:0);
+            if(!chasing && dropped!=null && distance<1){dropped.retrieved=true;dropped.transform.gameObject.SetActive(false);}
+            if(!chasing && dropped==null && distance<.4f)foreach(Egg egg in eggs)if(egg.zone==zone && egg.retrieved)RestoreEgg(egg);
+            if(chasing && distance<zone.attackDistance && !IsKnockedDown)BeginKnockdown(zone);
+        }
+    }
+    private void BeginKnockdown(Zone zone)
+    {
+        hitZone=zone;hitClock=0;hitApplied=false;training=false;joystick.ResetInput();
+        hitDirection=player.position-zone.guardian.position;hitDirection.y=0;
+        if(hitDirection.sqrMagnitude<.01f)hitDirection=zone.guardian.forward;
+        hitDirection.Normalize();zone.guardian.rotation=Quaternion.LookRotation(hitDirection);attackerRotation=zone.guardian.rotation;
+        if(playerAnimator){modelPosition=playerAnimator.transform.localPosition;modelRotation=playerAnimator.transform.localRotation;playerAnimator.SetFloat("Forward",0);}
+        SetAction("",false);dropButton.gameObject.SetActive(false);
+    }
+    private void UpdateKnockdown()
+    {
+        hitClock+=Time.deltaTime;
+        // The source guardian only has locomotion clips: use a short strike lean for the attack.
+        float strike=Mathf.Sin(Mathf.Clamp01(hitClock/(hitWindup+.2f))*Mathf.PI)*24;
+        hitZone.guardian.rotation=attackerRotation*Quaternion.Euler(strike,0,0);
+        if(hitClock<hitWindup)return;
+        if(!hitApplied)
+        {
+            hitApplied=true;DropEgg();PlaySound(caughtSound);Track("caught",1);
+            if(ragdoll){motor.enabled=false;ragdoll.Begin(hitDirection*Mathf.Clamp(hitZone.guardianSpeed,1,30)*50);}
+            if(playerAnimator)playerAnimator.enabled=false;
+            Notify("OUCH! You dropped the egg.");verticalSpeed=3;
+        }
+        float elapsed=hitClock-hitWindup;
+        if(ragdoll)
+        {
+            ragdoll.Follow();
+            if(elapsed>=knockdownDuration)
+            {
+                ragdoll.Recover();motor.enabled=true;hitZone.guardian.rotation=attackerRotation;hitZone=null;catchCooldown=Time.time+2;verticalSpeed=0;
+                SetStep(bag.Count>0?TutorialStep.Incubate:TutorialStep.FindEgg);
+            }
+            return;
+        }
+        float rise=Mathf.Clamp01((elapsed-knockdownDuration)/getUpDuration);
+        float fall=Mathf.Clamp01(elapsed/.25f)*(1-rise);
+        if(playerAnimator)
+        {
+            Vector3 localDirection=player.InverseTransformDirection(hitDirection);
+            Vector3 axis=Vector3.Cross(Vector3.up,localDirection);
+            playerAnimator.transform.localRotation=Quaternion.AngleAxis(85*fall,axis)*modelRotation;
+            playerAnimator.transform.localPosition=modelPosition+Vector3.up*(.3f*fall);
+        }
+        if(motor.isGrounded && verticalSpeed<0)verticalSpeed=-2;
+        verticalSpeed-=20*Time.deltaTime;
+        motor.Move((hitDirection*(elapsed<.4f?5*(1-elapsed/.4f):0)+Vector3.up*verticalSpeed)*Time.deltaTime);
+        if(rise>=1)
+        {
+            if(playerAnimator){playerAnimator.transform.localPosition=modelPosition;playerAnimator.transform.localRotation=modelRotation;playerAnimator.enabled=true;}
+            hitZone.guardian.rotation=attackerRotation;hitZone=null;catchCooldown=Time.time+2;verticalSpeed=0;
+            // Preserve player position: recovering from a hit never teleports to spawn.
+            SetStep(bag.Count>0?TutorialStep.Incubate:TutorialStep.FindEgg);
+        }
+    }
+    private void Respawn(){motor.enabled=false;player.position=spawn;player.rotation=spawnRotation;motor.enabled=true;verticalSpeed=0;if(IsCarrying)DropEgg();}
+    private void UpdateGuide()
+    {
+        Vector3 target=home.position;
+        if(Step==TutorialStep.FindEgg || Step==TutorialStep.Explore)
+        {
+            float best=float.MaxValue;
+            foreach(Egg egg in eggs)if(!egg.banked && !egg.retrieved && egg.transform && (tutorialCompleted?egg.zone==zones[selectedZone]:egg==eggs[0])){float d=FlatDistance(player.position,egg.transform.position);if(d<best){best=d;target=egg.transform.position;}}
+        }
+        if(Step==TutorialStep.BringHome)target=safePoint.position;
+        if(Step==TutorialStep.Train && trainingPoint)target=trainingPoint.position;
+        guide.enabled=!EndCardVisible && !IsKnockedDown && Step!=TutorialStep.Collect;
+        guide.SetPosition(0,player.position+Vector3.up*.2f);guide.SetPosition(1,new Vector3(target.x,player.position.y+.2f,target.z));
+    }
+    private void SetStep(TutorialStep step)
+    {
+        Step=step;
+        string[] titles={"STEAL AN EGG!","RUN TO THE SAFE ZONE!","INCUBATE YOUR EGG","HATCH YOUR FIRST PET!","YOUR PET EARNS COINS!","EXPLORE THE NEXT ZONE","PLACE YOUR PET IN THE COOP","TRAIN TO RUN FASTER"};
+        string[] details={"Follow the line to the first nest. Tap STEAL.","Cross the safe line, then carry the egg to your coop.","Your egg is safe. Go to your coop and tap INCUBATE.","Wait for the egg, then tap HATCH.","Pets in your coop generate income.","Train at home, then steal eggs from stronger guardians.","Tap EQUIP PET inside your coop.","Follow the line to your treadmill. Tap TRAIN."};
+        instruction.text=titles[(int)step];subtitle.text=details[(int)step];stageText.text="BAG  "+bag.Count+"   PETS  "+pets.Count;Track("tutorial_step",(int)step+1);
+    }
+    private void Notify(string message){toast.text=message;messageUntil=Time.time+3.5f;}
+    private void Track(string name,int value){Luna.Unity.Analytics.LogEvent(name,value);}
+    public void ShowEndCard(){endCard.SetActive(true);joystick.ResetInput();if(!ended){ended=true;Luna.Unity.LifeCycle.GameEnded();}}
+    public void Install(){Track("install_clicked",1);Luna.Unity.Playable.InstallFullGame(androidStoreUrl,iosStoreUrl);}
+    public void TravelToZone(int index)
+    {
+        if(IsCarrying){Notify("Bring your egg home before travelling.");return;}
+        if(!tutorialCompleted){Notify("Finish the tutorial first.");return;}
+        if(index<0 || index>=zones.Length)return;
+        selectedZone=index;panel.SetActive(false);SetStep(TutorialStep.Explore);Notify("Follow the route to "+zones[index].name);
+    }
+    public void UpgradeSpeed(){if(IsKnockedDown || IsCarrying)return;SetStep(TutorialStep.Train);Notify("Use your treadmill at home to gain speed.");}
+    private static float FlatDistance(Vector3 a,Vector3 b){a.y=0;b.y=0;return Vector3.Distance(a,b);}
+    private PlayableEggRules Rule(Egg egg){return egg.zone.eggRules!=null && egg.variant<egg.zone.eggRules.Length?egg.zone.eggRules[egg.variant]:null;}
+    private int RollEgg(Zone zone)
+    {
+        if(zone.eggRules==null || zone.eggRules.Length==0)return UnityEngine.Random.Range(0,zone.eggPrefabs.Length);
+        float[] weights=new float[zone.eggRules.Length];for(int i=0;i<weights.Length;i++)weights[i]=zone.eggRules[i].spawnWeight;
+        return PlayableEggRules.Pick(weights,weights.Length);
+    }
+    public static void DisablePhysics(GameObject obj)
+    {
+        foreach(Collider c in obj.GetComponentsInChildren<Collider>(true))c.enabled=false;
+        foreach(Rigidbody body in obj.GetComponentsInChildren<Rigidbody>(true)){body.isKinematic=true;body.useGravity=false;}
+        foreach(Transform t in obj.GetComponentsInChildren<Transform>(true))if(t.name.ToLowerInvariant().Contains("highlight"))t.gameObject.SetActive(false);
+        foreach(TMPro.TMP_Text label in obj.GetComponentsInChildren<TMPro.TMP_Text>(true))label.gameObject.SetActive(false);
+    }
+    public static void SetVisualSize(GameObject obj,float height)
+    {
+        bool found=false;Bounds bounds=new Bounds();
+        foreach(Renderer r in obj.GetComponentsInChildren<Renderer>())if(!(r is ParticleSystemRenderer) && !(r is LineRenderer))
+        {if(!found){bounds=r.bounds;found=true;}else bounds.Encapsulate(r.bounds);}
+        if(found && bounds.size.y>.01f)obj.transform.localScale*=height/bounds.size.y;
+    }
+    private static void SetAnimatorMovement(Animator a,float value)
+    {
+        foreach(AnimatorControllerParameter p in a.parameters)
+        {
+            if(p.type==AnimatorControllerParameterType.Float && (p.name=="Forward" || p.name=="Speed" || p.name=="MoveSpeed"))a.SetFloat(p.name,value);
+            if(p.type==AnimatorControllerParameterType.Bool && (p.name=="IsMoving" || p.name=="Run"))a.SetBool(p.name,value>0);
+        }
+    }
+    private void BindSceneUI()
+    {
+        if(!safeUI || !joystick || !panel || !endCard)
+            throw new InvalidOperationException("Scene UI is missing. Bake the UI in the Unity Editor before playing.");
+        BindSceneButton(safeUI.Find("Zones"),()=>OpenPanel("MAP"));
+        BindSceneButton(safeUI.Find("Pets"),()=>OpenPanel("PETS"));
+        BindSceneButton(safeUI.Find("Speed"),UpgradeSpeed);
+        BindSceneButton(safeUI.Find("Shop"),()=>OpenPanel("SHOP"));
+        BindSceneButton(actionButton.transform,Interact);
+        BindSceneButton(dropButton.transform,DropEgg);
+        if(jumpButton)BindSceneButton(jumpButton.transform,Jump);
+        if(bagButton)BindSceneButton(bagButton.transform,ToggleBagEgg);
+        BindInventoryUI();
+        Transform reference=safeUI.Find("Reference HUD");
+        if(reference)
+        {
+            BindSceneButton(reference.Find("Trail"),()=>OpenPanel("TRAIL"));
+            BindSceneButton(reference.Find("Index"),()=>OpenPanel("INDEX"));
+            BindSceneButton(reference.Find("Pets"),()=>OpenPanel("PETS"));
+            BindSceneButton(reference.Find("Eggs"),()=>OpenPanel("EGGS"));
+            BindSceneButton(reference.Find("Settings"),()=>OpenPanel("SETTINGS"));
+            BindSceneButton(reference.Find("Hand"),Interact);
+            BindSceneButton(reference.Find("Slow Mode"),()=>{slowMode=!slowMode;UpdateSlowModeUI();});
+            BindSceneButton(panel.transform.Find("Sound"),()=>{if(muted)Unmute();else Mute();OpenPanel("SETTINGS");});
+            UpdateSlowModeUI();
+        }
+        BindSceneButton(panel.transform.Find("Close"),()=>panel.SetActive(false));
+        for(int i=0;i<zones.Length;i++)
+        {
+            int index=i;
+            BindSceneButton(panel.transform.Find("Zone_"+i),()=>TravelToZone(index));
+        }
+        BindSceneButton(panel.transform.Find("MenuInstall"),Install);
+        BindSceneButton(endCard.transform.Find("Install"),Install);
+        BindSceneButton(endCard.transform.Find("Continue"),()=>endCard.SetActive(false));
+        Transform art=safeUI.Find("Original game HUD");
+        if(art)
+        {
+            foreach(Transform t in art.GetComponentsInChildren<Transform>(true))
+            {
+                if(t.parent && t.parent.name=="Left")
+                {
+                    if(t.name=="Button_Index")BindSceneButton(t,()=>OpenPanel("PETS"));
+                    else if(t.name=="Button_IAPShop")BindSceneButton(t,()=>OpenPanel("SHOP"));
+                    else if(t.name=="Button_ShopTrail")BindSceneButton(t,UpgradeSpeed);
+                    else if(t.name=="[Toggle] Speed Mode")BindSceneButton(t,()=>{slowMode=!slowMode;Notify(slowMode?"SLOW MODE":"FAST MODE");});
+                }
+                if(t.parent==originalFunctions)
+                {
+                    string key=t.name=="[Button] Steal"?"STEAL":t.name=="[Button] Incubate"?"INCUBATE":t.name=="[Button] Hatch"?"HATCH!":t.name=="[Button] Equip Monster"?"EQUIP PET":t.name=="[Button] Use Treadmil"?"TRAIN":"";
+                    if(key!=""){originalActions[key]=t.gameObject;BindSceneButton(t,Interact);}
+                }
+            }
+        }
+        UpdateSafeArea();
+    }
+    private void BindSceneButton(Transform target,UnityEngine.Events.UnityAction action)
+    {
+        if(!target)return;
+        Button button=target.GetComponent<Button>();
+        if(!button)throw new InvalidOperationException("Missing scene Button: "+target.name);
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(action);
+    }
+    private void OpenPanel(string mode)
+    {
+        inventoryVisible=mode=="INVENTORY";
+        if(inventoryGrid)inventoryGrid.gameObject.SetActive(inventoryVisible);
+        panel.SetActive(true);joystick.ResetInput();panelTitle.text=mode;
+        RectTransform panelRect=(RectTransform)panel.transform;
+        panelRect.anchorMin=panelRect.anchorMax=new Vector2(.5f,.5f);panelRect.anchoredPosition=Vector2.zero;
+        panelRect.sizeDelta=inventoryVisible?new Vector2(1200,370):new Vector2(680,460);
+        panel.GetComponent<Image>().color=inventoryVisible?new Color(0,0,0,0):navy;
+        panel.transform.Find("Title").gameObject.SetActive(!inventoryVisible);
+        panel.transform.Find("Close").gameObject.SetActive(!inventoryVisible);
+        panelBody.text=mode=="PETS"?pets.Count+" PETS\nIncome: $"+(pets.Count*5)+" / second":mode=="SHOP"?"Earn coins by hatching eggs.\nSpeed upgrade: 100 coins":"";
+        if(mode=="PETS")panelBody.text=pets.Count+" PETS\nIncome: $"+totalIncome+" / second";
+        if(mode=="EGGS")panelBody.text=bag.Count+" EGGS IN BACKPACK\n"+(incubating!=null?"An egg is incubating in your coop.":"Take an egg from the backpack,\nthen enter your coop to incubate it.");
+        if(mode=="INDEX")panelBody.text="EGGS RESCUED: "+Delivered+"\nPETS PLACED: "+pets.Count+"\nFOREST  /  LAKE  /  DESERT";
+        if(mode=="TRAIL")panelBody.text="Follow the yellow route\nto steal your first egg and bring it home.";
+        if(mode=="EQUIPMENT")panelBody.text="Use the backpack to take out\nor store an owned egg.\nThe bat is not usable in this playable.";
+        if(mode=="SETTINGS")panelBody.text="SOUND: "+(muted?"OFF":"ON")+"\nDRAG TO MOVE / SPACE TO JUMP";
+        Transform soundControl=panel.transform.Find("Sound");if(soundControl)soundControl.gameObject.SetActive(mode=="SETTINGS");
+        panelBody.gameObject.SetActive(mode!="MAP");
+        foreach(Transform child in panel.transform)if(child.name.StartsWith("Zone_"))child.gameObject.SetActive(mode=="MAP");panel.transform.Find("MenuInstall").gameObject.SetActive(mode!="MAP");
+        if(inventoryVisible){inventorySelection=null;panelBody.gameObject.SetActive(false);panel.transform.Find("MenuInstall").gameObject.SetActive(false);RefreshInventoryUI();}
+    }
+    private void UpdateSlowModeUI()
+    {
+        Transform thumb=safeUI.Find("Reference HUD/Slow Mode/Thumb");
+        if(thumb){RectTransform rt=(RectTransform)thumb;rt.anchorMin=rt.anchorMax=new Vector2(slowMode?.75f:.25f,.5f);thumb.GetComponent<Image>().color=slowMode?new Color(.4f,1,.4f):Color.white;}
+    }
+    private void UpdateSafeArea(){if(Screen.width==0 || Screen.height==0)return;UnityEngine.Rect s=Screen.safeArea;safeUI.anchorMin=new Vector2(s.xMin/Screen.width,s.yMin/Screen.height);safeUI.anchorMax=new Vector2(s.xMax/Screen.width,s.yMax/Screen.height);}
+}

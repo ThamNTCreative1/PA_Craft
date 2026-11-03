@@ -1,0 +1,216 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+
+public static class StealEggPlayableBuilder
+{
+    private const string Source="F:/GAME/StealEgg/steal-an-egg-main/";
+    private const string Root="Assets/MiniGames/StealAnEgg/";
+    public const string ScenePath="Assets/Scenes/StealEggPlayable.unity";
+    [MenuItem("Steal Egg/Build playable scene")]
+    public static void Build()
+    {
+        if(EditorApplication.isPlaying)throw new InvalidOperationException("Stop Play mode before rebuilding.");
+        Scene scene=EditorSceneManager.OpenScene(Root+"StealAnEgg.unity",OpenSceneMode.Single);
+        foreach(GameObject root in scene.GetRootGameObjects())
+            if(PrefabUtility.IsPartOfPrefabInstance(root))PrefabUtility.UnpackPrefabInstance(root,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
+        Transform[] original=UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include,FindObjectsSortMode.None);
+        foreach(Transform t in original)
+        {
+            GameObject prefabRoot=PrefabUtility.GetOutermostPrefabInstanceRoot(t.gameObject);
+            if(prefabRoot && PrefabUtility.IsPartOfPrefabInstance(prefabRoot))PrefabUtility.UnpackPrefabInstance(prefabRoot,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
+            GameObjectUtility.RemoveMonoBehavioursWithMissingScript(t.gameObject);
+            t.gameObject.layer=0;
+            t.gameObject.tag="Untagged";
+        }
+        foreach(MonoBehaviour b in UnityEngine.Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include,FindObjectsSortMode.None))
+        {
+            if(b is TMPro.TMP_Text || b is UnityEngine.UI.Graphic || b is UnityEngine.UI.LayoutGroup || b is UnityEngine.UI.ContentSizeFitter)continue;
+            UnityEngine.Object.DestroyImmediate(b);
+        }
+        foreach(UnityEngine.AI.NavMeshAgent a in UnityEngine.Object.FindObjectsByType<UnityEngine.AI.NavMeshAgent>(FindObjectsInactive.Include,FindObjectsSortMode.None))UnityEngine.Object.DestroyImmediate(a);
+        foreach(Camera c in UnityEngine.Object.FindObjectsByType<Camera>(FindObjectsInactive.Include,FindObjectsSortMode.None))UnityEngine.Object.DestroyImmediate(c.gameObject);
+        foreach(AudioListener a in UnityEngine.Object.FindObjectsByType<AudioListener>(FindObjectsInactive.Include,FindObjectsSortMode.None))UnityEngine.Object.DestroyImmediate(a);
+        foreach(Canvas c in UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include,FindObjectsSortMode.None))c.gameObject.SetActive(false);
+        GameObject controller=new GameObject("Luna Playable");
+        LunaController game=controller.AddComponent<LunaController>();
+        Transform model=original.First(t=>t && t.name=="Player.base_character");
+        model.SetParent(null,true);
+        GameObject player=new GameObject("Playable Player");player.transform.position=new Vector3(0,.1f,30);
+        model.SetParent(player.transform,false);model.localPosition=Vector3.zero;model.localRotation=Quaternion.identity;
+        LunaController.DisablePhysics(player);
+        foreach(Joint joint in player.GetComponentsInChildren<Joint>(true))UnityEngine.Object.DestroyImmediate(joint);
+        foreach(Rigidbody b in player.GetComponentsInChildren<Rigidbody>(true))UnityEngine.Object.DestroyImmediate(b);
+        game.player=player.transform;game.playerAnimator=model.GetComponent<Animator>();
+        game.playerAnimator.runtimeAnimatorController=AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(StealEggCompactPlayerAnimator.Path);
+        if(!game.playerAnimator.runtimeAnimatorController)game.playerAnimator.runtimeAnimatorController=AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(Root+"Animation/Character/SAE_MinigameCharacterController.controller");
+        game.playerAnimator.applyRootMotion=false;
+        game.playerAnimator.cullingMode=AnimatorCullingMode.AlwaysAnimate;
+        Material outfit=AssetDatabase.LoadAssetAtPath<Material>("Assets/Game/Models/BasePlayer/Squid_Game.mat");
+        if(outfit)foreach(SkinnedMeshRenderer renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>())renderer.sharedMaterial=outfit;
+        game.player.gameObject.AddComponent<CharacterController>();
+        GameObject oldPlayer=GameObject.Find("SAE_Player");if(oldPlayer)UnityEngine.Object.DestroyImmediate(oldPlayer);
+        GameObject npcs=GameObject.Find("NPCs");if(npcs)UnityEngine.Object.DestroyImmediate(npcs);
+        GameObject tutorial=GameObject.Find("TutorialSystem");if(tutorial)UnityEngine.Object.DestroyImmediate(tutorial);
+        GameObject volume=GameObject.Find("Volume");if(volume)UnityEngine.Object.DestroyImmediate(volume);
+        game.home=new GameObject("Player coop drop point").transform;game.home.position=new Vector3(0,.1f,8);
+        game.playerCoopArea=GameObject.Find("GameController/[Container] Houses/House/Coop/Model/Model Levels/Coop_Model_LV_1").GetComponent<BoxCollider>();
+        game.safePoint=new GameObject("Safe zone arrival").transform;game.safePoint.position=new Vector3(0,.1f,35);
+        Transform house=GameObject.Find("House").transform;
+        game.trainingPoint=house.GetComponentsInChildren<Transform>(true).First(t=>t.name=="TrainSlot");
+        Transform goal=original.FirstOrDefault(t=>t && t.name.StartsWith("SafeAreaGoal"));
+        if(goal)game.safePoint.position=new Vector3(goal.position.x,.1f,goal.position.z);
+        GameObject cameraObject=new GameObject("Main Camera",typeof(Camera),typeof(AudioListener));cameraObject.tag="MainCamera";
+        game.gameCamera=cameraObject.GetComponent<Camera>();game.gameCamera.fieldOfView=50;game.gameCamera.nearClipPlane=.2f;game.gameCamera.farClipPlane=250;
+        game.gameCamera.clearFlags=CameraClearFlags.SolidColor;game.gameCamera.backgroundColor=new Color(.54f,.78f,.96f);
+        game.gameCamera.transform.position=player.transform.position+new Vector3(0,15,-18);game.gameCamera.transform.LookAt(player.transform.position+Vector3.up);
+        string[] names={"Forest","Lake","Desert"};
+        Transform container=GameObject.Find("[Container] Zone").transform;
+        List<LunaController.Zone> zones=new List<LunaController.Zone>();
+        for(int i=0;i<names.Length;i++)
+        {
+            Transform root=container.Find(i==0?"SAE_Zone":"SAE_Zone ("+i+")");
+            LunaController.Zone zone=new LunaController.Zone();zone.root=root;zone.name=names[i]=="CheeyBlossom"?"Cherry Blossom":names[i];
+            zone.nests=root.GetComponentsInChildren<Transform>(true).Where(t=>t.name=="EggSlot").ToArray();
+            zone.guardian=root.GetComponentsInChildren<Transform>(true).First(t=>t.name.StartsWith("ProtectEggMonster"));
+            LunaController.DisablePhysics(zone.guardian.gameObject);
+            zone.guardianSpeed=6.5f+i*.45f;
+            string database=File.ReadAllText(Source+Root+"Data/ZoneEgg/[EggZoneDatabase] "+names[i]+".asset");
+            List<GameObject> eggList=new List<GameObject>(),petList=new List<GameObject>();
+            foreach(Match match in Regex.Matches(database,@"egg:.*?guid: ([a-f0-9]{32})"))
+            {
+                string assetPath=AssetDatabase.GUIDToAssetPath(match.Groups[1].Value);
+                GameObject egg=AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                if(!egg)continue;eggList.Add(egg);
+                string eggYaml=File.ReadAllText(Source+assetPath);
+                Match petMatch=Regex.Match(eggYaml,@"propertyPath: monsters.Array.data\[0\].obj\r?\n.*?\r?\n\s+objectReference:.*?guid: ([a-f0-9]{32})");
+                if(petMatch.Success)
+                {
+                    GameObject pet=AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(petMatch.Groups[1].Value));
+                    if(pet)petList.Add(pet);
+                }
+            }
+            zone.eggPrefabs=eggList.ToArray();zone.petPrefabs=petList.ToArray();zones.Add(zone);
+            if(eggList.Count==0 || zone.nests.Length==0 || petList.Count==0)throw new InvalidOperationException("Missing assets in "+names[i]);
+        }
+        game.zones=zones.ToArray();
+        game.uiFont=AssetDatabase.LoadAssetAtPath<Font>("Assets/01 RESOURCES/FFFFORWA.TTF");
+        if(!game.uiFont)throw new InvalidOperationException("Missing FFFFORWA font in 01 RESOURCES.");
+        Directory.CreateDirectory("Assets/PlayableGenerated");AssetDatabase.Refresh();
+        Material guide=AssetDatabase.LoadAssetAtPath<Material>("Assets/PlayableGenerated/Guide.mat");
+        if(!guide){guide=new Material(Shader.Find("Sprites/Default"));AssetDatabase.CreateAsset(guide,"Assets/PlayableGenerated/Guide.mat");}
+        guide.color=new Color(1,.85f,.05f);game.guideMaterial=guide;
+        game.sourceHud=AssetDatabase.LoadAssetAtPath<GameObject>(Root+"Prefabs/UI/SAEGamePlayPanel.prefab");
+        foreach(AudioSource audio in UnityEngine.Object.FindObjectsByType<AudioSource>(FindObjectsInactive.Include,FindObjectsSortMode.None))UnityEngine.Object.DestroyImmediate(audio);
+        game.stealSound=AssetDatabase.LoadAssetAtPath<AudioClip>(Root+"Sounds/Collect1.mp3");
+        game.deliverSound=AssetDatabase.LoadAssetAtPath<AudioClip>(Root+"Sounds/Collect2.mp3");
+        game.hatchSound=AssetDatabase.LoadAssetAtPath<AudioClip>(Root+"Sounds/EggOpen1.mp3");
+        game.eggBreakEffect=AssetDatabase.LoadAssetAtPath<GameObject>(Root+"FXs/EggBreak/[Fx] EggBreak.prefab");
+        game.caughtSound=AssetDatabase.LoadAssetAtPath<AudioClip>(Root+"Sounds/SAE_hurt-4.mp3");
+        game.roundedSprite=CreateUISprite("Rounded",false);game.circleSprite=CreateUISprite("Circle",true);
+        foreach(Transform t in original)if(t && t.name=="HomeMark")t.gameObject.SetActive(false);
+        // Built-in rendering is used for the Playworks shader translator.
+        GraphicsSettings.defaultRenderPipeline=null;
+        // Playworks may select Mobile quality on entering Play Mode. Clear every
+        // quality override, not only the currently selected PC quality level.
+        int previousQuality=QualitySettings.GetQualityLevel();
+        for(int i=0;i<QualitySettings.names.Length;i++)
+        {
+            QualitySettings.SetQualityLevel(i,false);
+            QualitySettings.renderPipeline=null;
+        }
+        QualitySettings.SetQualityLevel(previousQuality,false);
+        RenderSettings.skybox=null;RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.55f,.55f,.55f);
+        foreach(Light l in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None)){l.shadows=LightShadows.None;l.intensity=.75f;}
+        ConvertMaterials();
+        // Imported source has visual floors; add stable ground colliders only where absent.
+        foreach(MeshFilter mesh in UnityEngine.Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None))
+        {
+            if(!mesh.sharedMesh || mesh.GetComponent<Collider>() || mesh.GetComponentInParent<Animator>())continue;
+            Renderer renderer=mesh.GetComponent<Renderer>();if(!renderer)continue;
+            if(renderer.bounds.size.x>10 && renderer.bounds.size.z>10 && renderer.bounds.min.y<1)
+                mesh.gameObject.AddComponent<MeshCollider>().sharedMesh=mesh.sharedMesh;
+        }
+        StealEggSourceRulesImporter.Apply(game);
+        StealEggThreeMapCut.Apply(game);
+        game.BakeUI();
+        EditorSceneManager.SaveScene(scene,ScenePath);
+        StealEggCompactPlayerAnimator.Apply();
+        EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(ScenePath,true)};
+        PlayerSettings.defaultInterfaceOrientation=UIOrientation.Portrait;PlayerSettings.defaultScreenWidth=720;PlayerSettings.defaultScreenHeight=1280;
+        AssetDatabase.SaveAssets();
+        Debug.Log("PLAYABLE READY: "+zones.Count+" zones, "+zones.Sum(z=>z.nests.Length)+" nests, "+zones.Sum(z=>z.eggPrefabs.Length)+" egg variants. "+ScenePath);
+    }
+    private static void ConvertMaterials()
+    {
+        Shader shader=Shader.Find("Standard");
+        foreach(string guid in AssetDatabase.FindAssets("t:Material",new[]{"Assets/MiniGames","Assets/Game","Assets/Lego","Assets/ithappy","Assets/TextMesh Pro"}.Where(AssetDatabase.IsValidFolder).ToArray()))
+        {
+            string path=AssetDatabase.GUIDToAssetPath(guid);Material m=AssetDatabase.LoadAssetAtPath<Material>(path);
+            if(!m || !m.shader || path.Contains("TextMesh Pro") || m.shader.name.Contains("TextMeshPro") || m.shader.name.Contains("UI/"))continue;
+            if(!path.EndsWith(".mat"))continue;
+            Texture texture=m.HasProperty("_BaseMap")?m.GetTexture("_BaseMap"):m.mainTexture;
+            Color color=m.HasProperty("_BaseColor")?m.GetColor("_BaseColor"):(m.HasProperty("_Color")?m.color:Color.white);
+            if(File.Exists(Source+path))
+            {
+                string yaml=File.ReadAllText(Source+path);
+                foreach(string property in new[]{"_BaseMap","_MainTex"})
+                {
+                    Match match=Regex.Match(yaml,Regex.Escape(property)+@":\r?\n\s+m_Texture:.*?guid: ([a-f0-9]{32})");
+                    if(!match.Success)continue;
+                    Texture original=AssetDatabase.LoadAssetAtPath<Texture>(AssetDatabase.GUIDToAssetPath(match.Groups[1].Value));
+                    if(original){texture=original;break;}
+                }
+            }
+            m.shader=shader;m.mainTexture=texture;m.color=color;m.SetFloat("_Glossiness",0);m.SetFloat("_Metallic",0);EditorUtility.SetDirty(m);
+        }
+        foreach(Renderer renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None))
+        {
+            Material[] materials=renderer.sharedMaterials;
+            for(int i=0;i<materials.Length;i++)
+            {
+                Material m=materials[i];if(!m || !m.shader || !m.shader.name.Contains("Universal"))continue;
+                Material replacement=new Material(shader);
+                replacement.color=m.HasProperty("_BaseColor")?m.GetColor("_BaseColor"):Color.white;
+                replacement.mainTexture=m.HasProperty("_BaseMap")?m.GetTexture("_BaseMap"):null;
+                replacement.SetFloat("_Glossiness",0);
+                string path=AssetDatabase.GenerateUniqueAssetPath("Assets/PlayableGenerated/"+m.name.Replace('/','_')+".mat");
+                AssetDatabase.CreateAsset(replacement,path);materials[i]=replacement;
+            }
+            renderer.sharedMaterials=materials;
+        }
+    }
+    private static Sprite CreateUISprite(string name,bool circle)
+    {
+        string path="Assets/PlayableGenerated/"+name+".asset";
+        Sprite existing=AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().FirstOrDefault();if(existing)return existing;
+        Texture2D texture=new Texture2D(64,64,TextureFormat.RGBA32,false);texture.name=name;
+        for(int y=0;y<64;y++)for(int x=0;x<64;x++)
+        {
+            float dx=circle?x-31.5f:Mathf.Max(Mathf.Abs(x-31.5f)-20,0);
+            float dy=circle?y-31.5f:Mathf.Max(Mathf.Abs(y-31.5f)-20,0);
+            float alpha=Mathf.Clamp01((circle?31:11)-Mathf.Sqrt(dx*dx+dy*dy));texture.SetPixel(x,y,new Color(1,1,1,alpha));
+        }
+        texture.Apply();texture.wrapMode=TextureWrapMode.Clamp;AssetDatabase.CreateAsset(texture,path);
+        Sprite sprite=Sprite.Create(texture,new Rect(0,0,64,64),new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect,new Vector4(14,14,14,14));
+        sprite.name=name;AssetDatabase.AddObjectToAsset(sprite,texture);return sprite;
+    }
+    [MenuItem("Steal Egg/Validate playable scene")]
+    public static void Validate()
+    {
+        LunaController game=UnityEngine.Object.FindFirstObjectByType<LunaController>();
+        if(!game || game.zones.Length!=3)throw new Exception("Expected 3 zones.");
+        foreach(var z in game.zones)if(!z.guardian || z.nests.Length==0 || z.eggPrefabs.Length==0 || z.petPrefabs.Length==0)throw new Exception("Incomplete zone: "+z.name);
+        if(!game.home || !game.player || !game.gameCamera || !game.uiFont)throw new Exception("Missing gameplay reference.");
+        int missing=0;foreach(var root in SceneManager.GetActiveScene().GetRootGameObjects())foreach(var t in root.GetComponentsInChildren<Transform>(true))missing+=GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject);
+        if(missing!=0)throw new Exception(missing+" missing scripts");
+        Debug.Log("PLAYABLE VALIDATION PASSED: 3 zones, guards, nests, eggs, pets and player references.");
+    }
+}
