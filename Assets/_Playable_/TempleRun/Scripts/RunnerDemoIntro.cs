@@ -25,7 +25,14 @@ namespace Playable.TempleRun
         public bool HasEnded { get; private set; }
         public float Remaining { get; private set; }
         private float _selectionRemaining;
-        private int _selectedFrame, _lastCtaFrame = -1;
+        private int _lastCtaFrame = -1;
+        private bool _hasGameplayTimeout;
+
+        private void Awake()
+        {
+            // This intro owns selection/gameplay timers; avoid a second scene-wide timer.
+            if (gameManager != null) gameManager.DeferCountdownUntilGameplay();
+        }
 
         private void Start()
         {
@@ -45,6 +52,7 @@ namespace Playable.TempleRun
                 AudioManager.Instance.PlayMusic(backgroundMusic);
             }
         }
+
         private void Update()
         {
             if (HasEnded) return;
@@ -54,29 +62,43 @@ namespace Playable.TempleRun
                 if (_selectionRemaining <= 0) Expire();
                 return;
             }
+
+            if (!_hasGameplayTimeout) return;
             Remaining = Mathf.Max(0, Remaining - Time.deltaTime);
             view.SetTime(Remaining);
-            if (Time.frameCount > _selectedFrame && Input.GetMouseButtonDown(0)) ShowCTA();
-            else if (Remaining <= 0) Expire();
+            if (Remaining <= 0) Expire();
         }
-        public void SelectHider() { SelectRole(true); }
-        public void SelectSeeker() { SelectRole(false); }
+
+        public void SelectHider()
+        {
+            SelectRole(true);
+        }
+
+        public void SelectSeeker()
+        {
+            SelectRole(false);
+        }
+
         private void SelectRole(bool hider)
         {
             if (HasSelected || HasEnded) return;
             HasSelected = true;
-            _selectedFrame = Time.frameCount;
-            Remaining = Mathf.Max(0, gameManager.EndTime);
+            Remaining = gameManager != null ? Mathf.Max(0, gameManager.EndTime) : 30f;
+            _hasGameplayTimeout = Remaining > 0f;
             view.ShowGameplay(hider);
             view.SetTime(Remaining);
-            foreach (var actor in actors) actor.Begin();
+            foreach (var actor in actors)
+                if (actor != null)
+                    actor.Begin();
             if (AudioManager.Instance != null) AudioManager.Instance.PlayOneShot(selectSound);
         }
+
         private void Expire()
         {
             if (AudioManager.Instance != null) AudioManager.Instance.PlayOneShot(timeoutSound);
             ShowCTA();
         }
+
         public void ShowCTA()
         {
             if (HasEnded) return;
@@ -86,13 +108,21 @@ namespace Playable.TempleRun
             {
                 HasEnded = true;
                 view.StopTutorials();
-                foreach (var actor in actors) actor.Stop();
+                foreach (var actor in actors)
+                    if (actor != null)
+                        actor.Stop();
                 Luna.Unity.LifeCycle.GameEnded();
             }
+
             Debug.Log("[HideSeek] Open store");
             Luna.Unity.Playable.InstallFullGame();
         }
-        public void BeginRun() { SelectHider(); }
+
+        public void BeginRun()
+        {
+            SelectHider();
+        }
+
         private void OnDestroy()
         {
             if (_selectionBackgroundSprite != null) Destroy(_selectionBackgroundSprite);

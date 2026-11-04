@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 29023,
-    "creativeName": "C1_2611_HuyNQ_UAC_V82_ThuLH",
+    "applicationID": 43685,
+    "creativeName": "C1_2611_HuyNQ_OBP_V05_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -12,6 +12,7 @@
         "scripts": {
             "excludes": [
                 "**/Editor/",
+                "Assets/_Playable_/MonsterArmy/Tests/",
                 "**/Luna/RuntimeScripts/",
                 "**/FacebookSDK/",
                 "**/googleads**/",
@@ -3582,10 +3583,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.WaitForSecondsRealtime",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.WaitUntil",
                 "excluded": true
             },
@@ -3766,23 +3763,11 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.Animation",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.Joint",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.ReflectionProbe",
                 "excluded": true
             },
             {
                 "name": "UnityEngine.Rendering.SortingGroup",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.Rigidbody2D",
                 "excluded": true
             },
             {
@@ -3798,47 +3783,7 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.CapsuleCollider2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.CharacterJoint",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.CompositeCollider2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.ConfigurableJoint",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.EdgeCollider2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.Effector2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.FixedJoint",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.HingeJoint",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.PolygonCollider2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.SpringJoint",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WheelCollider",
                 "excluded": true
             },
             {
@@ -3854,15 +3799,7 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.Joint2D",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.FlareLayer",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.PlatformEffector2D",
                 "excluded": true
             },
             {
@@ -3874,47 +3811,7 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.AnchoredJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.RelativeJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.TargetJoint2D",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.TextMesh",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.DistanceJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.FixedJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.FrictionJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.HingeJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.SliderJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.SpringJoint2D",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WheelJoint2D",
                 "excluded": true
             },
             {
@@ -6387,7 +6284,7 @@
             },
             {
                 "name": "UnityEngine.SpriteTileMode",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.StackTraceLogType",
@@ -8311,6 +8208,34 @@
             },
             {
                 "name": "Playable.TempleRun.RunnerGameManager.State",
+                "excluded": false
+            },
+            {
+                "name": "Playable.MonsterArmy.BossSkill",
+                "excluded": false
+            },
+            {
+                "name": "Playable.MonsterArmy.Core.MonsterKind",
+                "excluded": false
+            },
+            {
+                "name": "Playable.MonsterArmy.Core.MonsterSpecies",
+                "excluded": false
+            },
+            {
+                "name": "Playable.MonsterArmy.Core.TutorialStep",
+                "excluded": false
+            },
+            {
+                "name": "Playable.MonsterArmy.Core.WeaponCategory",
+                "excluded": false
+            },
+            {
+                "name": "Playable.MonsterArmy.MonsterRig.Layer",
+                "excluded": false
+            },
+            {
+                "name": "Playable.MonsterArmy.VfxKind",
                 "excluded": false
             }
         ],
@@ -12199,7 +12124,7 @@
                     },
                     {
                         "name": "ctor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "System$Collections$IEnumerator$reset",
@@ -12215,7 +12140,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -14137,7 +14062,7 @@
                     },
                     {
                         "name": "Next",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSampleForLargeRange",
@@ -15131,7 +15056,7 @@
                     },
                     {
                         "name": "op_Equality",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "op_Inequality",
@@ -16577,7 +16502,7 @@
                     },
                     {
                         "name": "TransformVector",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Translate$1",
@@ -17129,15 +17054,15 @@
                     },
                     {
                         "name": "orthographicSize#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "orthographicSize#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "orthographic#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "cullingMask#get",
@@ -17543,7 +17468,7 @@
                     },
                     {
                         "name": "sortingOrder#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sortingLayerID#get",
@@ -17977,23 +17902,23 @@
                     },
                     {
                         "name": "color#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sprite#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "size#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "tileMode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "adaptiveModeThreshold#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "spriteSortPoint#get",
@@ -18035,7 +17960,7 @@
                     },
                     {
                         "name": "remove",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetEnumerator",
@@ -18067,7 +17992,7 @@
                     },
                     {
                         "name": "removeAt",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "RemoveAll",
@@ -18553,7 +18478,7 @@
                     },
                     {
                         "name": "material#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ctor",
@@ -18695,11 +18620,11 @@
                     },
                     {
                         "name": "UpdateCull",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetClipRect",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnTransformParentChanged",
@@ -18841,7 +18766,7 @@
                     },
                     {
                         "name": "material#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "enabled#get",
@@ -21171,7 +21096,7 @@
                     },
                     {
                         "name": "mainTexture#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "renderQueue#get",
@@ -21783,7 +21708,7 @@
                     },
                     {
                         "name": "Create$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Create$2",
@@ -21847,7 +21772,7 @@
                     },
                     {
                         "name": "bounds#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "textureRectOffset#get",
@@ -21903,7 +21828,7 @@
                     },
                     {
                         "name": "Get9TiledMesh",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -22063,7 +21988,7 @@
                     },
                     {
                         "name": "DisableRectClipping",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetTexture",
@@ -24781,7 +24706,7 @@
                     },
                     {
                         "name": "showMaskGraphic#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "$ctor1",
@@ -24803,7 +24728,7 @@
                     },
                     {
                         "name": "rectTransform#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "rootCanvasRect#get",
@@ -24823,11 +24748,11 @@
                     },
                     {
                         "name": "OnDisable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "IsRaycastLocationValid",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PerformClipping",
@@ -24839,7 +24764,7 @@
                     },
                     {
                         "name": "RemoveClippable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnTransformParentChanged",
@@ -25413,7 +25338,7 @@
                     },
                     {
                         "name": "enableAutoSizing#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "fontSizeMin#get",
@@ -25421,7 +25346,7 @@
                     },
                     {
                         "name": "fontSizeMin#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "fontSizeMax#get",
@@ -25429,7 +25354,7 @@
                     },
                     {
                         "name": "fontSizeMax#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "fontStyle#get",
@@ -25437,7 +25362,7 @@
                     },
                     {
                         "name": "fontStyle#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "horizontalAlignment#get",
@@ -25953,7 +25878,7 @@
                     },
                     {
                         "name": "SetText$3",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetText$4",
@@ -25981,7 +25906,7 @@
                     },
                     {
                         "name": "SetText$10",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetText$11",
@@ -26049,11 +25974,11 @@
                     },
                     {
                         "name": "AddFloatToInternalTextBackingArray",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "AddIntegerToInternalTextBackingArray",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "InternalTextBackingArrayToString",
@@ -28637,7 +28562,7 @@
                     },
                     {
                         "name": "missingGlyphCharacter#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "missingGlyphCharacter#set",
@@ -28685,7 +28610,7 @@
                     },
                     {
                         "name": "defaultSpriteAsset#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "defaultSpriteAssetPath#get",
@@ -29461,7 +29386,7 @@
                     },
                     {
                         "name": "fallbackFontAssetTable#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "fallbackFontAssetTable#set",
@@ -29695,7 +29620,7 @@
                     },
                     {
                         "name": "spriteCharacterLookupTable#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "spriteCharacterLookupTable#set",
@@ -29715,7 +29640,7 @@
                     },
                     {
                         "name": "UpdateLookupTables",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSpriteIndexFromHashcode",
@@ -29765,7 +29690,7 @@
                     },
                     {
                         "name": "hashCode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "$ctor3",
@@ -30199,7 +30124,7 @@
                     },
                     {
                         "name": "GetSpriteCharacterFromSpriteAsset",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSpriteCharacterFromSpriteAsset_Internal",
@@ -31465,7 +31390,7 @@
                     },
                     {
                         "name": "Shake$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Shake$2",
@@ -31493,7 +31418,7 @@
                     },
                     {
                         "name": "CompleteAndReturnKilledTot$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "CompleteAndReturnKilledTot$2",
@@ -31865,7 +31790,7 @@
                     },
                     {
                         "name": "DOLocalMoveX",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DOLocalMoveY",
@@ -35157,7 +35082,7 @@
                     },
                     {
                         "name": "DOShakeAnchorPos$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DOJumpAnchorPos",
@@ -37814,6 +37739,22 @@
                     {
                         "name": "SelectionBackground#get",
                         "excluded": false
+                    },
+                    {
+                        "name": "HasEnded#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "DeferCountdownUntilGameplay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginGameplayCountdown",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IEEndcardStore",
+                        "excluded": false
                     }
                 ]
             },
@@ -38309,7 +38250,7 @@
                     },
                     {
                         "name": "MarkViewAlignmentCacheNormalsDirty",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "MarkViewAlignmentCacheMeshDirty",
@@ -38317,7 +38258,7 @@
                     },
                     {
                         "name": "GetOrCreateViewAlignmentCache",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Attach",
@@ -38423,7 +38364,7 @@
                     },
                     {
                         "name": "GenerateByViewAlignment",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetScaledCornerNormal",
@@ -39421,7 +39362,7 @@
                     },
                     {
                         "name": "Unregister",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "init",
@@ -40234,6 +40175,10 @@
                     {
                         "name": "OnDestroy",
                         "excluded": true
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": true
                     }
                 ]
             },
@@ -40379,6 +40324,2826 @@
                     },
                     {
                         "name": "SetSelectionBackground",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.ArenaCameraFitter",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginBattle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FitBattle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Fit",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.ArenaGrid",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Columns#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Rows#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CellSize#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Center#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Origin#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "WorldBounds#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetLandscape",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CellToWorld",
+                        "excluded": false
+                    },
+                    {
+                        "name": "WorldToCell",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ClampToCell",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDrawGizmosSelected",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.BossHealthBar",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Bind",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayDangerPulse",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.BossUnit",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HeadTop#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Initialise",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TakeDamage",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SkillLoop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Telegraph",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Cast",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CastStomp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CastFireballRain",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CastRoar",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Live",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetGlowAlpha",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SkillOffset",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetBattleOrientation",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopBattle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApproachPosition",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RangedPosition",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsClose",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CastEnergyBeam",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetBeam",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PositionBeam",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.ChaosDirector",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetLiveMonsterCount",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideOverlays",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Shake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Flash",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Burn",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.CharacterParts",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsComplete#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.CombatAudio",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StartBattle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopBattle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayMonsterVoice",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayFireball",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayClick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayAddItem",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayGunshot",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayAxeHit",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayLaser",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayGrenade",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayGrenadeBoom",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayMonsterDeath",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayBossStomp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayBossRoar",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayError",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.Core.BossHealthModel",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Clamp01",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Percent#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsAtFloor#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyDamage",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Drain",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DamageMultiplier",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.Core.ChaosLevel",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.Core.ChaosTier",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ForLiveMonsters",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.Core.MonsterRoster",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "BossSkinFolder#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "BossBaseKey#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Count#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "At",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.Core.MonsterStats",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "CategoryFor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "For",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.Core.PlacementGrid",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "IsFull#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsOccupied",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryOccupy",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Release",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryOccupyNearestFree",
+                        "excluded": true
+                    },
+                    {
+                        "name": "TryMove",
+                        "excluded": true
+                    },
+                    {
+                        "name": "InBounds",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.Core.SpeciesInfo",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsZombie#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SkinFolder#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "BaseKey#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.Core.TutorialFlow",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ShowStartButton#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsLocked#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsEmphasised#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifyActivity",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifyMonsterPlaced",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifyStartPressed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Advance",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.DragPlacer",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsDragging#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Initialise",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginSpeciesDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PrepareUiPreview",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SyncUiPreview",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryPickPlacedUnit",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Drag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateDragPosition",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Drop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CancelDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowHighlight",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PointerWorld",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Live",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.HotbarSlot",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Bind",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerDown",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnBeginDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEndDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerUp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsRaycastLocationValid",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.MonsterArmyController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RotateLayout",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleGameEnded",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BuildPool",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnHero",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleSlotDragBegin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleDropRejected",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleSpeciesDropped",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleUnitMoved",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshStartButton",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateBattleOrientation",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleStartPressed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleUnitDied",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleBossReachedFloor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshChaos",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TakeFromPool",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "HandleSlotTapped",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowDefeatEndcard",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.MonsterArtLibrary",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Pick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BossParts#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GroundTile#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CellHighlight#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PartsFor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Icon",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Vfx",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RandomWeapon",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.MonsterHotbar",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "SpeciesAt",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlaceHud",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SlotRoot#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SlotCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "WidthFraction#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TopFraction#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerDown",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Relayout",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SlotTransform",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PulseSlot",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RejectDrop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleDragBegin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EnsureScroll",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetScrollForHint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleTouch",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleTap",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateClipRect",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.MonsterRig",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HeadTop#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "WorldBounds#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetLibrary",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Build$1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Build",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BuildBoss",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetWalking",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayAttack",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayBossAttack",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopAttack",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayDeath",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetSortingOrder",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetForReuse",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AnimateWalk",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AnimateIdle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Limb",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Part",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetAlpha",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Clear",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "FeetPosition#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BossEyePosition",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.MonsterUnit",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "VisualBounds#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Configure",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Spawn",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TakeDamage",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Despawn",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MoveTo",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Advance",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Attack",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnHitEffect",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnMuzzleFlash",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Die",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Knockback",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FeetPosition#get",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.TutorialDirector",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "IsFinished#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Current#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowStartButton#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideLegacyDecorations",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Begin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifySelectionTouched",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifyActivity",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NotifyMonsterPlaced",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifyStartPressed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyStep",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PointHandAtStart",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowDragHint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowHand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopHints",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.VfxClip",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsValid#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.VfxPool",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ActiveCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetLibrary",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Prewarm",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TrySpawn",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MergeIntoNearest",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TakeFree",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CreateInstance",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.VfxPool.Instance",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Animation",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "clip#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "clip#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "clips#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "clips#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "wrapMode#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "wrapMode#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "getItem",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsPlaying",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetEnumerator",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddClip",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Play$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateClipWrapMode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Stop",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Stop$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Rewind",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddTime",
+                        "excluded": true
+                    },
+                    {
+                        "name": "TriggerEvents",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Sample",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CrossFade",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Joint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "rigidbody#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedBody#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedBody#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "enableCollision#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "enableCollision#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "massScale#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "massScale#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedMassScale#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedMassScale#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NullifySecondBodyConstraints",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ResetAllRows",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ComputeJacobianAxes",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetAngularConstraint",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetLinearConstraint",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetupHardPositionalConstraint",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CorrectErrorSpring",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SeparateSwingTwist",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplySpringToRow",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplyAngularBouncinessToRow",
+                        "excluded": true
+                    },
+                    {
+                        "name": "QuarterAnglePair",
+                        "excluded": true
+                    },
+                    {
+                        "name": "HalfAnglePair",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NormalizeAngle",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NormalizeAngle360",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateBodyValues",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Rigidbody2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "velocity#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "velocity#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearVelocity#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearVelocity#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularVelocity#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularVelocity#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "attachedColliderCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "mass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "mass#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useAutoMass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useAutoMass#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "inertia#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "inertia#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "drag#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "drag#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearDamping#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearDamping#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularDrag#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularDrag#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularDamping#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularDamping#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "position#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "position#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "gravityScale#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "gravityScale#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "collisionDetectionMode#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "collisionDetectionMode#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "simulated#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "simulated#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "bodyType#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "bodyType#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "isKinematic#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "isKinematic#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useFullKinematicContacts#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useFullKinematicContacts#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "freezeRotation#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "freezeRotation#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "constraints#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "constraints#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "centerOfMass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "centerOfMass#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "rotation#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "rotation#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "sharedMaterial#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "sharedMaterial#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddForce",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddForceAtPosition",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddRelativeForce",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddTorque",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MoveRotation",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MoveRotation$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "WakeUp",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MovePosition$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MovePosition",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetAttachedColliders",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetRotation",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetRotation$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetContacts$2",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetContacts",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetContacts$3",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetContacts$1",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.CapsuleCollider2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "direction#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "direction#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "size#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "size#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.CharacterJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.ConfigurableJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetUpLinearLimitOnAxis",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetUpLinearDriveOnAxis",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetUpAngularDriveAroundAxis",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.EdgeCollider2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "points#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "points#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "edgeRadius#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "edgeRadius#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "pointCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Effector2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "useColliderMask#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useColliderMask#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "colliderMask#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "colliderMask#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.FixedJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.HingeJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplySpring",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ComputePhi",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplyMotor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.PolygonCollider2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "m_Points#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "m_Points#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "points#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "points#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "pathCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "pathCount#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetPath$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetTotalPointCount",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.SpringJoint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Reset",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelCollider",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "brakeTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "brakeTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motorTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motorTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "steerAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "steerAngle#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "radius#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "radius#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "mass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "mass#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "isGrounded#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "suspensionDistance#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "suspensionDistance#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "rpm#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "sprungMass#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnAwake",
+                        "excluded": true
+                    },
+                    {
+                        "name": "FixedUpdate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetGroundHit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetWorldPose",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateHit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateSuspension",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateWheel",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateFriction",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IntegrateForces",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetupCurve",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CalculateWheelParams",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.Joint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "enableCollision#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "enableCollision#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "attachedRigidbody#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedBody#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedBody#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "breakTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "reactionForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "reactionTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetReactionForce",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetReactionTorque",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.PlatformEffector2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.AnchoredJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "autoConfigureConnectedAnchor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureConnectedAnchor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "anchor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "anchor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedAnchor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "connectedAnchor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.RelativeJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "angularOffset#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angularOffset#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearOffset#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "linearOffset#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureOffset#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureOffset#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "correctionScale#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "correctionScale#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "target#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.TargetJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "autoConfigureTarget#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureTarget#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "target#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "target#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "anchor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "anchor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.DistanceJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "distance#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "distance#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxDistanceOnly#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxDistanceOnly#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureDistance#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureDistance#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.FixedJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "frequency#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "referenceAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.FrictionJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "maxForce#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxForce#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxTorque#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "maxTorque#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.HingeJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "useLimits#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useLimits#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limits#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limits#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.SliderJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "angle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "angle#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "referenceAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "autoConfigureAngle#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useLimits#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useLimits#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limits#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limits#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "limitState#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointTranslation#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointSpeed#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetMotorForce",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.SpringJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "distance#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "distance#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "frequency#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "dampingRatio#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WheelJoint2D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "suspension#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "suspension#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useMotor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "motor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointSpeed#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointTranslation#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "jointLinearSpeed#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetMotorTorque",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TempleRun.RunnerButtonPulse",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.MonsterArmy.EndcardLayout",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Place",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshLayout",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WaitForSecondsRealtime",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "keepWaiting#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Reset",
                         "excluded": false
                     }
                 ]
@@ -40839,6 +43604,16 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/Font/Arial Rounded MT Bold Regular SDF.asset"
+                    },
+                    {
+                        "maxWidth": 2048,
+                        "maxHeight": 1024,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/MonsterArmy/MonsterArmy.spriteatlasv2"
                     }
                 ]
             },

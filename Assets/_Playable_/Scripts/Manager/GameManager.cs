@@ -12,8 +12,25 @@ namespace Playable
 
         [SerializeField] private HomeRewardPopup _homeRewardPopup;
         private Coroutine _endCountdown;
+        private Coroutine _endcardStore;
         private Tween _pendingCta;
         private bool _gameEnded;
+        [SerializeField] private bool _autoStoreAfterEndcard;
+        private bool _deferCountdown;
+        public bool HasEnded => _gameEnded;
+        public event System.Action GameEnded;
+
+        public void DeferCountdownUntilGameplay()
+        {
+            _deferCountdown = true;
+            CancelPendingEnd();
+        }
+
+        public void BeginGameplayCountdown()
+        {
+            _deferCountdown = false;
+            CountdownEndGame();
+        }
 
         [Header("End Game")] [LunaPlaygroundField("End Time", 1, "End Game")] [SerializeField]
         private int _endTime = 30;
@@ -59,21 +76,34 @@ namespace Playable
 
             if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
-            if (!_eggRaisingMode) CountdownEndGame();
+            if (!_eggRaisingMode && !_deferCountdown) CountdownEndGame();
         }
 
 
         public void EndGame()
         {
+            if (_autoStoreAfterEndcard && _gameEnded) return;
             CancelPendingEnd();
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
+            if (_autoStoreAfterEndcard) _btnBlock.interactable = false;
             NotifyGameEnded();
+            if (_autoStoreAfterEndcard)
+                _endcardStore = StartCoroutine(IEEndcardStore());
+        }
+
+        private IEnumerator IEEndcardStore()
+        {
+            float readyAt = Time.realtimeSinceStartup + 1f;
+            while (Time.realtimeSinceStartup < readyAt) yield return null;
+            _endcardStore = null;
+            ShowCTA();
         }
 
         public void ShowCTA()
         {
             CancelPendingEnd();
+            if (_autoStoreAfterEndcard && _btnBlock != null) _btnBlock.interactable = true;
             Debug.Log("Show CTA");
             Luna.Unity.Playable.InstallFullGame();
         }
@@ -91,12 +121,15 @@ namespace Playable
             if (_gameEnded) return;
             _gameEnded = true;
             Luna.Unity.LifeCycle.GameEnded();
+            GameEnded?.Invoke();
         }
 
         private void CancelPendingEnd()
         {
             if (_endCountdown != null) StopCoroutine(_endCountdown);
             _endCountdown = null;
+            if (_endcardStore != null) StopCoroutine(_endcardStore);
+            _endcardStore = null;
             _pendingCta?.Kill();
             _pendingCta = null;
         }
@@ -134,7 +167,7 @@ namespace Playable
             yield return new WaitForSeconds(_endTime);
             _endCountdown = null;
             EndGame();
-            if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
+            if (!_autoStoreAfterEndcard && !_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
         }
 
         private Sprite CreateSprite(Texture2D texture)
@@ -148,7 +181,7 @@ namespace Playable
         public void ShowWinPanel()
         {
             EndGame();
-            if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA);
+            if (!_autoStoreAfterEndcard && !_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA);
             if (_winPanel == null) return;
             _winPanel.Show();
         }
@@ -177,7 +210,7 @@ namespace Playable
             _btnBlock.gameObject.SetActive(false);
             _quantityEvent = 0;
             _gameController.ResetGame();
-            if (!_eggRaisingMode) CountdownEndGame();
+            if (!_eggRaisingMode && !_deferCountdown) CountdownEndGame();
         }
 
         private void OnDestroy()
