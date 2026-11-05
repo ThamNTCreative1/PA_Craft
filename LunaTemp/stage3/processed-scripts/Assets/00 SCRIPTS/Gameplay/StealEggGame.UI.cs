@@ -77,7 +77,6 @@ public partial class StealEggGame
         if(swipe)cameraHint.anchoredPosition=new Vector2(Mathf.Lerp(-160,160,Mathf.PingPong(Time.time*.8f,1)),0);
         bool jump=free && jumpHint && cameraTurned && !jumped;
         if(jumpHint && jumpHint.gameObject.activeSelf!=jump)jumpHint.gameObject.SetActive(jump);
-        if(jump)AnimateTapHand(jumpHint);
         if(tutorialText)
         {
             // After the three control hints, "Steal An Egg" pulses until the first egg is taken (then never again).
@@ -106,25 +105,8 @@ public partial class StealEggGame
     {
         if(!hint)return;
         bool show=!Blocked && !IsKnockedDown && Step==step && currentAction==action;
+        // The hint animates itself (TapHintView) while it is shown.
         Show(hint.gameObject,show);
-        if(show)AnimateTapHand(hint);
-    }
-    // "tab" (0.67 s): the hand lifts, presses down onto the button, settles; the shine flashes as it presses.
-    private static void AnimateTapHand(TapHintView hint)
-    {
-        float t=Mathf.Repeat(Time.time,.667f);
-        float lift=t<.2f?t/.2f:t<.33f?1-(t-.2f)/.13f*1.5f:t<.667f?-.5f*(1-(t-.33f)/.337f):0;
-        if(hint.hand)
-        {
-            hint.hand.localPosition=new Vector3(lift*10,lift*12,0);
-            hint.hand.localRotation=Quaternion.Euler(0,0,8*Mathf.Max(0,lift));
-        }
-        if(hint.shine)
-        {
-            float flash=t>=.3f && t<.667f?1-Mathf.Abs((t-.467f)/.2f):0;
-            if(hint.shineGraphic){Color c=hint.shineGraphic.color;c.a=Mathf.Clamp01(flash);hint.shineGraphic.color=c;}
-            hint.shine.localScale=Vector3.one*(.6f+.6f*Mathf.Clamp01((t-.3f)/.37f));
-        }
     }
 
     // ---- Context buttons above the target (SAE_GamePlayPanel.LockToTarget) ----

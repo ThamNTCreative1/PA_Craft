@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "7c3548a0f00f61f48bf437794041aba1",
     "applicationID": 38041,
-    "creativeName": "C1_2611_TamNTM_TE_V05_DungNV",
+    "creativeName": "C1_2611_TamNTM_TE_V06_DungNV",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -8205,10 +8205,6 @@
             {
                 "name": "StealEggGame.TreadmillPanelUI",
                 "excluded": false
-            },
-            {
-                "name": "TapHintView",
-                "excluded": false
             }
         ],
         "unusedMethods": [
@@ -15080,7 +15076,7 @@
                     },
                     {
                         "name": "MinMaxRect",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "NormalizedToPoint",
@@ -18436,7 +18432,7 @@
                     },
                     {
                         "name": "material#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "material#set",
@@ -18934,7 +18930,7 @@
                     },
                     {
                         "name": "mainTexture#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "uvRect#get",
@@ -18954,7 +18950,7 @@
                     },
                     {
                         "name": "init",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "$ctor1",
@@ -18962,11 +18958,11 @@
                     },
                     {
                         "name": "ctor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Awake",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnDidApplyAnimationProperties",
@@ -18974,7 +18970,7 @@
                     },
                     {
                         "name": "ConfigureForEntity",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -23570,7 +23566,7 @@
                     },
                     {
                         "name": "insideUnitCircle#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "rotation#get",
@@ -31697,6 +31693,18 @@
                     {
                         "name": "ShowEndCard",
                         "excluded": true
+                    },
+                    {
+                        "name": "IAPVisible#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayerWalked",
+                        "excluded": false
                     }
                 ]
             },
@@ -33315,10 +33323,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "OrbitCamera",
-                        "excluded": false
-                    },
-                    {
                         "name": "MovePlayer",
                         "excluded": false
                     },
@@ -33927,10 +33931,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "AnimateTapHand",
-                        "excluded": false
-                    },
-                    {
                         "name": "FetchNext",
                         "excluded": true
                     },
@@ -33981,6 +33981,14 @@
                     {
                         "name": "UpdateFootsteps",
                         "excluded": false
+                    },
+                    {
+                        "name": "IsInputBlocked#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NotifyCameraTurned",
+                        "excluded": true
                     }
                 ]
             },
@@ -34900,6 +34908,134 @@
                     },
                     {
                         "name": "Apply",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "TapHintView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "CameraController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetAngles",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Orbit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateTransform",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "IAPPopupView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Show",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PlayableImageCycle",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetAlpha",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PlayableUIPulse",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PlayableUISparkle",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Respawn",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RespawnRay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Set",
                         "excluded": false
                     }
                 ]

@@ -61,7 +61,8 @@ public partial class StealEggGame : MonoBehaviour
     public TutorialStep Step {get; private set;}
     public bool TutorialCompleted {get{return Step==TutorialStep.Done;}}
     public bool IsCarrying {get{return carried!=null;}}
-    public bool EndCardVisible {get{return LunaController.Instance && LunaController.Instance.EndCardVisible;}}
+    // The end card and the IAP popup (both LunaController) stop the game under them.
+    public bool EndCardVisible {get{return LunaController.Instance && (LunaController.Instance.EndCardVisible || LunaController.Instance.IAPVisible);}}
     public class Egg
     {
         public Transform transform;
@@ -168,7 +169,7 @@ public partial class StealEggGame : MonoBehaviour
     }
     private void PlaySound(AudioClip clip,float volume=1){if(sound && clip)sound.PlayOneShot(clip,volume);}
     // Original SAE_FootStep on the player: one step each time 0.5 * min(speed, 30) units have been covered while walking.
-    private float stepLeft=1;
+    private float stepLeft=1, walked;
     private void UpdateFootsteps(float speed)
     {
         if(speed<=.01f){stepLeft=1;return;}
@@ -194,7 +195,12 @@ public partial class StealEggGame : MonoBehaviour
             if(IsKnockedDown)UpdateKnockdown();else if(training)UpdateTraining();else MovePlayer();
             if(Input.GetKeyDown(KeyCode.E))PressPrimaryAction();if(Input.GetKeyDown(KeyCode.Q))DropEgg();if(Input.GetKeyDown(KeyCode.F))Attack();
         }
-        else playerForward=0;
+        else
+        {
+            playerForward=0;
+            // A popup over the joystick never sends its pointer up: drop the held input.
+            if(EndCardVisible)joystick.ResetInput();
+        }
         UpdatePlayerAnimation();
         UpdateInteraction();
         UpdateGuardians();UpdateNpcs();UpdateHome();UpdateWorld();UpdateCombat();UpdateGuide();UpdateHud();UpdateTutorialHints();
@@ -218,12 +224,15 @@ public partial class StealEggGame : MonoBehaviour
         verticalSpeed-=gravity*Time.deltaTime;
         // Ceiling check from the actual rise: Luna numbers CollisionFlags 0..3 (Below=3), so "& Above" held on the ground
         // and cancelled every jump on its first frame.
-        float startY=player.position.y;
+        Vector3 startPosition=player.position;float startY=startPosition.y;
         motor.Move((direction*moveSpeed+Vector3.up*verticalSpeed)*Time.deltaTime);
         if(verticalSpeed>0 && player.position.y-startY<verticalSpeed*Time.deltaTime*.5f)verticalSpeed=0;
         if(player.position.y< -12)Respawn();
         playerForward=input.magnitude;
         UpdateFootsteps(motor.isGrounded?direction.magnitude*moveSpeed:0);
+        // Distance actually walked (horizontal), for LunaController's IAP popup.
+        Vector3 step=player.position-startPosition;step.y=0;
+        if(step.sqrMagnitude>0){walked+=step.magnitude;if(LunaController.Instance)LunaController.Instance.PlayerWalked(walked);}
     }
     public void Jump()
     {

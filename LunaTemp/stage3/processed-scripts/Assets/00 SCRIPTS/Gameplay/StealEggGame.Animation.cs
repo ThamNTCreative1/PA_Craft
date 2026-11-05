@@ -10,7 +10,6 @@ public partial class StealEggGame
     public const string AnimSet="Set", AnimMotion="Motion";
     public const int SetPlain=0, SetCarry=1, SetHold=2, SetFight=3;
     public const int MotionIdle=0, MotionWalk=1, MotionRun=2, MotionJump=3, MotionFall=4;
-    private static readonly int SetId=Animator.StringToHash(AnimSet), MotionId=Animator.StringToHash(AnimMotion);
     private float playerForward;
     // Legs under the swing, chosen when it starts so running in or out of it does not restart the swing.
     private int fightMotion;
@@ -23,7 +22,9 @@ public partial class StealEggGame
     private static void SetAnimatorState(Animator a,int set,int motion)
     {
         if(!a || !a.isActiveAndEnabled || !a.runtimeAnimatorController)return;
-        a.SetInteger(SetId,set);a.SetInteger(MotionId,motion);
+        // By name: in Luna the hash overload missed the parameters (they are keyed by name there, and a static
+        // StringToHash field came out undefined), which left the player stuck in Idle.
+        a.SetInteger(AnimSet,set);a.SetInteger(AnimMotion,motion);
     }
     private void UpdatePlayerAnimation()
     {

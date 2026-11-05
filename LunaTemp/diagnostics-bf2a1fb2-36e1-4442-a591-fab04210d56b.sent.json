@@ -1,0 +1,253 @@
+{
+    "BuildID": "bf2a1fb2-36e1-4442-a591-fab04210d56b",
+    "Command": "project:upload",
+    "ProjectID": "7c3548a0f00f61f48bf437794041aba1",
+    "ProjectStateHash": "1c6e19c4ac6a7893a84fe6597d14eb1d15c248326ef0b7fa0466e418e654f87e",
+    "StageCompletedAt": 3,
+    "EarliestFatalError": 0,
+    "StartTime": 1793774484478,
+    "EndTime": 1793774559148,
+    "PlaygroundUserID": 36785,
+    "OperatingSystem": "win32",
+    "UnityPackageID": null,
+    "TargetPlatform": "playground",
+    "UnityVersion": "6000.0.78f1",
+    "LunaVersion": "7.2.0",
+    "LogCount": 9,
+    "Logs": [
+        {
+            "LogID": "ed7c51a7-d99a-4f86-a5a4-f6cd14070940",
+            "Order": 9,
+            "Timestamp": 1793774559453,
+            "Stage": 3,
+            "ErrorType": 3,
+            "ErrorCode": "LP3007",
+            "Description": "You are not using any custom events",
+            "Details": [
+                "You are not using any custom events. It is recommended to use custom events to have a better understanding of the playable."
+            ],
+            "DescriptionValues": [
+                ""
+            ],
+            "DetailsValues": [
+                ""
+            ],
+            "LogCount": 1,
+            "LinePosition": null,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "52ec810d-020d-4034-b765-77d130a8610b",
+            "Order": 0,
+            "Timestamp": 1793774516068,
+            "Stage": 1,
+            "ErrorType": 2,
+            "ErrorCode": "LP1014",
+            "Description": "We recommend running Runtime Analysis to find and remove all unused code",
+            "Details": [
+                "Navigate to the Runtime Analysis → Code tab to enable code stripping. Before uploading the playable, please make sure to have played all scenario’s of the playable in a development build to make Runtime Analysis work properly."
+            ],
+            "DescriptionValues": [],
+            "DetailsValues": [],
+            "LogCount": 1,
+            "LinePosition": 0,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "455f03a3-ed4b-4d35-aea9-0b7b1e4a759d",
+            "Order": 1,
+            "Timestamp": 1793774516068,
+            "Stage": 1,
+            "ErrorType": 2,
+            "ErrorCode": "LP1016",
+            "Description": "Extensive usage of Rigidbody Component",
+            "Details": [
+                "There is extensive usage of the Rigidbody component.\nExcessive usage of any component can be detrimental to performance on lower and in some cases higher end devices, consider reducing the amount the component is used.\nRecommended count: 10, current count 18."
+            ],
+            "DescriptionValues": [
+                "Rigidbody"
+            ],
+            "DetailsValues": [
+                "Rigidbody",
+                "10",
+                "18"
+            ],
+            "LogCount": 1,
+            "LinePosition": 0,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "5aa14273-d0b3-4ca0-9a56-bcca61b8f779",
+            "Order": 2,
+            "Timestamp": 1793774516068,
+            "Stage": 1,
+            "ErrorType": 2,
+            "ErrorCode": "LP1016",
+            "Description": "Extensive usage of ParticleSystem Component",
+            "Details": [
+                "There is extensive usage of the ParticleSystem component.\nExcessive usage of any component can be detrimental to performance on lower and in some cases higher end devices, consider reducing the amount the component is used.\nRecommended count: 10, current count 75."
+            ],
+            "DescriptionValues": [
+                "ParticleSystem"
+            ],
+            "DetailsValues": [
+                "ParticleSystem",
+                "10",
+                "75"
+            ],
+            "LogCount": 1,
+            "LinePosition": 0,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "860ac5fa-13a8-4104-908a-56646e301e68",
+            "Order": 3,
+            "Timestamp": 1793774516068,
+            "Stage": 1,
+            "ErrorType": 1,
+            "ErrorCode": "LP1023",
+            "Description": "Too many files for facebook platform",
+            "Details": [
+                "Too many files for facebook platform in use ($199) only $100 available"
+            ],
+            "DescriptionValues": [],
+            "DetailsValues": [
+                "199",
+                "100"
+            ],
+            "LogCount": 1,
+            "LinePosition": 0,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "4b5ca196-096b-4cf2-9fa7-1cb85894452b",
+            "Order": 4,
+            "Timestamp": 1793774516076,
+            "Stage": 1,
+            "ErrorType": 0,
+            "ErrorCode": "LP1032",
+            "Description": "Package(s) is not supported in Luna",
+            "Details": [
+                "Currently package(s) com.unity.timeline are not supported in Luna. We recommend you to remove it and workaround it's functionality."
+            ],
+            "DescriptionValues": [
+                "com.unity.timeline (1.8.12)"
+            ],
+            "DetailsValues": [
+                "com.unity.timeline"
+            ],
+            "LogCount": 1,
+            "LinePosition": 0,
+            "FilePath": "F:/UnityProjects/TE_V06/Packages\\manifest.json",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "2e2dca11-6cce-490f-9630-0c9ed7a26298",
+            "Order": 5,
+            "Timestamp": 1793774516080,
+            "Stage": 1,
+            "ErrorType": 3,
+            "ErrorCode": "LP1002",
+            "Description": "Repeat wrap mode used on a texture with non power-of-two dimensions, this might not be rendered correctly.",
+            "Details": [
+                "SAE_Night 1",
+                "SAE_Speed 2"
+            ],
+            "DescriptionValues": [],
+            "DetailsValues": [],
+            "LogCount": 2,
+            "LinePosition": 0,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "f7291e08-d9ec-4dea-8c2c-e4c531b10e04",
+            "Order": 6,
+            "Timestamp": 1793774516080,
+            "Stage": 1,
+            "ErrorType": 2,
+            "ErrorCode": "LP1010",
+            "Description": "Looks like a collider was scaled, this might affect performance.",
+            "Details": [
+                "Snake Variant",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "CombatArea",
+                "End of Desert",
+                "SafeAreaGoal (1)",
+                "Cube",
+                "Base_Treadmill",
+                "Flame_Treadmill",
+                "Sci-Fi_Treadmill",
+                "Base_Treadmill",
+                "Flame_Treadmill",
+                "Sci-Fi_Treadmill",
+                "Base_Treadmill",
+                "Flame_Treadmill",
+                "Sci-Fi_Treadmill",
+                "Base_Treadmill",
+                "Flame_Treadmill",
+                "Sci-Fi_Treadmill",
+                "Base_Treadmill",
+                "Flame_Treadmill",
+                "Sci-Fi_Treadmill"
+            ],
+            "DescriptionValues": [],
+            "DetailsValues": [],
+            "LogCount": 28,
+            "LinePosition": 0,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        },
+        {
+            "LogID": "2ba851cc-f3ae-47c0-a8f1-d4c0d5601aff",
+            "Order": 7,
+            "Timestamp": 1793774516080,
+            "Stage": 1,
+            "ErrorType": 0,
+            "ErrorCode": "LP1033",
+            "Description": "Use of unsupported Character Controller detected.",
+            "Details": [
+                "Not all features of the Character Controller are implemented yet, which is found on the Playable Player GameObject. This can result into unexpected behaviour! Please work around this feature instead."
+            ],
+            "DescriptionValues": [],
+            "DetailsValues": [
+                "Use of unsupported Character Controller detected.",
+                "Use of unsupported Character Controller detected."
+            ],
+            "LogCount": 1,
+            "LinePosition": 0,
+            "FilePath": "",
+            "ClassName": "",
+            "MemberName": "",
+            "Severity": 0
+        }
+    ]
+}
