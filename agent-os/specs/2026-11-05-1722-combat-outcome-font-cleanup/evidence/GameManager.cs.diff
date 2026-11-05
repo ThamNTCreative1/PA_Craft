@@ -1,0 +1,97 @@
+--- 
++++ 
+@@ -8,19 +8,26 @@
+     {
+         public static GameManager Instance;
+ 
+-        [LunaPlaygroundField("End Time")]
++        [LunaPlaygroundField("End Time", fieldOrder: 1, fieldSection: "Gameplay")]
+         [SerializeField, Min(1)] private int _endTime = 30;
+-        [LunaPlaygroundAsset("Background Music")]
++        [LunaPlaygroundAsset("Background Music", 1, "Audio")]
+         [SerializeField] private AudioClip _backgroundMusic;
++        [LunaPlaygroundAsset("Win Sound", 2, "Audio")]
++        [SerializeField] private AudioClip _winSound;
++        [LunaPlaygroundAsset("Fail Sound", 3, "Audio")]
++        [SerializeField] private AudioClip _failSound;
++        [SerializeField] private AudioSource _endAudio;
+         [SerializeField] private Texture2D _backgroundTexture;
+         [SerializeField] private Image _background;
+         [SerializeField] private Button _btnBlock;
+         [SerializeField] private WinPanel _winPanel;
+         [SerializeField] private FailPanel _failPanel;
+         [SerializeField] private GameObject _timeoutPanel;
+-        [SerializeField, Min(0f)] private float _autoCtaDelay = 1f;
++        [LunaPlaygroundField("Auto CTA Delay", fieldOrder: 1, fieldSection: "EndCard")]
++        [SerializeField, Min(0f)] private float _autoCtaDelay = 5f;
+ 
+         private float _elapsed;
++        private bool _timerArmed;
+         private int _endedFrame;
+         private bool _autoInstalled;
+         private float _autoCtaAt = -1f;
+@@ -69,23 +76,43 @@
+                 return;
+             }
+ 
+-            _elapsed += Time.unscaledDeltaTime;
+-            if (_elapsed >= _endTime) EndWithTimeout();
++            if (_timerArmed)
++            {
++                _elapsed += Time.unscaledDeltaTime;
++                if (_elapsed >= _endTime) EndWithTimeout();
++            }
++        }
++
++        public void BeginCombatTimer()
++        {
++            if (_timerArmed || IsEnded) return;
++            _elapsed = 0f;
++            _timerArmed = true;
+         }
+ 
+         public void EndWithWin()
+         {
+             if (!TryBeginEnd()) return;
+-            if (_winPanel != null) _winPanel.Show();
++            if (_winPanel != null)
++            {
++                _winPanel.transform.SetAsLastSibling();
++                _winPanel.Show();
++            }
+             else Debug.LogError("Win endcard is not assigned.", this);
++            PlayEndSound(_winSound);
+             FinishEnd();
+         }
+ 
+         public void EndWithLose()
+         {
+             if (!TryBeginEnd()) return;
+-            if (_failPanel != null) _failPanel.Show();
++            if (_failPanel != null)
++            {
++                _failPanel.transform.SetAsLastSibling();
++                _failPanel.Show();
++            }
+             else Debug.LogError("Lose endcard is not assigned.", this);
++            PlayEndSound(_failSound);
+             FinishEnd();
+         }
+ 
+@@ -104,6 +131,16 @@
+             _endedFrame = Time.frameCount;
+             Ended?.Invoke();
+             return true;
++        }
++
++        private void PlayEndSound(AudioClip clip)
++        {
++            if (_endAudio == null || clip == null)
++            {
++                Debug.LogError("GameManager needs an end AudioSource and the matching Win/Fail Sound clip.", this);
++                return;
++            }
++            _endAudio.PlayOneShot(clip);
+         }
+ 
+         private void FinishEnd()

@@ -1,0 +1,23 @@
+--- 
++++ 
+@@ -16,7 +16,7 @@
+         [SerializeField, Min(1f)] private float _maxHealth = 150f;
+         [SerializeField, Min(0f)] private float _moveSpeed = 2.5f;
+         [SerializeField, Min(0.1f)] private float _attackRange = 2.5f;
+-        [SerializeField, Min(1f)] private float _attackDamage = 25f;
++        [SerializeField, Min(1f)] private float _attackDamage = 20f;
+         [SerializeField, Min(0f)] private float _attackHitTime = 0.3764471f;
+         [SerializeField, Min(0.1f)] private float _attackDuration = 1.366667f;
+         private Health _health;
+@@ -67,9 +67,11 @@
+                 }
+                 return;
+             }
++            _motor.Stop();
+             _motor.Face(_target.transform.position);
+             _attackTime += Time.fixedDeltaTime;
+             if (!_hitDelivered && _attackTime >= _attackHitTime) OnAnimationHit();
++            if (_state != State.Attack) return;
+             if (_attackTime >= _attackDuration)
+             {
+                 _state = State.Approach;

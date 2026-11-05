@@ -158,6 +158,276 @@ namespace Playable.Editor
             return transition;
         }
 
+        [MenuItem("Playable/Animations/Export NPC 33 and 26 Gun Clips")]
+        public static void ExportHeroGunClips()
+        {
+            ExportHeroGunClips(new[] { "NPC_33", "NPC_26" });
+        }
+
+        [MenuItem("Playable/Animations/Export Remaining Hero Gun Clips")]
+        public static void ExportRemainingHeroGunClips()
+        {
+            ExportHeroGunClips(new[] { "NPC_7", "NPC_5", "Doctor", "FireFighter", "Police" });
+        }
+
+        private static void ExportHeroGunClips(string[] heroes)
+        {
+            if (EditorApplication.isPlaying) throw new InvalidOperationException("Stop Play Mode before baking.");
+            const string sourceController = Folder + "/Standalone/PaintballStandalone.controller";
+            if (AssetDatabase.LoadAssetAtPath<AnimatorController>(sourceController) == null)
+                throw new InvalidOperationException("Missing standalone gun controller.");
+
+            var locomotion = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
+                "Assets/GameAsset/Model/Character/Player city.controller");
+            var gun = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(Paintball + "PlayerPaintball.controller");
+            if (locomotion == null || gun == null) throw new InvalidOperationException("Missing source animation controller.");
+            var idle = RequireHeroSourceClip(locomotion, "idle");
+            var run = RequireHeroSourceClip(locomotion, "run");
+            var jump = RequireHeroSourceClip(locomotion, "jump_start");
+            var hold = RequireHeroSourceClip(gun, "AssaultRifleIdle");
+            var draw = RequireHeroSourceClip(gun, "AssaultRifleEquipFromIdle");
+            var fire = RequireHeroSourceClip(gun, "AssaultRifleFire");
+            var reload = RequireHeroSourceClip(gun, "AssaultRifleReloadMid");
+            string[] names = { "Idle_Gun", "Run_Gun", "Jump_Gun", "Draw_Gun", "Fire_Gun", "Reload_Gun" };
+            string[] states = { "Idle", "Run", "Jump", "Equip", "Fire", "Reload" };
+            var legs = new[] { idle, run, jump, idle, idle, idle };
+            var arms = new[] { hold, hold, hold, draw, fire, reload };
+            var timings = new[] { idle, run, jump, draw, fire, reload };
+            var report = new StringBuilder("Hero animation bake (30 fps, original rigs preserved)\n");
+
+            foreach (string hero in heroes)
+            {
+                string modelPath = "Assets/GameAsset/Model/Character/Skin/" + hero + ".fbx";
+                var model = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
+                if (model == null) throw new InvalidOperationException("Missing hero model: " + modelPath);
+                var generated = new AnimationClip[names.Length];
+                try
+                {
+                    // Finish sampling and validation before writing any of this hero's assets.
+                    for (int i = 0; i < generated.Length; i++)
+                        generated[i] = BakeHeroGunClip(model, legs[i], arms[i], timings[i], names[i], report);
+                    string destination = Folder + "/Heroes/" + hero;
+                    Directory.CreateDirectory(destination);
+                    AssetDatabase.Refresh();
+                    for (int i = 0; i < generated.Length; i++)
+                    {
+                        string path = destination + "/" + names[i] + ".anim";
+                        var existing = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
+                        if (existing == null) AssetDatabase.CreateAsset(generated[i], path);
+                        else
+                        {
+                            EditorUtility.CopySerialized(generated[i], existing);
+                            UnityEngine.Object.DestroyImmediate(generated[i]);
+                            generated[i] = existing;
+                        }
+                        EditorUtility.SetDirty(generated[i]);
+                    }
+                    string controllerPath = destination + "/PaintballHero.controller";
+                    if (AssetDatabase.LoadAssetAtPath<AnimatorController>(controllerPath) == null &&
+                        !AssetDatabase.CopyAsset(sourceController, controllerPath))
+                        throw new InvalidOperationException("Cannot create hero controller: " + controllerPath);
+                    var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(controllerPath);
+                    var machine = controller.layers[0].stateMachine;
+                    if (controller.layers.Length != 1 || machine.states.Length != states.Length)
+                        throw new InvalidOperationException("Unexpected standalone controller layout.");
+                    foreach (var state in machine.states)
+                    {
+                        int index = Array.IndexOf(states, state.state.name);
+                        if (index < 0) throw new InvalidOperationException("Unexpected gun state: " + state.state.name);
+                        state.state.motion = generated[index];
+                        EditorUtility.SetDirty(state.state);
+                    }
+                    EditorUtility.SetDirty(controller);
+                    AssetDatabase.SaveAssets();
+                    foreach (string name in names)
+                    {
+                        string path = destination + "/" + name + ".anim";
+                        report.AppendLine(path + " | sourceBytes=" + new FileInfo(path).Length);
+                    }
+                }
+                finally
+                {
+                    foreach (var clip in generated)
+                        if (clip != null && !AssetDatabase.Contains(clip)) UnityEngine.Object.DestroyImmediate(clip);
+                }
+            }
+            Debug.Log(report.ToString());
+        }
+
+        private static AnimationClip RequireHeroSourceClip(RuntimeAnimatorController controller, string name)
+        {
+            var clip = controller.animationClips.FirstOrDefault(c => c.name == name);
+            if (clip == null || !clip.humanMotion)
+                throw new InvalidOperationException("Missing Humanoid source clip: " + name);
+            return clip;
+        }
+
+        private static Avatar BuildHeroBakeAvatar(GameObject clone)
+        {
+            var mapping = new Dictionary<string, string>
+            {
+                { "Hips", "mixamorig:Hips" }, { "Spine", "mixamorig:Spine" },
+                { "Chest", "mixamorig:Spine1" }, { "UpperChest", "mixamorig:Spine2" },
+                { "Neck", "mixamorig:Neck" }, { "Head", "mixamorig:Head" },
+                { "LeftShoulder", "ORG-shoulder.L" }, { "RightShoulder", "ORG-shoulder.R" },
+                { "LeftUpperArm", "ORG-upper_arm.L" }, { "RightUpperArm", "ORG-upper_arm.R" },
+                { "LeftLowerArm", "ORG-forearm.L" }, { "RightLowerArm", "ORG-forearm.R" },
+                { "LeftHand", "ORG-hand.L" }, { "RightHand", "ORG-hand.R" },
+                { "LeftUpperLeg", "mixamorig:LeftUpLeg" }, { "RightUpperLeg", "mixamorig:RightUpLeg" },
+                { "LeftLowerLeg", "mixamorig:LeftLeg" }, { "RightLowerLeg", "mixamorig:RightLeg" },
+                { "LeftFoot", "mixamorig:LeftFoot" }, { "RightFoot", "mixamorig:RightFoot" },
+                { "LeftToes", "mixamorig:LeftToeBase" }, { "RightToes", "mixamorig:RightToeBase" }
+            };
+            var transforms = clone.GetComponentsInChildren<Transform>(true);
+            var human = new List<HumanBone>();
+            foreach (var pair in mapping)
+            {
+                if (!transforms.Any(t => t.name == pair.Value))
+                    throw new InvalidOperationException("Missing target bone: " + pair.Value);
+                human.Add(new HumanBone { humanName = pair.Key, boneName = pair.Value,
+                    limit = new HumanLimit { useDefaultValues = true } });
+            }
+            for (int i = 0; i < HumanTrait.BoneCount; i++)
+                if (HumanTrait.RequiredBone(i) && !mapping.ContainsKey(HumanTrait.BoneName[i]))
+                    throw new InvalidOperationException("Missing required human mapping: " + HumanTrait.BoneName[i]);
+            var description = new HumanDescription
+            {
+                human = human.ToArray(),
+                skeleton = transforms.Select(t => new SkeletonBone { name = t.name,
+                    position = t.localPosition, rotation = t.localRotation, scale = t.localScale }).ToArray(),
+                upperArmTwist = 0.5f, lowerArmTwist = 0.5f, upperLegTwist = 0.5f, lowerLegTwist = 0.5f,
+                armStretch = 0f, legStretch = 0f, feetSpacing = 0f, hasTranslationDoF = false
+            };
+            var avatar = AvatarBuilder.BuildHumanAvatar(clone, description);
+            if (avatar != null && avatar.isValid && avatar.isHuman) return avatar;
+            if (avatar != null) UnityEngine.Object.DestroyImmediate(avatar);
+            throw new InvalidOperationException("Cannot create a valid transient Humanoid avatar: " + clone.name);
+        }
+
+        private static AnimationClip BakeHeroGunClip(GameObject model, AnimationClip legs,
+            AnimationClip arms, AnimationClip timing, string name, StringBuilder report)
+        {
+            var preview = EditorSceneManager.NewPreviewScene();
+            GameObject clone = null;
+            Avatar avatar = null;
+            AvatarMask mask = null;
+            PlayableGraph graph = default(PlayableGraph);
+            try
+            {
+                clone = UnityEngine.Object.Instantiate(model);
+                clone.name = model.name;
+                SceneManager.MoveGameObjectToScene(clone, preview);
+                var boneSet = new HashSet<Transform>();
+                foreach (var skin in clone.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                    foreach (var bone in skin.bones)
+                        for (var t = bone; t != null && t != clone.transform; t = t.parent) boneSet.Add(t);
+                var bones = clone.GetComponentsInChildren<Transform>(true).Where(boneSet.Contains).ToArray();
+                if (bones.Length == 0) throw new InvalidOperationException("Hero has no deform bones.");
+                var restPositions = bones.Select(b => b.localPosition).ToArray();
+                var restScales = bones.Select(b => b.localScale).ToArray();
+                avatar = BuildHeroBakeAvatar(clone);
+                var animator = clone.GetComponent<Animator>();
+                if (animator == null) animator = clone.AddComponent<Animator>();
+                animator.runtimeAnimatorController = null;
+                animator.avatar = avatar;
+                animator.applyRootMotion = false;
+                animator.fireEvents = false;
+                animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                animator.Rebind();
+                mask = new AvatarMask();
+                for (int i = 0; i < (int)AvatarMaskBodyPart.LastBodyPart; i++)
+                    mask.SetHumanoidBodyPartActive((AvatarMaskBodyPart)i, false);
+                foreach (var part in new[] { AvatarMaskBodyPart.Body, AvatarMaskBodyPart.Head,
+                    AvatarMaskBodyPart.LeftArm, AvatarMaskBodyPart.RightArm,
+                    AvatarMaskBodyPart.LeftFingers, AvatarMaskBodyPart.RightFingers })
+                    mask.SetHumanoidBodyPartActive(part, true);
+                graph = PlayableGraph.Create("Hero gun animation bake");
+                graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
+                var basePlayable = AnimationClipPlayable.Create(graph, legs);
+                var upperPlayable = AnimationClipPlayable.Create(graph, arms);
+                basePlayable.SetApplyFootIK(false);
+                basePlayable.SetApplyPlayableIK(false);
+                upperPlayable.SetApplyFootIK(false);
+                upperPlayable.SetApplyPlayableIK(false);
+                var mixer = AnimationLayerMixerPlayable.Create(graph, 2);
+                graph.Connect(basePlayable, 0, mixer, 0);
+                graph.Connect(upperPlayable, 0, mixer, 1);
+                mixer.SetInputWeight(0, 1f);
+                mixer.SetInputWeight(1, 1f);
+                mixer.SetLayerMaskFromAvatarMask(1, mask);
+                AnimationPlayableOutput.Create(graph, "Bake hero", animator).SetSourcePlayable(mixer);
+                graph.Play();
+                var curves = new AnimationCurve[bones.Length, 10];
+                var previous = new Quaternion[bones.Length];
+                for (int b = 0; b < bones.Length; b++)
+                    for (int c = 0; c < 10; c++) curves[b, c] = new AnimationCurve();
+                int frames = Mathf.Max(1, Mathf.CeilToInt(timing.length * SampleRate));
+                for (int frame = 0; frame <= frames; frame++)
+                {
+                    float time = Mathf.Min(frame / (float)SampleRate, timing.length);
+                    basePlayable.SetTime(legs.isLooping ? Mathf.Repeat(time, legs.length) : Mathf.Min(time, legs.length));
+                    upperPlayable.SetTime(arms.isLooping ? Mathf.Repeat(time, arms.length) : Mathf.Min(time, arms.length));
+                    graph.Evaluate(0f);
+                    for (int b = 0; b < bones.Length; b++)
+                    {
+                        var p = bones[b].localPosition;
+                        var q = bones[b].localRotation;
+                        var scale = bones[b].localScale;
+                        if (bones[b].name != "mixamorig:Hips" && bones[b].name != "rig" &&
+                            Mathf.Abs(p.magnitude - restPositions[b].magnitude) > 0.0001f)
+                            throw new InvalidOperationException("Retarget changed bone length: " + model.name + "/" + bones[b].name);
+                        if ((scale - restScales[b]).sqrMagnitude > 0.00000001f)
+                            throw new InvalidOperationException("Retarget changed bone scale: " + bones[b].name);
+                        if (frame > 0 && Quaternion.Dot(previous[b], q) < 0f)
+                            q = new Quaternion(-q.x, -q.y, -q.z, -q.w);
+                        previous[b] = q;
+                        for (int c = 0; c < 3; c++) curves[b, c].AddKey(time, p[c]);
+                        for (int c = 0; c < 4; c++) curves[b, c + 3].AddKey(time, q[c]);
+                        for (int c = 0; c < 3; c++) curves[b, c + 7].AddKey(time, scale[c]);
+                    }
+                }
+                var output = new AnimationClip { name = name, frameRate = SampleRate };
+                string[] properties = { "m_LocalPosition.x", "m_LocalPosition.y", "m_LocalPosition.z",
+                    "m_LocalRotation.x", "m_LocalRotation.y", "m_LocalRotation.z", "m_LocalRotation.w",
+                    "m_LocalScale.x", "m_LocalScale.y", "m_LocalScale.z" };
+                int changing = 0, keys = 0;
+                for (int b = 0; b < bones.Length; b++)
+                {
+                    string bonePath = "HeroSkins/" + model.name + "/" + AnimationUtility.CalculateTransformPath(bones[b], clone.transform);
+                    for (int c = 0; c < 10; c++)
+                    {
+                        var curve = Reduce(curves[b, c], 0.0003f);
+                        if (curve.keys.Max(k => k.value) - curve.keys.Min(k => k.value) > 0.001f) changing++;
+                        keys += curve.length;
+                        AnimationUtility.SetEditorCurve(output,
+                            EditorCurveBinding.FloatCurve(bonePath, typeof(Transform), properties[c]), curve);
+                    }
+                }
+                if (changing == 0)
+                {
+                    UnityEngine.Object.DestroyImmediate(output);
+                    throw new InvalidOperationException("Hero bake produced no motion: " + model.name + "/" + name);
+                }
+                var settings = AnimationUtility.GetAnimationClipSettings(timing);
+                settings.startTime = 0f;
+                settings.stopTime = timing.length;
+                AnimationUtility.SetAnimationClipSettings(output, settings);
+                AnimationUtility.SetAnimationEvents(output, AnimationUtility.GetAnimationEvents(timing));
+                output.EnsureQuaternionContinuity();
+                report.AppendLine(model.name + "/" + name + " | length=" + output.length +
+                    " | curves=" + bones.Length * 10 + " | keys=" + keys + " | changing=" + changing);
+                return output;
+            }
+            finally
+            {
+                if (graph.IsValid()) graph.Destroy();
+                if (clone != null) UnityEngine.Object.DestroyImmediate(clone);
+                if (avatar != null) UnityEngine.Object.DestroyImmediate(avatar);
+                if (mask != null) UnityEngine.Object.DestroyImmediate(mask);
+                EditorSceneManager.ClosePreviewScene(preview);
+            }
+        }
+
         [MenuItem("Playable/Animations/Bake Generic Player and NPCs")]
         public static void BakeAndAssign()
         {
@@ -174,7 +444,6 @@ namespace Playable.Editor
             var clips = new Dictionary<string, AnimationClip>();
             var onFoot = BakeController(player, "Assets/GameAsset/Model/Character/Player city.controller", "Player", clips, report);
             var armed = BakeController(player, Paintball + "PlayerPaintball.controller", "Player", clips, report);
-            var rider = BakeController(player, "Assets/_Playable_/Animations/MotorbikeRider.controller", "Player", clips, report);
             var npc = BakeController(npcs[0], Paintball + "NpcPaintball.controller", "NPC", clips, report);
 
             // Assign only after every clip/controller has baked successfully.
@@ -192,9 +461,6 @@ namespace Playable.Editor
                 a.applyRootMotion = false;
                 EditorUtility.SetDirty(a);
             }
-            foreach (var root in scene.GetRootGameObjects())
-                foreach (var bike in root.GetComponentsInChildren<MotorbikeController>(true))
-                    SetReference(bike, "_riderController", rider);
             AssetDatabase.SaveAssets();
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);

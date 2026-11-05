@@ -1,0 +1,21 @@
+--- Assets\_Playable_\Scripts\Tutorial\CombatTutorialController.cs
++++ Assets\_Playable_\Scripts\Tutorial\CombatTutorialController.cs
+@@ -10,6 +10,7 @@
+         [SerializeField] private CameraController _camera;
+         [SerializeField] private TouchController _touch;
+         [SerializeField] private PlayerController _player;
++        [SerializeField] private UltimateJoystick _moveJoystick;
+         [SerializeField] private PlayerPaintballController _weapon;
+         [SerializeField] private GameObject _lookCue, _moveCue, _fireCue, _joystick, _fireButton;
+         [SerializeField, Min(1f)] private float _lookThresholdDegrees = 45f;
+@@ -54,8 +55,8 @@
+         private void Update()
+         {
+             if (_step != Step.Move) return;
+-            _moveTime = _player.MoveJoystick != null &&
+-                new Vector2(_player.MoveJoystick.HorizontalAxis, _player.MoveJoystick.VerticalAxis).sqrMagnitude > 0.01f
++            _moveTime = _moveJoystick != null &&
++                new Vector2(_moveJoystick.HorizontalAxis, _moveJoystick.VerticalAxis).sqrMagnitude > 0.01f
+                 ? _moveTime + Time.deltaTime : 0f;
+             if (_moveTime < 0.25f) return;
+             _step = Step.Fire;

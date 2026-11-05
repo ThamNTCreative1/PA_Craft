@@ -1,0 +1,53 @@
+# Hero animation bake verification — 2026-11-05
+Editor/PreviewScene verification only. Not PlayMode, not Luna runtime, not final build-size evidence.
+
+## Transient avatars
+NPC_33 transient avatar: valid=True human=True humanBones=22 original imported FBX/meta untouched
+NPC_26 transient avatar: valid=True human=True humanBones=22 original imported FBX/meta untouched
+
+## Generic clip sampling
+NPC_33 | tris=1820 | states=6
+Idle | length=2 | curves=260 | keys=522 | sourceBytes=361066 | maxAngle=0 | armAngle=0 | displacement=0.001217961 | maxLengthError=6.258488E-07 | maxScaleError=0 | events=0 | missingBindings=0
+Run | length=0.6666667 | curves=260 | keys=848 | sourceBytes=571972 | maxAngle=91.48247 | armAngle=0 | displacement=0.09399758 | maxLengthError=6.258488E-07 | maxScaleError=0 | events=0 | missingBindings=0
+Jump | length=0.4666667 | curves=260 | keys=786 | sourceBytes=535971 | maxAngle=62.97974 | armAngle=0 | displacement=1.023453 | maxLengthError=6.258488E-07 | maxScaleError=0 | events=0 | missingBindings=0
+Equip | length=2.166667 | curves=260 | keys=1715 | sourceBytes=1209394 | maxAngle=179.9889 | armAngle=179.9889 | displacement=0.001354257 | maxLengthError=6.258488E-07 | maxScaleError=0 | events=2 | missingBindings=0
+Fire | length=0.2083333 | curves=260 | keys=678 | sourceBytes=468932 | maxAngle=21.14843 | armAngle=21.14843 | displacement=0.0004463021 | maxLengthError=6.258488E-07 | maxScaleError=0 | events=2 | missingBindings=0
+Reload | length=4.541667 | curves=260 | keys=2245 | sourceBytes=1710215 | maxAngle=81.40466 | armAngle=81.40466 | displacement=0.001246496 | maxLengthError=6.258488E-07 | maxScaleError=0 | events=4 | missingBindings=0
+NPC_26 | tris=894 | states=6
+Idle | length=2 | curves=260 | keys=522 | sourceBytes=360981 | maxAngle=0 | armAngle=0 | displacement=0.001217961 | maxLengthError=5.960464E-07 | maxScaleError=0 | events=0 | missingBindings=0
+Run | length=0.6666667 | curves=260 | keys=848 | sourceBytes=571978 | maxAngle=91.48245 | armAngle=0 | displacement=0.09399746 | maxLengthError=5.960464E-07 | maxScaleError=0 | events=0 | missingBindings=0
+Jump | length=0.4666667 | curves=260 | keys=786 | sourceBytes=535951 | maxAngle=62.97973 | armAngle=0 | displacement=1.023453 | maxLengthError=5.960464E-07 | maxScaleError=0 | events=0 | missingBindings=0
+Equip | length=2.166667 | curves=260 | keys=1715 | sourceBytes=1209279 | maxAngle=179.9889 | armAngle=179.9889 | displacement=0.001354257 | maxLengthError=5.960464E-07 | maxScaleError=0 | events=2 | missingBindings=0
+Fire | length=0.2083333 | curves=260 | keys=678 | sourceBytes=468795 | maxAngle=21.14843 | armAngle=21.14843 | displacement=0.0004463024 | maxLengthError=5.960464E-07 | maxScaleError=0 | events=2 | missingBindings=0
+Reload | length=4.541667 | curves=260 | keys=2245 | sourceBytes=1710120 | maxAngle=81.40466 | armAngle=81.40466 | displacement=0.001246496 | maxLengthError=5.960464E-07 | maxScaleError=0 | events=4 | missingBindings=0
+
+
+## Single-root Animator controller sampling
+NPC_33/Idle controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_33/Run controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_33/Jump controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_33/Equip controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_33/Fire controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_33/Reload controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_26/Idle controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_26/Run controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_26/Jump controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_26/Equip controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_26/Fire controller vs clip: maxPositionError=0 maxAngleError=0
+NPC_26/Reload controller vs clip: maxPositionError=0 maxAngleError=0
+
+
+## Source event/duration/loop comparison
+PASS: 12 Generic clips preserve source durations, loop settings and complete animation-event data. Main scene dirty=True
+
+## Remaining skin weight probe
+{'file': 'NPC_7.fbx', 'weighted_vertices': 592, 'multi_weight_vertices': 171, 'max_influences': 2}
+{'file': 'NPC_5.fbx', 'weighted_vertices': 895, 'multi_weight_vertices': 155, 'max_influences': 2}
+{'file': 'Doctor.fbx', 'weighted_vertices': 1188, 'multi_weight_vertices': 279, 'max_influences': 3}
+{'file': 'FireFighter.fbx', 'weighted_vertices': 1484, 'multi_weight_vertices': 280, 'max_influences': 3}
+{'file': 'Police.fbx', 'weighted_vertices': 1130, 'multi_weight_vertices': 430, 'max_influences': 4}
+
+
+Initial rotation-only Idle test was too strict: Idle retains the source's held gun pose and small hip-position breathing motion. Validation was corrected to check positional or rotational motion, with explicit arm-motion requirements for Equip/Fire/Reload. No clip or source animation was altered to satisfy that assertion.
+
+Source FBX/meta and four source gun-clip hashes were checked unchanged (8 baseline entries). Generated clips retain local bone lengths within 6.26e-7 model units and zero scale error. No runtime scene save was performed during this phase; transient preview-object creation can mark the editor scene dirty, so no automatic scene save/revert was attempted.

@@ -1,0 +1,19 @@
+--- 
++++ 
+@@ -78,6 +78,7 @@
+             // Apply the four cells explicitly: Luna does not rebuild this layout
+             // reliably after the initially hidden selection panel becomes visible.
+             _grid.enabled = false;
++            float totalWidth = columns * cardWidth + (columns - 1) * _grid.spacing.x;
+             float totalHeight = rows * height + (rows - 1) * _grid.spacing.y;
+             for (int i = 0; i < _cards.Length; i++)
+             {
+@@ -86,7 +87,7 @@
+                 card.pivot = new Vector2(0.5f, 0.5f);
+                 card.sizeDelta = new Vector2(cardWidth, height);
+                 card.anchoredPosition = new Vector2(
+-                    -rect.width * 0.5f + width * 0.5f + (i % columns) * (width + _grid.spacing.x),
++                    -totalWidth * 0.5f + cardWidth * 0.5f + (i % columns) * (cardWidth + _grid.spacing.x),
+                     totalHeight * 0.5f - height * 0.5f - (i / columns) * (height + _grid.spacing.y));
+             }
+             return true;

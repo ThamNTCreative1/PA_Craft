@@ -1,0 +1,1 @@
+AGENTS.md; agent-os/workflows/codex-claude-codex.md; governance/runtime/test skills; TMP_Text.cs textStyle/PopulateTextProcessingArray; TMP_Style.cs NormalStyle; existing font/settings/styles/assets; Gameplay.unity; currentruntime logevidence fromconversation.

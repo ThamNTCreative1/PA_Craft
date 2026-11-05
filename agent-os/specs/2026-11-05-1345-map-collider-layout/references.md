@@ -1,0 +1,11 @@
+﻿# References
+- Assets/_Playable_/Scenes/Gameplay.unity — current scene; live read-only Unity inspection is the evidence source for collider counts and bounds.
+- Assets/GameAsset/Model/Map/Map cropped/CityMap_Cropped_Colliders.prefab — source of CityMap collision instance; no edits performed.
+- Assets/_Playable_/Scripts/Controller/CameraController.cs — collision mask, collision sphere radius, ApplyPose camera obstruction behavior.
+- Assets/_Playable_/Scripts/Controller/PlayerController.cs — Rigidbody initialization, FixedUpdate movement, ProbeGround and step probing.
+- agent-os/workflows/codex-claude-codex.md — research / Claude plan / approval / implementation sequence.
+- agent-os/product/ — product context; current requested map operation takes precedence over historical mission descriptions.
+- agent-os/standards/index.yml; ai-agent/*.md; unity/assets.md; testing/luna-verification.md — scope, approval, primitive colliders and runtime verification.
+- .agents/skills/luna-production-governance/SKILL.md and references/verification.md — approval gates and verification evidence.
+- .agents/skills/analyze-luna-project/SKILL.md — isolated research and current pointer protocol.
+- C:/Users/Admin/.codex/skills/unity-mcp-skill/SKILL.md — read-only Unity MCP inspection workflow.

@@ -1,0 +1,12 @@
+﻿# References
+- agent-os/workflows/codex-claude-codex.md: role sequence and research artifact authorization.
+- .agents/skills/luna-production-governance/SKILL.md and references/architecture-and-patterns.md, references/verification.md.
+- .agents/skills/luna-code-architecture/SKILL.md; .agents/skills/luna-test-and-verify/SKILL.md.
+- agent-os/standards/index.yml; ai-agent/*.md; unity/assets.md.
+- Assets/_Playable_/Scenes/Gameplay.unity: collider data and camera settings.
+- Assets/_Playable_/Prefabs/Monster/Monster.prefab: current UI and references.
+- Assets/_Playable_/Scripts/UI/WorldHealthBar.cs: SetValue and LateUpdate.
+- Assets/_Playable_/Scripts/Monster/MonsterController.cs: health update calls.
+- Assets/_Playable_/Scripts/Controller/CameraController.cs: obstruction checks.
+- D:/Source/minecraft/Assets/Game/Prefabs/UI/Elements/HealthBar.prefab: visuals only.
+- D:/Source/minecraft/Assets/Game/Textures/Common/progressBar_HP_1.png and progressBar_HP_2_.png: GUID-resolved dependencies.

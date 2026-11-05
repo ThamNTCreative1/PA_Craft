@@ -20,6 +20,7 @@ namespace Playable
         private bool _isApplyingLayout;
 
         public event Action<Vector2> OnLookDelta;
+        public event Action OnScreenPressed;
 
         private void Awake()
         {
@@ -30,6 +31,22 @@ namespace Playable
         private void OnEnable()
         {
             RefreshLayout();
+        }
+
+        private void Update()
+        {
+            if (Input.touchCount > 0)
+            {
+                for (int i = 0; i < Input.touchCount; i++)
+                {
+                    if (Input.GetTouch(i).phase != TouchPhase.Began) continue;
+                    OnScreenPressed?.Invoke();
+                    break;
+                }
+                return;
+            }
+
+            if (Input.GetMouseButtonDown(0)) OnScreenPressed?.Invoke();
         }
 
         private void OnRectTransformDimensionsChange()

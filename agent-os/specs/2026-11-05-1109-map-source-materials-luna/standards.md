@@ -1,0 +1,3 @@
+# Applicable standards
+AGENTS.md and codex-claude-codex workflow: user granted Codex planning exception; implementation still needs exact plan approval.
+Governance,material-authoring,runtime-compatibility,architecture,test-and-verify skills apply. Built-inUnlit only; proposed explicit exception to particle-only use of existing built-in Particles/StandardUnlit on static map. No new custom shader/URP import. All61exactoutputs enumerated in plan; scope change or unsupported variants stop. Preserve user unsaved state. Measure Luna support and <4.5MB output rather than assume. Source data-only reuse already explicitly requested; no source-code borrowing.

@@ -1,0 +1,28 @@
+﻿# References
+- User request and two supplied screenshots: gameplay contract, seven hero skins plus default player, park reference.
+- agent-os/workflows/codex-claude-codex.md; .agents/skills/luna-production-governance/SKILL.md; .agents/skills/analyze-luna-project/SKILL.md; .agents/skills/luna-cross-project-reuse/SKILL.md: research/handoff and approval requirements.
+- agent-os/product/mission.md and tech-stack.md: current mission gameplay and platform policy.
+- agent-os/standards/index.yml; ai-agent standards; luna/runtime-compatibility.md; unity/materials-built-in-unlit.md: scope, source confirmation and rendering constraints.
+- ProjectSettings/EditorBuildSettings.asset; ProjectSettings/ProjectVersion.txt: selected scene and Unity version.
+- Assets/_Playable_/Scenes/Gameplay.unity: current scene objects.
+- Assets/_Playable_/Scripts/Paintball/PlayerPaintballController.cs: Equip, TryFire, FireProjectile, ReceiveHit, GetAimRay.
+- Assets/_Playable_/Scripts/Paintball/PaintballProjectile.cs: FixedUpdate damage dispatch to NPC.
+- Assets/_Playable_/Scripts/Missions/PaintballMissionController.cs: five-NPC prerequisite and mission equip lifecycle.
+- Assets/_Playable_/Scripts/Missions/MissionManager.cs: current selection/pause flow.
+- Assets/_Playable_/Scripts/Controller/CameraController.cs: LookAtPoint, SetEntryAngles and existing portrait aim support.
+- Assets/_Playable_/Scripts/UI/PaintballMovementTutorial.cs: Begin, Update, WasScreenPressed dismissal.
+- Assets/_Playable_/Scripts/UI/ResponsiveCanvasScaler.cs: orientation scaling.
+- Assets/_Playable_/Scripts/GameController.cs: start guidance and brightness global.
+- Assets/GameAsset/Shaders/BrightUnlit.shader: custom brightness rendering dependency.
+- Assets/_Playable_/Scripts/Manager/GameManager.cs: Start, CountdownEndGame, EndGame, ShowCta.
+- D:/Source/party-craft/Assets/Game/Scripts/Weather/WeatherController.cs: UpdateTimeOfDay, RequestRain, DayMorningHandle, AfternoonHandle, NightHandle, DayRain, empty NightRain, transition coroutines.
+- D:/Source/party-craft/Assets/Game/Scenes/City.unity: source scene; preset wiring not yet resolved.
+- D:/Source/party-craft/Assets/GameAsset/Model/Map/CityMap.fbx: requested map source; crop not performed.
+- D:/Source/minecraft/Assets/Game/Models/Mobs/huggy_wuggy/huggy_wuggy.fbx: requested monster; not imported.
+- Skin inventory: target has NPC_7/NPC_33/NPC_26/NPC_5; Doctor/FireFighter/Police found in party-craft source skin directory, absent in target.
+- User explicitly confirmed party-craft Doctor/FireFighter/Police FBX sources and 30-second timer from scene opening; see latest research addendum.
+- Latest weather extraction reviewed after user chose latest revision: DayRainHandleCoroutine, GetRainLightIntensity and day/night preset handlers; snow/Noel, random cycling and night rain excluded. See research extraction table.
+- Read-only Unity MCP inspected current root/component inventory and renderer mesh asset paths; no scene mutation.
+- Unity MCP preflight imported triangle counts and panel child text/sprite inventory: research addendum 2026-11-04 17:54.
+- Map visual evidence: Library/MonsterHeroPreflight/existing-map-top.png (temporary inspection capture, not shipped asset).
+- Blender MCP status reports addon endpoint not reachable; no Blender operation performed.

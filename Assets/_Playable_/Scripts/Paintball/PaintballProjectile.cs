@@ -40,8 +40,11 @@ namespace Playable
         public void SetPaused(bool paused)
         {
             _paused = paused;
-            PauseParticles(_flightParticles, paused);
-            PauseParticles(_impactParticles, paused);
+            if (paused)
+            {
+                ClearParticles(_flightParticles);
+                ClearParticles(_impactParticles);
+            }
         }
         public void ResetProjectile()
         {
@@ -62,13 +65,6 @@ namespace Playable
             ClearParticles(particles);
             if (particles == null) return;
             foreach (var p in particles) if (p != null) p.Play(false);
-        }
-        private static void PauseParticles(ParticleSystem[] particles, bool paused)
-        {
-            if (particles == null) return;
-            foreach (var p in particles)
-                if (p != null && p.gameObject.activeInHierarchy)
-                { if (paused) p.Pause(false); else if (p.isPaused) p.Play(false); }
         }
 
         private void FixedUpdate()
@@ -92,8 +88,8 @@ namespace Playable
             if (index >= 0)
             {
                 RaycastHit hit = _hits[index];
-                var npc = hit.collider.GetComponentInParent<PaintballNpcController>();
-                if (npc != null) npc.ReceiveHit(_owner, _damage);
+                var monster = hit.collider.GetComponentInParent<MonsterController>();
+                if (monster != null) monster.ReceiveHit(_damage);
                 transform.position = hit.point + hit.normal * 0.02f;
                 _visual.gameObject.SetActive(false);
                 ClearParticles(_flightParticles);

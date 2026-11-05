@@ -1,0 +1,1450 @@
+You are Claude, planning only as required by this project workflow. Do not use tools or edit project. Return a concise Markdown implementation plan (max1200words) headed Status: PENDING APPROVAL. Codex performed research. User asks converting source CityMap.fbx materials into local Luna-compatible materials while keeping source color quality. Need honest practical recommendation and concrete file list+verification, architecture no new types unless justified. Main risk: source lighting/graphs and Linear vs Gamma cannot be reproduced by copying tints. Avoid promising exact match. Prefer minimal staged proof on samples before61materials. Built-in-only rule applies unless prior scoped BrightUnlit exception retained. Include exact deterministic output folder/path naming per source61materials in inventory and handling alpha/double-sided without unauthorized custom shaders. Stop if built-in shader cannot preserve required cull0/vertexcolors. No broad pipeline/color-space/mesh/SDK edits. User scene has unsaved changes; preserve it. No dynamic material scanning runtime. Need plan reviewer can approve. Include decision recommendation whether preserving existing approved shader is preferable to baking61textures under4.5MB. You may propose first a non-mutating diagnostic proof instead of expensive incompatible migration. Full research:
+# Map source materials to Luna research
+User requests local materials derived from D:/Source/party-craft/Assets/GameAsset/Model/Map/CityMap.fbx while preserving source color quality and running on Luna. No runtime/source/asset mutation during this work item.
+Current Gameplay references four CityMap_Park meshes and 61 distinct materials (44 Base_Map,11 Grass,4 Road,2 Water). Exact paths, source equivalents, textures/ST/tints/alpha/emission are in material-inventory.json. Source URP shader GUID8d2bb70cbf9db8d4da26e15b26e74248 resolves to URP SimpleLit.shader.meta. Target uses approved legacy exception BrightUnlit for59materials and Particles/Standard Unlit for2. BrightUnlit brightness now0 but rendering still differs from source lighting.
+Source uses Linear color space; target Gamma/Built-in. Do not change project pipeline/color space, bring URP packages, add shaders, or assume tint transfer recreates lighting/shadows. No promise of pixel-identical lit/shadow/specular/dynamic source render from single unlit texture. Need exact plan reviewed by user before material/shader/asset changes, per AGENTS and material skill. Scene currently dirty: preserve unsaved state; do not save/reload/play until safe. GameController only controls global BrightUnlit brightness and should not gain per-frame material scans or allocations.
+Known source/reference: attached full-map screenshot in current conversation and source CityMap.fbx. No cross-project code reuse requested; reuse material/texture data only, no source file writes.
+Required output: concrete minimal conversion plan enumerating exact material/texture/scene/code files, handling tint/alpha/cull/emission/vertexcolors, preserving visual quality within honest limits, SceneView+PlayMode+real Luna runtime/build checks. Avoid mass conversion of unused source258materials; only61used are in scope unless user asks otherwise. Existing target mapping and source textures can be reused; verify hashes/import settings. Built-in Unlit/Texture has no tint, so bake tint or another explicitly approved supported shader is necessary. Transparent cutout must preserve foliage alpha/culling. Build<4500000bytes must be measured, not inferred. No new C# class/interface unless necessary and approved. No implementation in planning stage.
+
+Measured inventory:54URP SimpleLit,5ShaderGraph materials (DynamicTree/DynamicGrass/WetSurface),2additional water shader.61of61current textureGUID+scale+offset already match source.46of61_BaseColor match target_Color;15mismatches need graph property semantic analysis, not blind overwrite. Source alpha/cull groups:39opaque backface,15cutout double-sided,4cutout backface,1transparent backface,2transparent double-sided.59emission black,2white (water fields may be inactive shader properties, verify). Target Gamma/source Linear. Matching image with actual source render needs controlled capture, not source FBX alone. Existing BrightUnlit has prior user shader exception in conversation; avoid editing shader or importing unsupported graphs; option preserving existing approved shader and source effective tint/alpha may be lower cost than61baked textures. Plan must decide whether standard builtin migration is necessary and explain exact limitations.
+
+Correction after numeric inspection:all15text tint mismatches are only float serialization rounding (~1e-7), not meaningful color discrepancies. Current source and target base tint essentially match for all61materials. Do not present restoring source tint as a solution to the remaining rendering difference. Actual difference is lighting/shader/color-space/vertexcolor behavior. Research-only proposed minimal path: bake source base texture*tint into local color-managed texture variants, then built-in Unlit/Texture (opaque), Unlit/Transparent Cutout (19cutout) and Unlit/Transparent (3transparent), only after culling capability/source graph semantics/vertexcolor use and image proof; if double-sided unavailable on builtin shader do NOT silently remove backfaces or choose unsupported shader. Original user-approved BrightUnlit exception exists, but retaining it alone does not prove Luna render equivalence. Source rendering needs a frozen view/light/time reference to bake fully; source .fbx alone does not contain scene lighting. No user source-logic confirmation needed as no code reuse.
+
+Standards:
+# Built-in Unlit Materials for Luna
+
+## Render pipeline
+
+- Project phải dùng **Unity Built-in Render Pipeline**.
+- Không chuyển sang URP hoặc HDRP.
+- Không dùng Shader Graph.
+- Không tạo hoặc import custom shader, surface shader hoặc shader package nếu chưa có ngoại lệ được phê duyệt trong spec.
+- Mọi material runtime phải dùng shader Unlit có sẵn và được phép trong tài liệu này.
+
+Lưu ý: Unity material luôn cần một shader. Cụm từ “không dùng shader” trong project này được hiểu là **không dùng custom shader; chỉ dùng built-in Unlit shader**.
+
+## Approved shader allowlist
+
+| Use case | Approved built-in shader | Brightness/tint method |
+|---|---|---|
+| Solid-color 3D mesh | `Unlit/Color` | Material `_Color` |
+| Opaque textured 3D mesh | `Unlit/Texture` | Bake brightness into texture/material variant |
+| Transparent textured 3D mesh | `Unlit/Transparent` hoặc `Unlit/Transparent Cutout` | Bake brightness into texture; use only when transparency is required |
+| SpriteRenderer | `Sprites/Default` | `SpriteRenderer.color` hoặc `_Color` |
+| Unity UI Graphic/Image | `UI/Default` | `Graphic.color` |
+| Particle-only effect | Built-in unlit particle shader already supported by the project | Particle color/module; do not introduce extra shader variants unnecessarily |
+
+Không dùng `Standard`, Lit shader, URP Lit/Unlit, HDRP shader hoặc shader do Blender/material exporter tự tạo.
+
+## Brightness and darkness
+
+### Solid color
+
+Với `Unlit/Color`, lưu base color và áp dụng hệ số:
+
+```text
+darkenedColor = baseColor × brightness
+```
+
+- `brightness = 1`: màu gốc.
+- `0 < brightness < 1`: tối hơn.
+- Không dùng giá trị âm.
+- Giá trị lớn hơn 1 chỉ được coi là sáng hơn nếu color space/output thực tế giữ được kết quả; không dựa vào HDR/bloom.
+
+### Sprite and UI
+
+- Dùng `SpriteRenderer.color` hoặc `Graphic.color` để tint/tối màu.
+- Không tạo material riêng cho mỗi sprite/UI element chỉ để đổi brightness.
+- Giữ alpha độc lập nếu chỉ muốn đổi sáng/tối: nhân RGB, không vô tình thay alpha.
+
+### Textured 3D mesh
+
+`Unlit/Texture` built-in không được giả định có property tint/brightness tương thích. Nếu material không expose `_Color`, không gọi `material.color` hoặc `SetColor` và giả định nó có tác dụng.
+
+Khi textured mesh cần nhiều mức sáng/tối mà vẫn cấm custom shader, dùng một trong các cách:
+
+1. Bake brightness vào texture nguồn.
+2. Tạo số lượng nhỏ texture/material variant đã được duyệt.
+3. Chuyển visual sang `Unlit/Color` nếu không cần texture detail.
+4. Với sprite/UI, dùng hệ thống tint native thay vì mesh material.
+
+Không duplicate texture variant hàng loạt vì có thể phá budget 4.5 MB. Nếu cần brightness thay đổi liên tục trên textured 3D mesh, đây là mâu thuẫn với quy tắc “no custom shader”; agent phải dừng và yêu cầu quyết định thay vì tự tạo shader.
+
+## Material ownership and runtime changes
+
+- Ưu tiên shared material để giảm material count và draw call.
+- Không truy cập `renderer.material` lặp lại vì Unity có thể instantiate material riêng.
+- Nếu built-in shader có property cần thay đổi theo renderer, ưu tiên `MaterialPropertyBlock` và cache property ID.
+- Trước khi set property, kiểm tra shader/material có property đó bằng `HasProperty` trong validation/development path.
+- Không tạo material mới trong `Update()` hoặc input callback.
+- Material variant phải có mục đích rõ ràng và được tính vào asset/build budget.
+
+## Blender to Unity
+
+- Blender material/node graph chỉ là nguồn authoring; không được import như một runtime shader graph.
+- Bake procedural color, lighting stylization, AO hoặc gradient cần thiết vào texture/vertex data phù hợp trước export.
+- Sau import, thay material tự sinh bằng approved built-in Unlit material.
+- Không giữ normal, metallic, roughness hoặc emission map nếu approved shader không sử dụng chúng.
+- Xóa material slot không dùng và merge mesh/material khi không phá animation hoặc gameplay.
+
+## Lighting assumptions
+
+- Unlit material không nhận ánh sáng scene theo cách Lit shader làm.
+- Độ sáng/tối phải đến từ base color, texture đã bake, sprite/UI tint hoặc approved material variant.
+- Không thêm realtime light, shadow hoặc post-processing chỉ để bù cho Unlit visual.
+- Nếu art cần chiều sâu, bake gradient/AO/highlight vào texture hoặc vertex color chỉ khi approved shader thực sự sử dụng dữ liệu đó.
+
+## Verification
+
+- Quét toàn bộ material được đưa vào build và báo shader ngoài allowlist.
+- Kiểm tra project vẫn dùng Built-in Render Pipeline.
+- Kiểm tra không có Shader Graph/custom shader/URP/HDRP dependency trong Luna build path.
+- Kiểm tra mọi brightness control thực sự thay đổi output trên Unity và Luna build, không chỉ thay property không tồn tại.
+- Kiểm tra số material, texture variant, shader variant và ảnh hưởng đến budget 4.5 MB.
+- Kiểm tra transparent material về overdraw và chỉ giữ transparency khi cần.
+
+Inventory:
+[
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/acacia_leaves.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\acacia_leaves.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON\n  - _RECEIVE_SHADOWS_OFF",
+    "source_tint": "{r: 0.5331788, g: 0.6482734, b: 0.44876033, a: 1}",
+    "target_tint": "{r: 0.5331788, g: 0.6482734, b: 0.44876027, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/azalea_leaves.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\azalea_leaves.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON\n  - _RECEIVE_SHADOWS_OFF",
+    "source_tint": "{r: 0.53333336, g: 0.64705884, b: 0.44705883, a: 1}",
+    "target_tint": "{r: 0.5333333, g: 0.64705884, b: 0.4470588, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/iron_chain.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\iron_chain.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 79c7ccb735ec61b48b9c291b3b7e99cb, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 79c7ccb735ec61b48b9c291b3b7e99cb, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/pale_oak_planks.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\pale_oak_planks.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 0.97464633, b: 0.8726415, a: 1}",
+    "target_tint": "{r: 1, g: 0.9746463, b: 0.8726415, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 77d0e64d28428884798127bea7aca75b, type: 3}",
+      "{x: 0.4, y: 0.4}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 77d0e64d28428884798127bea7aca75b, type: 3}",
+      "{x: 0.4, y: 0.4}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/beacon.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\beacon.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _EMISSION",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_texture": [
+      "{fileID: 2800000, guid: f9faf4dd2bb445743a00b94db257ba8e, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: f9faf4dd2bb445743a00b94db257ba8e, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/birch_leaves.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\birch_leaves.mat",
+    "source_shader": "{fileID: -6465566751694194690, guid: 69d5952fb588f3e4b980faefe7bcd9fd, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 0.53333336, g: 0.64705884, b: 0.44705883, a: 1}",
+    "target_tint": "{r: 0.5333333, g: 0.64705884, b: 0.4470588, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/birch_log.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\birch_log.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: e37b06fe2cdab9a489e69f5ee9074bd6, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: e37b06fe2cdab9a489e69f5ee9074bd6, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/quartz_block_side.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\quartz_block_side.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.78497684, g: 0.69632995, b: 0.61716676, a: 1}",
+    "target_tint": "{r: 0.78497684, g: 0.69632995, b: 0.6171667, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: bc575b5cd8633214eb7f846e0a690246, type: 3}",
+      "{x: 0.3, y: 0.3}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: bc575b5cd8633214eb7f846e0a690246, type: 3}",
+      "{x: 0.3, y: 0.3}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/quartz_block_top.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\quartz_block_top.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.8704165, g: 0.8704165, b: 0.8704165, a: 1}",
+    "target_tint": "{r: 0.8704165, g: 0.8704165, b: 0.8704165, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: bc575b5cd8633214eb7f846e0a690246, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: bc575b5cd8633214eb7f846e0a690246, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/bricks.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\bricks.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 5b50f5d829173a5469e5086ef9e266de, type: 3}",
+      "{x: 0.1, y: 0.1}",
+      "{x: 0.17, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 5b50f5d829173a5469e5086ef9e266de, type: 3}",
+      "{x: 0.1, y: 0.1}",
+      "{x: 0.17, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/campfire_log.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\campfire_log.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 859c05a3156d82e4290b78a6df58fc48, type: 3}",
+      "{x: 0.7, y: 0.7}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 859c05a3156d82e4290b78a6df58fc48, type: 3}",
+      "{x: 0.7, y: 0.7}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/cherry_planks.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\cherry_planks.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.59700966, g: 0.28575277, b: 0.43148583, a: 1}",
+    "target_tint": "{r: 0.59700966, g: 0.2857527, b: 0.4314858, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/cobblestone.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\cobblestone.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 34d9714ae76ac7f428a2d013c14d257a, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 34d9714ae76ac7f428a2d013c14d257a, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/cracked_stone_bricks.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\cracked_stone_bricks.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}",
+    "target_tint": "{r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: d39b40fe588e21d4d843ea9fe1cb4133, type: 3}",
+      "{x: 0.2, y: 0.2}",
+      "{x: 0.3, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: d39b40fe588e21d4d843ea9fe1cb4133, type: 3}",
+      "{x: 0.2, y: 0.2}",
+      "{x: 0.3, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/dark_oak_planks.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\dark_oak_planks.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: c750b1efa4b2b3b4a9b77a18f49bcb32, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: c750b1efa4b2b3b4a9b77a18f49bcb32, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/diorite.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\diorite.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: bc575b5cd8633214eb7f846e0a690246, type: 3}",
+      "{x: 0.3, y: 0.3}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: bc575b5cd8633214eb7f846e0a690246, type: 3}",
+      "{x: 0.3, y: 0.3}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/dirt.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\dirt.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: a8e3707d3a63d2d40abdfc8742d94d39, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: a8e3707d3a63d2d40abdfc8742d94d39, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/glass.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\glass.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHAPREMULTIPLY_ON\n  - _RECEIVE_SHADOWS_OFF\n  - _SURFACE_TYPE_TRANSPARENT",
+    "source_tint": "{r: 0.7688679, g: 0.9366683, b: 1, a: 1}",
+    "target_tint": "{r: 0.76886797, g: 0.9366683, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "1",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 2484595c1a2bfad438c83b1d8a3877a6, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 2484595c1a2bfad438c83b1d8a3877a6, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/grass_block_top.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\grass_block_top.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.7935208, g: 0.7823688, b: 0.7662604, a: 1}",
+    "target_tint": "{r: 0.7935208, g: 0.7823688, b: 0.7662604, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 1d9d558e6d40ec64c8065ed228d0ee73, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 1d9d558e6d40ec64c8065ed228d0ee73, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/iron_bars.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\iron_bars.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 8a94c5612d865a94eb40318e48ae57ef, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 8a94c5612d865a94eb40318e48ae57ef, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/mangrove_log.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\mangrove_log.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: dd877e77bc68cb747913ee5d2d0a013a, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: dd877e77bc68cb747913ee5d2d0a013a, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/nether_bricks.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\nether_bricks.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: c18523e97002be14cafc9c9cf0ad674c, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: c18523e97002be14cafc9c9cf0ad674c, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/oak_leaves.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\oak_leaves.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON\n  - _RECEIVE_SHADOWS_OFF",
+    "source_tint": "{r: 0.53333336, g: 0.64705884, b: 0.44705883, a: 1}",
+    "target_tint": "{r: 0.5333333, g: 0.64705884, b: 0.4470588, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/oak_log.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\oak_log.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: dd877e77bc68cb747913ee5d2d0a013a, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: dd877e77bc68cb747913ee5d2d0a013a, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/oak_log_top.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\oak_log_top.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 8c7d8b38fcae04f4a8dcd8679fd2595b, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 8c7d8b38fcae04f4a8dcd8679fd2595b, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/obsidian.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\obsidian.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: c1e744db7ca017f40a9a199af37ff001, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: c1e744db7ca017f40a9a199af37ff001, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/orange_concrete.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\orange_concrete.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.8078432, g: 0.33333334, b: 0.03137255, a: 1}",
+    "target_tint": "{r: 0.8078432, g: 0.3333333, b: 0.03137255, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/pale_oak_trapdoor.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\pale_oak_trapdoor.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: f963e89b29d6f114fa039488b4e3a054, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: f963e89b29d6f114fa039488b4e3a054, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/prismarine.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\prismarine.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: dfaa7b6801a450343a0815f0627ceac4, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: dfaa7b6801a450343a0815f0627ceac4, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/purple_concrete.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\purple_concrete.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: ffcdd10024f6aa74d9e4b53c20f1d044, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: ffcdd10024f6aa74d9e4b53c20f1d044, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/sea_lantern.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\sea_lantern.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _EMISSION",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 88dad689ba7ce9d4d8c7286e391ee0b5, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 88dad689ba7ce9d4d8c7286e391ee0b5, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/quartz_block_bottom.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\quartz_block_bottom.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.9528302, g: 0.8843758, b: 0.80451226, a: 1}",
+    "target_tint": "{r: 0.95283014, g: 0.8843758, b: 0.8045122, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: c607a06689d44cc468c65c0e331be6c1, type: 3}",
+      "{x: 1.5, y: 1.5}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: c607a06689d44cc468c65c0e331be6c1, type: 3}",
+      "{x: 1.5, y: 1.5}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/smooth_stone.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\smooth_stone.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 1}",
+    "target_tint": "{r: 0.7830188, g: 0.7830188, b: 0.7830188, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 5fc3d8f0996f7624bb8895ab3b4e25bb, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0.03, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 5fc3d8f0996f7624bb8895ab3b4e25bb, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0.03, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/spore_blossom.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\spore_blossom.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 137215fcd136c2b41af7593026dd1636, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 137215fcd136c2b41af7593026dd1636, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/spore_blossom_base.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\spore_blossom_base.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: c0156ad651aad84428c7ba6296ac4068, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: c0156ad651aad84428c7ba6296ac4068, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/spruce_leaves.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\spruce_leaves.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON\n  - _RECEIVE_SHADOWS_OFF",
+    "source_tint": "{r: 0.47416055, g: 0.58, b: 0.39795616, a: 1}",
+    "target_tint": "{r: 0.47416055, g: 0.58, b: 0.39795613, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: a52d74c9fd56eb649a9e5f9432e01b35, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/spruce_log.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\spruce_log.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: dd877e77bc68cb747913ee5d2d0a013a, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: dd877e77bc68cb747913ee5d2d0a013a, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/stone_bricks.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\stone_bricks.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 1}",
+    "target_tint": "{r: 0.7830188, g: 0.7830188, b: 0.7830188, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 488203df59344f34099b47682c226a24, type: 3}",
+      "{x: 0.3, y: 0.3}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 488203df59344f34099b47682c226a24, type: 3}",
+      "{x: 0.3, y: 0.3}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/smooth_stone_slab_side.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\smooth_stone_slab_side.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.8396226, g: 0.81632286, b: 0.75645244, a: 1}",
+    "target_tint": "{r: 0.8396226, g: 0.81632286, b: 0.75645244, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 5fc3d8f0996f7624bb8895ab3b4e25bb, type: 3}",
+      "{x: 0.2, y: 0.2}",
+      "{x: -0.12, y: -0.45}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 5fc3d8f0996f7624bb8895ab3b4e25bb, type: 3}",
+      "{x: 0.2, y: 0.2}",
+      "{x: -0.12, y: -0.45}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/stripped_acacia_log.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\stripped_acacia_log.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 80c439e5cce3fc841b4f92e890bd7413, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 80c439e5cce3fc841b4f92e890bd7413, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/stripped_acacia_log_top.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\stripped_acacia_log_top.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/stripped_cherry_log.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\stripped_cherry_log.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}",
+    "target_tint": "{r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: dfa33c765f0d37b4a8bc19ae7d2c61a7, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: dfa33c765f0d37b4a8bc19ae7d2c61a7, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/warped_planks.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\warped_planks.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}",
+    "target_tint": "{r: 0.8113207, g: 0.8113207, b: 0.8113207, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 2484595c1a2bfad438c83b1d8a3877a6, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 2484595c1a2bfad438c83b1d8a3877a6, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/white_candle.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\white_candle.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 9a8c5776af39cca4aa8468648d3d47ae, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 9a8c5776af39cca4aa8468648d3d47ae, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/dandelion.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\dandelion.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 50801cdaffd2b674893c8047583e804f, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 50801cdaffd2b674893c8047583e804f, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/lilac_bottom.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\lilac_bottom.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 66a361e2d49ac0b4a937b6f5758a6fb6, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 66a361e2d49ac0b4a937b6f5758a6fb6, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/lilac_top.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\lilac_top.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: e966374d693bd084fb29c1ce21ec736e, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: e966374d693bd084fb29c1ce21ec736e, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/peony_bottom.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\peony_bottom.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: b9100961063c55a4e88cd305817d5ad5, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: b9100961063c55a4e88cd305817d5ad5, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/peony_top.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\peony_top.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: eba6767f295e58042a1e026a4d1a38e4, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: eba6767f295e58042a1e026a4d1a38e4, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/poppy.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\poppy.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: ab72b1459c6bec54fac32022b04876ae, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: ab72b1459c6bec54fac32022b04876ae, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/rose_bush_bottom.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\rose_bush_bottom.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 8ffb5816ddba487419e511617ac03459, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 8ffb5816ddba487419e511617ac03459, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/rose_bush_top.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\rose_bush_top.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 4b3e49cdca3d6544483ef6900ff2c78e, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 4b3e49cdca3d6544483ef6900ff2c78e, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/short_grass.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\short_grass.mat",
+    "source_shader": "{fileID: -6465566751694194690, guid: ab25e6a4c04531c4ba2efe05173847c7, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: b008d5d31628ef846990c872779e5cfe, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: b008d5d31628ef846990c872779e5cfe, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/tall_grass_bottom.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\tall_grass_bottom.mat",
+    "source_shader": "{fileID: -6465566751694194690, guid: ab25e6a4c04531c4ba2efe05173847c7, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 7ebbd3ba418b0434c91f0ef1b6be1594, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 7ebbd3ba418b0434c91f0ef1b6be1594, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/tall_grass_top.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\tall_grass_top.mat",
+    "source_shader": "{fileID: -6465566751694194690, guid: ab25e6a4c04531c4ba2efe05173847c7, type: 3}",
+    "source_keywords": "- _ALPHATEST_ON",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "1",
+    "source_surface": "0",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 0cc1489530368ed459af9f0938be4b20, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 0cc1489530368ed459af9f0938be4b20, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/blackstone_top.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\blackstone_top.mat",
+    "source_shader": "{fileID: -6465566751694194690, guid: 42bd0804de700c84781269c785b3c0f3, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: a4b897ad6bd19a64e8dfe75ac9d62f04, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: a4b897ad6bd19a64e8dfe75ac9d62f04, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/blackstone.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\blackstone.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: f47e8f3e0d7d96c479a4a9fa7491cecc, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: f47e8f3e0d7d96c479a4a9fa7491cecc, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/white_wool.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\white_wool.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.764151, g: 0.764151, b: 0.764151, a: 1}",
+    "target_tint": "{r: 0.764151, g: 0.764151, b: 0.764151, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/yellow_wool.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\yellow_wool.mat",
+    "source_shader": "{fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 0.6603774, g: 0.5420731, b: 0.252314, a: 1}",
+    "target_tint": "{r: 0.6603774, g: 0.542073, b: 0.25231397, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "0",
+    "source_cull": "2",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 0}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/water_still.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\water_still.mat",
+    "source_shader": "{fileID: 4800000, guid: d63f35a2cac0c4342970f121d760729d, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "1",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 0145cc981f5063b41a3a0dbd562556c1, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 0145cc981f5063b41a3a0dbd562556c1, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  },
+  {
+    "target": "Assets/GameAsset/Model/Map/Materials/water_flow.mat",
+    "source": "D:\\Source\\party-craft\\Assets\\GameAsset\\Model\\Map\\Materials\\water_flow.mat",
+    "source_shader": "{fileID: 4800000, guid: d63f35a2cac0c4342970f121d760729d, type: 3}",
+    "source_keywords": "[]",
+    "source_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "target_tint": "{r: 1, g: 1, b: 1, a: 1}",
+    "source_alphaClip": "0",
+    "source_surface": "1",
+    "source_cull": "0",
+    "source_emission": "{r: 0, g: 0, b: 0, a: 0}",
+    "source_texture": [
+      "{fileID: 2800000, guid: 0145cc981f5063b41a3a0dbd562556c1, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ],
+    "target_texture": [
+      "{fileID: 2800000, guid: 0145cc981f5063b41a3a0dbd562556c1, type: 3}",
+      "{x: 1, y: 1}",
+      "{x: 0, y: 0}"
+    ]
+  }
+]

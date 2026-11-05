@@ -1,0 +1,2 @@
+﻿# Standards
+Apply governance,architectureandverification skills; indexedapproval/scope,Unityassets/architecture,Lunabudgetandverificationstandards. No codearchitecture/runtimeAPIchanges. KeepassetGUIDs/meta/importsettings andotherworkingtreeedits. UseexistingSpritedata; noimagegenerationneeded. ActualLunabuildsizemustbemeasured,notassumed. Planawaitsapprovalbeforeimplementation.

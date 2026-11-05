@@ -15,11 +15,6 @@ namespace Playable
         [SerializeField] private CameraController _cameraController;
         [SerializeField] private Animator _animator;
         [SerializeField] private Button _btnJump;
-        [SerializeField] private DriveHoldButton _forwardButton;
-        [SerializeField] private DriveHoldButton _reverseButton;
-        [SerializeField] private DriveHoldButton _leftButton;
-        [SerializeField] private DriveHoldButton _rightButton;
-        [SerializeField] private GameController _gameController;
         [Header("Animation")]
         [SerializeField] private string _isJumpParam = "isJump";
         [SerializeField] private string _speedParam = "speed";
@@ -56,23 +51,31 @@ namespace Playable
         private bool _hasSpeed, _hasJump;
         private float _animationSpeed, _airborneTime, _groundedTime;
         private bool _jumpAnimation;
-        private Transform _originalParent;
-        private RuntimeAnimatorController _onFootController;
-        private Vector3 _originalScale;
         private PhysicsMaterial _movementMaterial;
         private readonly RaycastHit[] _groundHits = new RaycastHit[32];
         private readonly Collider[] _overlaps = new Collider[32];
         public bool IsGrounded => _isGrounded;
-        public bool IsRiding { get; private set; }
-        public Vector3 Velocity => IsRiding || _rigidbody == null ? Vector3.zero : _rigidbody.linearVelocity;
+        public Vector3 Velocity => _rigidbody == null ? Vector3.zero : _rigidbody.linearVelocity;
         public UltimateJoystick MoveJoystick => _moveJoystick;
         public CameraController CameraController => _cameraController;
         public event Action MovementRequested;
+        private bool _movementLocked;
+        public bool IsMovementLocked => _movementLocked;
+        public void SetMovementLocked(bool locked)
+        {
+            _movementLocked = locked;
+            _lastJumpRequestTime = float.NegativeInfinity;
+            if (locked && _rigidbody != null && !_rigidbody.isKinematic)
+            {
+                Vector3 velocity = _rigidbody.linearVelocity;
+                _rigidbody.linearVelocity = new Vector3(0f, velocity.y, 0f);
+            }
+        }
         public bool IsWorking { get => _isWorking; set { _isWorking = value; if (!value) _moveInput = Vector2.zero; } }
 
         public RuntimeAnimatorController SetOnFootAnimator(RuntimeAnimatorController controller)
         {
-            if (_animator == null || IsRiding) return null;
+            if (_animator == null) return null;
             RuntimeAnimatorController previous = _animator.runtimeAnimatorController;
             _animator.runtimeAnimatorController = controller;
             _animator.Rebind();
@@ -136,39 +139,8 @@ namespace Playable
             input = Vector2.ClampMagnitude(input, 1);
             return input.sqrMagnitude < _inputDeadZone * _inputDeadZone ? Vector2.zero : input;
         }
-        public float ReadDriveInput()
-        {
-            float input = (_forwardButton != null && _forwardButton.IsHeld ? 1f : 0f)
-                - (_reverseButton != null && _reverseButton.IsHeld ? 1f : 0f);
-#if UNITY_EDITOR || UNITY_STANDALONE
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
-                input = (Input.GetKey(KeyCode.W) ? 1f : 0f) - (Input.GetKey(KeyCode.S) ? 1f : 0f);
-#endif
-            return input;
-        }
-        private void SetDrivingControls(bool riding)
-        {
-            if (_moveJoystick != null) _moveJoystick.gameObject.SetActive(!riding);
-            if (_forwardButton != null) { _forwardButton.Release(); _forwardButton.gameObject.SetActive(riding); }
-            if (_reverseButton != null) { _reverseButton.Release(); _reverseButton.gameObject.SetActive(riding); }
-            if (_leftButton != null) { _leftButton.Release(); _leftButton.gameObject.SetActive(riding); }
-            if (_rightButton != null) { _rightButton.Release(); _rightButton.gameObject.SetActive(riding); }
-            if (_gameController != null) _gameController.SetRiding(riding);
-        }
-        private void Start() { SetDrivingControls(false); }
-        public float ReadSteerInput()
-        {
-            float input = (_rightButton != null && _rightButton.IsHeld ? 1f : 0f)
-                - (_leftButton != null && _leftButton.IsHeld ? 1f : 0f);
-#if UNITY_EDITOR || UNITY_STANDALONE
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-                input = (Input.GetKey(KeyCode.D) ? 1f : 0f) - (Input.GetKey(KeyCode.A) ? 1f : 0f);
-#endif
-            return input;
-        }
         private void Update()
         {
-            if (IsRiding) return;
             _moveInput = ReadMoveInput();
             if (!_isWorking && _moveInput.sqrMagnitude > 0) MovementRequested?.Invoke();
 #if UNITY_EDITOR || UNITY_STANDALONE
@@ -185,7 +157,7 @@ namespace Playable
         }
         private void FixedUpdate()
         {
-            if (IsRiding || _rigidbody.isKinematic) return;
+            if (_rigidbody.isKinematic) return;
             Vector3 velocity = _rigidbody.linearVelocity;
             RaycastHit ground = default;
             _isGrounded = Time.time >= _ignoreGroundUntil && velocity.y <= 0.5f && ProbeGround(out ground);
@@ -195,7 +167,8 @@ namespace Playable
                 _lastGroundedTime = Time.time;
             }
             else _groundNormal = Vector3.up;
-            Vector2 input = _isWorking ? _moveInput : Vector2.zero;
+            bool canMove = _isWorking && !_movementLocked;
+            Vector2 input = canMove ? _moveInput : Vector2.zero;
             Quaternion yaw = Quaternion.Euler(0, _cameraController != null ? _cameraController.Yaw : 0, 0);
             Vector3 direction = yaw * new Vector3(input.x, 0, input.y);
             Vector3 desired = direction * _moveRate;
@@ -204,13 +177,14 @@ namespace Playable
             Vector3 target = new Vector3(desired.x, 0, desired.z);
             planar = Vector3.MoveTowards(planar, target, (input.sqrMagnitude > 0 ? _acceleration : _deceleration)
                 * (_isGrounded ? 1f : _airControlMultiplier) * Time.fixedDeltaTime);
+            if (_movementLocked) planar = Vector3.zero;
             float vertical = _isGrounded ? Mathf.Min(velocity.y, -2f) + Mathf.Max(0, desired.y) : velocity.y;
 #if UNITY_LUNA
             // Use a small ground adhesion velocity, rather than carrying a fall into the floor.
             // Preserve the slope's vertical component in both travel directions.
             if (_isGrounded) vertical = desired.y - 0.5f;
 #endif
-            bool jumped = _isWorking && Time.time - _lastJumpRequestTime <= _jumpBufferDuration &&
+            bool jumped = canMove && Time.time - _lastJumpRequestTime <= _jumpBufferDuration &&
                 (_isGrounded || Time.time - _lastGroundedTime <= _coyoteTime);
             if (jumped)
             {
@@ -284,8 +258,8 @@ namespace Playable
         }
         public void OnJumpButtonPressed()
         {
-            if (IsRiding) return;
             if (!_isWorking) { MovementRequested?.Invoke(); return; }
+            if (_movementLocked) return;
             _lastJumpRequestTime = Time.time;
         }
         public void SetMoveJoystick(UltimateJoystick joystick) { _moveJoystick = joystick; }
@@ -305,63 +279,6 @@ namespace Playable
             if (!_rigidbody.isKinematic) { _rigidbody.linearVelocity = Vector3.zero; _rigidbody.angularVelocity = Vector3.zero; }
             _rigidbody.position = position; _rigidbody.rotation = rotation;
             transform.SetPositionAndRotation(position, rotation);
-        }
-        public void BeginDrive()
-        {
-            if (IsRiding) return;
-            _moveInput = Vector2.zero;
-            IsRiding = true;
-            gameObject.SetActive(false);
-        }
-
-        public void EndDrive(Vector3 position, Quaternion rotation)
-        {
-            gameObject.SetActive(true);
-            IsRiding = false;
-            Teleport(position, rotation);
-        }
-
-        public void BeginRide(Transform seat, RuntimeAnimatorController rideController)
-        {
-            if (IsRiding || seat == null) return;
-            _originalParent = transform.parent;
-            _originalScale = transform.localScale;
-            _rigidbody.linearVelocity = Vector3.zero; _rigidbody.angularVelocity = Vector3.zero;
-            _rigidbody.interpolation = RigidbodyInterpolation.None;
-            _rigidbody.isKinematic = true; _capsuleCollider.enabled = false;
-            _moveInput = Vector2.zero; IsRiding = true;
-            transform.SetParent(seat, false);
-            transform.localPosition = Vector3.zero; transform.localRotation = Quaternion.identity;
-            if (_btnJump != null) _btnJump.gameObject.SetActive(false);
-            SetDrivingControls(true);
-            if (_animator != null && rideController != null)
-            {
-                _onFootController = _animator.runtimeAnimatorController;
-                _animator.runtimeAnimatorController = rideController;
-                _animator.Rebind();
-                _animator.Update(0);
-            }
-        }
-
-        public void EndRide(Vector3 position, Quaternion rotation)
-        {
-            if (!IsRiding) return;
-            transform.SetParent(_originalParent, true);
-            transform.localScale = _originalScale;
-            IsRiding = false; _rigidbody.isKinematic = false;
-            ConfigureWalkingPhysics();
-            Teleport(position, rotation); _capsuleCollider.enabled = true;
-            if (_animator != null && _onFootController != null)
-            {
-                _animator.runtimeAnimatorController = _onFootController;
-                _onFootController = null;
-                _animator.Rebind();
-                if (_hasSpeed) _animator.SetFloat(_speedParam, 0);
-                if (_hasJump) _animator.SetBool(_isJumpParam, false);
-                _animator.Update(0);
-            }
-            if (_btnJump != null) _btnJump.gameObject.SetActive(true);
-            SetDrivingControls(false);
         }
     }
 }

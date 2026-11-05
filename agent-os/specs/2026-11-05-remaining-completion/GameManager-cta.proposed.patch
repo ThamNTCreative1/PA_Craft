@@ -1,0 +1,45 @@
+--- Assets\_Playable_\Scripts\Manager\GameManager.cs
++++ Assets\_Playable_\Scripts\Manager\GameManager.cs
+@@ -1,5 +1,4 @@
+ using System;
+-using System.Collections;
+ using UnityEngine;
+ using UnityEngine.UI;
+ 
+@@ -24,6 +23,7 @@
+         private float _elapsed;
+         private int _endedFrame;
+         private bool _autoInstalled;
++        private float _autoCtaAt = -1f;
+         private Sprite _backgroundSprite;
+ 
+         public event Action Ended;
+@@ -59,6 +59,11 @@
+         {
+             if (IsEnded)
+             {
++                if (!_autoInstalled && _autoCtaAt >= 0f && Time.realtimeSinceStartup >= _autoCtaAt)
++                {
++                    _autoInstalled = true;
++                    RequestInstall();
++                }
+                 if (_btnBlock != null && Time.frameCount > _endedFrame)
+                     _btnBlock.interactable = true;
+                 return;
+@@ -110,15 +115,7 @@
+             }
+             if (LunaServices.Controller != null) LunaServices.Controller.NotifyGameEnded();
+             else Debug.LogError("Cannot report GameEnded: LunaController is not registered.", this);
+-            StartCoroutine(AutoInstall());
+-        }
+-
+-        private IEnumerator AutoInstall()
+-        {
+-            yield return new WaitForSecondsRealtime(_autoCtaDelay);
+-            if (_autoInstalled) yield break;
+-            _autoInstalled = true;
+-            RequestInstall();
++            _autoCtaAt = Time.realtimeSinceStartup + _autoCtaDelay;
+         }
+ 
+         public void RequestInstall()

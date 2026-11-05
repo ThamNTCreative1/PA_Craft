@@ -1,0 +1,210 @@
+[
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "initial": [
+      {
+        "x": 217.39998511672013,
+        "y": 309.5999956011771,
+        "width": 402.6000022888185,
+        "height": 402.6000022888185,
+        "label": "Default"
+      },
+      {
+        "x": 499.13332837224016,
+        "y": 309.5999956011771,
+        "width": 402.6000022888185,
+        "height": 402.6000022888185,
+        "label": "Summer Vacation"
+      },
+      {
+        "x": 780.8666716277601,
+        "y": 309.5999956011771,
+        "width": 402.6000022888185,
+        "height": 402.6000022888185,
+        "label": "Doctor"
+      },
+      {
+        "x": 1062.6000148832802,
+        "y": 309.5999956011771,
+        "width": 402.6000022888185,
+        "height": 402.6000022888185,
+        "label": "Police"
+      }
+    ],
+    "chosen": {
+      "phase": 1,
+      "step": 1,
+      "shots": 0,
+      "monster": 0
+    },
+    "looked": {
+      "phase": 1,
+      "step": 2,
+      "shots": 0,
+      "monster": 0
+    },
+    "joy": {
+      "x": 144.99998524785042,
+      "y": 197.99999517202377
+    },
+    "joystickState": {
+      "active": true,
+      "x": 0.6049382876303303,
+      "y": 0,
+      "pointer": 1,
+      "handling": 0,
+      "range": false,
+      "interactable": true,
+      "moveTime": 0.2505
+    },
+    "moved": {
+      "phase": 1,
+      "step": 3,
+      "shots": 0,
+      "monster": 0
+    },
+    "accepted": true,
+    "fired": {
+      "phase": 2,
+      "step": 4,
+      "shots": 1,
+      "monster": 1
+    },
+    "winParticleScenario": "after natural projectile expiry",
+    "win": {
+      "ended": true,
+      "win": true,
+      "lose": false,
+      "events": 1
+    },
+    "cta": {
+      "count": 1,
+      "delay": 1007.5999999940395
+    },
+    "errors": [],
+    "logs": []
+  },
+  {
+    "viewport": {
+      "width": 720,
+      "height": 1280
+    },
+    "initial": [
+      {
+        "x": 200.73971456581492,
+        "y": 764.2602741130004,
+        "width": 578.6606277197486,
+        "height": 783.9024381599877,
+        "label": "Default"
+      },
+      {
+        "x": 519.2602854341853,
+        "y": 764.2602741130004,
+        "width": 578.6606277197486,
+        "height": 783.9024381599877,
+        "label": "Summer Vacation"
+      },
+      {
+        "x": 200.73971456581492,
+        "y": 336.5397064509769,
+        "width": 578.6606277197486,
+        "height": 783.9024381599877,
+        "label": "Doctor"
+      },
+      {
+        "x": 519.2602854341853,
+        "y": 336.5397064509769,
+        "width": 578.6606277197486,
+        "height": 783.9024381599877,
+        "label": "Police"
+      }
+    ],
+    "chosen": {
+      "phase": 1,
+      "step": 1,
+      "shots": 0,
+      "monster": 0
+    },
+    "looked": {
+      "phase": 1,
+      "step": 2,
+      "shots": 0,
+      "monster": 0
+    },
+    "joy": {
+      "x": 116.9999876108786,
+      "y": 309.99998317526723
+    },
+    "joystickState": {
+      "active": true,
+      "x": 0.6049382876303301,
+      "y": 0,
+      "pointer": 1,
+      "handling": 0,
+      "range": false,
+      "interactable": true,
+      "moveTime": 0.27249999999999996
+    },
+    "moved": {
+      "phase": 1,
+      "step": 3,
+      "shots": 0,
+      "monster": 0
+    },
+    "accepted": true,
+    "fired": {
+      "phase": 2,
+      "step": 4,
+      "shots": 1,
+      "monster": 1
+    },
+    "winParticleScenario": "after natural projectile expiry",
+    "win": {
+      "ended": true,
+      "win": true,
+      "lose": false,
+      "events": 1
+    },
+    "cta": {
+      "count": 1,
+      "delay": 1022.4000000059605
+    },
+    "errors": [],
+    "logs": []
+  },
+  {
+    "outcome": "Lose",
+    "immediate": {
+      "blocked": true,
+      "events": 1,
+      "win": false,
+      "lose": true,
+      "timeout": false
+    },
+    "cta": {
+      "count": 1,
+      "delay": 1064.0999999940395
+    },
+    "afterManual": 2,
+    "errors": []
+  },
+  {
+    "outcome": "Timeout",
+    "immediate": {
+      "blocked": true,
+      "events": 1,
+      "win": false,
+      "lose": false,
+      "timeout": true
+    },
+    "cta": {
+      "count": 1,
+      "delay": 1035.699999988079
+    },
+    "afterManual": 2,
+    "errors": []
+  }
+]

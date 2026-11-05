@@ -1,0 +1,2 @@
+﻿# Standards
+Apply governance,architecture,input-handling,tutorial-onboarding,test-and-verify skills. Follow indexed approval/scope,LegacyInput/runtime,architecture,testing standards. No newInputSystem/package/shader/APIsearch. Event subscription lifetime symmetrical; inputsampling prioritizedtouch with once-perframe notification, no hotpath allocations. Explicit serializedTouch dependency stays; no newclasses/interfaces. Existing unrelatedchanges preserved. Luna/devicetouch/buildbudget remain unverified unless run.

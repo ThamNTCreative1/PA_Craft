@@ -1,0 +1,10 @@
+--- 
++++ 
+@@ -106,6 +106,7 @@
+             if (_phase != Phase.Tutorial || _game.IsEnded) return;
+             _phase = Phase.Combat;
+             _health.SetInvulnerable(false);
++            _game.BeginCombatTimer();
+             _monster.Activate(_health);
+         }
+         private void OnMonsterDefeated() { _game.EndWithWin(); }

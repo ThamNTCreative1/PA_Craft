@@ -1,0 +1,2 @@
+﻿# Standards
+Apply agent-os/standards/index.yml: approval gates, roles/handoff, safety/scope, Unity assets/architecture, Luna runtime and 4.5MB budget, testing/luna-verification. Apply luna-production-governance, luna-code-architecture, luna-test-and-verify and unity-mcp-orchestrator. UI-only import: no cross-project gameplay logic. No existing UI removal or source modifications. No runtime search or additional scripts/shaders/packages. Actual measured gap rows require approval before collider supplementation.

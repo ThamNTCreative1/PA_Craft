@@ -1,0 +1,2 @@
+# Shape
+Preserve source base-color quality with independent Luna map materials and existing textures, using a staged proof rather than promising URP lighting reproduction. Existing standard particle Unlit exposes tint,alpha,culling needed by current map. No new runtime architecture; no change to GameController. Full source illumination bake is separate scope if pilot does not meet visual requirements.

@@ -106,7 +106,6 @@ GameObject:
   - component: {fileID: 6854659257691220478}
   - component: {fileID: 8942999948422213378}
   - component: {fileID: 7661326454635684796}
-  - component: {fileID: 1097979245321863764}
   - component: {fileID: 1259904500764165351}
   m_Layer: 12
   m_Name: Playable Motobike 4
@@ -182,42 +181,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 2
   m_Center: {x: 0, y: 0.43, z: 0}
---- !u!114 &1097979245321863764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7641819453703552709}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb21e721a37ffbd45afda115a91c9697, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _visual: {fileID: 6982410551873478752}
-  _riderSeat: {fileID: 4718775320896975721}
-  _cameraTarget: {fileID: 9206702226345248911}
-  _wheels:
-  - {fileID: 649273635369340821}
-  - {fileID: 1532246368637263521}
-  _riderController: {fileID: 9100000, guid: 4fa3b4ab1ea2ca34fb27bec2a023ccf9, type: 2}
-  _engine: {fileID: 1259904500764165351}
-  _maxForwardSpeed: 13
-  _maxReverseSpeed: 3
-  _acceleration: 6
-  _braking: 14
-  _coastDeceleration: 5
-  _grip: 22
-  _wheelBase: 2.15
-  _lowSpeedSteerAngle: 38
-  _highSpeedSteerAngle: 15
-  _steerSmoothTime: 0.14
-  _leanAngle: 22
-  _wheelRadius: 0.46
-  _groundMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  _gravity: 24
 --- !u!82 &1259904500764165351
 AudioSource:
   m_ObjectHideFlags: 0
@@ -386,18 +349,6 @@ PrefabInstance:
 --- !u!4 &134843559491000056 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3ed32597ea68493428369e0175b42f0a,
-    type: 3}
-  m_PrefabInstance: {fileID: 456472138229526803}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &649273635369340821 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8117993330488377722, guid: 3ed32597ea68493428369e0175b42f0a,
-    type: 3}
-  m_PrefabInstance: {fileID: 456472138229526803}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1532246368637263521 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -7848059968962351182, guid: 3ed32597ea68493428369e0175b42f0a,
     type: 3}
   m_PrefabInstance: {fileID: 456472138229526803}
   m_PrefabAsset: {fileID: 0}

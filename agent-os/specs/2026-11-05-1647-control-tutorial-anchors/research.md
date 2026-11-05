@@ -1,0 +1,11 @@
+# Control tutorial anchors
+
+Research only. User requests joystick tutorial anchored to joystick, fire tutorial anchored above fire button. Preserve existing progression and controls.
+
+Scene inspected through serialized CombatTutorialController refs. _moveCue is TMP Swipe To Move under Paintball Movement Tutorial, viewport anchors(.05,.42)..(.45,.52), position(-2.39,-315), stretched size. _joystick is Minimalist Joystick04 under UIPlayer, Rect338.31square, bottom-left anchored, position updated by UltimateJoystick. _fireCue is Hint under PaintballHUD, bottom-right anchored position(-390,649), size300x70; child Fire Hand image110x127, position(25,-169). _fireButton Fire is sibling bottom-right anchored(-390,517),180square. Thus cues currently track viewport offsets, not actual controls. Move text SWIPE TO MOVE and Fire Tap to Fire, all cue graphics raycastfalse.
+
+Smallest adaptation: scene-only reparent moveCue beneath joystick root, fireCue beneath Fire. Set both root RectTransforms top-center anchor(.5,1), bottom-center pivot(.5,0), offset(0,24). Move cue fixed size380x80 (current original stretched text much wider); Fire cue retains300x70 and existing Fire Hand child. Fire hand relative pose remains initially, visually check it points at Fire without obscuring text. Maintain graphic raycastfalse, serialized object refs, active states, Look cue and state logic untouched. No new script/type/interface/asset. Existing Begin sets cues then enables joystick/fire; nested cues still follow lifecycle, Cancel hides cues then controls. OnShot hidesfirecue normally.
+
+Joystick movement target must be root, not movable knob/Joystick child. UltimateJoystick explicit root/base refs and UpdatePositioning move its own controls; inspect before change. Reparenting to control follows orientation/resize automatically, not runtime scans.
+
+Verification: scene snapshot, exact parent/anchor/pivot refs; landscape and portrait screenshots during Move/Fire; screen relative top gap24 in local control coordinates; controls remain clickable (cue graphics false), joystick still drags, hand position/scale preserved, Look->Move->Fire->Completed and Cancel/outcome hide behavior unchanged. Console check, no source compile required for scene-only edit. No Luna build/device/size claims unless run. New work-item approval required before scene edit.

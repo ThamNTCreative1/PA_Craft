@@ -1,5 +1,3 @@
 # Current work item
-
-agent-os/specs/2026-10-14-1432-vehicle-tap-diagnosis
-
-Status: Scene reference repair implemented; static validation passed; Unity/Luna runtime unverified.
+Spec folder: agent-os/specs/2026-11-05-2248-selection-roar-equip-lock/
+Status: APPROVED implementation complete. Editor compile/selection/audio/equip-lock/tutorial/watchdog/cleanup checks passed. Play stopped. Browser/build unverified. See implementation-report.md.

@@ -1,0 +1,23 @@
+--- 
++++ 
+@@ -23,16 +23,16 @@
+         }
+ 
+         [SerializeField] private HeroEntry[] _heroes;
+-        [LunaPlaygroundField("Hero Slot 1 (0-7)")]
++        [LunaPlaygroundField("Hero Slot 1 (0-7)", fieldOrder: 1, fieldSection: "Heroes")]
+         [Tooltip("Hero id 0-7: 0 Default, 1 Summer, 2 Browncoat, 3 Fish, 4 Panda, 5 Doctor, 6 FireFighter, 7 Police. Invalid/duplicate uses first unused id.")]
+         [SerializeField, Range(0, 7)] private int _slot1;
+-        [LunaPlaygroundField("Hero Slot 2 (0-7)")]
++        [LunaPlaygroundField("Hero Slot 2 (0-7)", fieldOrder: 2, fieldSection: "Heroes")]
+         [Tooltip("Hero id 0-7: 0 Default, 1 Summer, 2 Browncoat, 3 Fish, 4 Panda, 5 Doctor, 6 FireFighter, 7 Police. Invalid/duplicate uses first unused id.")]
+         [SerializeField, Range(0, 7)] private int _slot2 = 1;
+-        [LunaPlaygroundField("Hero Slot 3 (0-7)")]
++        [LunaPlaygroundField("Hero Slot 3 (0-7)", fieldOrder: 3, fieldSection: "Heroes")]
+         [Tooltip("Hero id 0-7: 0 Default, 1 Summer, 2 Browncoat, 3 Fish, 4 Panda, 5 Doctor, 6 FireFighter, 7 Police. Invalid/duplicate uses first unused id.")]
+         [SerializeField, Range(0, 7)] private int _slot3 = 2;
+-        [LunaPlaygroundField("Hero Slot 4 (0-7)")]
++        [LunaPlaygroundField("Hero Slot 4 (0-7)", fieldOrder: 4, fieldSection: "Heroes")]
+         [Tooltip("Hero id 0-7: 0 Default, 1 Summer, 2 Browncoat, 3 Fish, 4 Panda, 5 Doctor, 6 FireFighter, 7 Police. Invalid/duplicate uses first unused id.")]
+         [SerializeField, Range(0, 7)] private int _slot4 = 3;
+ 

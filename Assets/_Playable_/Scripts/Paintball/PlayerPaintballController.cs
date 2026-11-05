@@ -12,6 +12,7 @@ namespace Playable
         [SerializeField] private Animator _animator;
         [SerializeField] private RuntimeAnimatorController _armedAnimator;
         [SerializeField] private Transform _weapon;
+        [SerializeField] private Transform _heroWeaponSocket;
         [SerializeField] private Transform _muzzle;
         [SerializeField] private RectTransform _crosshair;
         private Canvas _crosshairCanvas;
@@ -51,6 +52,7 @@ namespace Playable
         private int _ammo, _reserve;
         private bool _paused, _reloading, _refilled;
         public PlayerController Player => _player;
+        public event System.Action ShotFired;
         public bool IsEquipped { get; private set; }
         public bool IsReloading => _reloading;
         public int Ammo => _ammo;
@@ -68,6 +70,14 @@ namespace Playable
                 _crosshairBasePosition = _crosshair.anchoredPosition;
                 _crosshairParent = _crosshair.parent as RectTransform;
             }
+        }
+
+        public bool ConfigureHeroRig(RuntimeAnimatorController controller, Transform followSocket)
+        {
+            if (IsEquipped || controller == null || followSocket == null) return false;
+            _armedAnimator = controller;
+            _heroWeaponSocket = followSocket;
+            return true;
         }
 
         public void Equip()
@@ -89,6 +99,7 @@ namespace Playable
             IsEquipped = true;
             _shotPending = _emitShot = false;
             _equipping = true;
+            _player.SetMovementLocked(true);
             _actionTime = 0f;
             _aimTime = 0;
             // A previous paused state must never become the resumed playback speed.
@@ -104,6 +115,7 @@ namespace Playable
             IsEquipped = false;
             _reloading = false;
             _shotPending = _emitShot = _equipping = false;
+            if (_player != null) _player.SetMovementLocked(false);
             if (_animator != null && wasEquipped) _animator.speed = _animatorSpeed;
             if (_fire != null) _fire.Release();
             if (_weapon != null) { if (wasEquipped) { _weapon.localPosition = _weaponPosition; _weapon.localRotation = _weaponRotation; } _weapon.gameObject.SetActive(false); }
@@ -155,6 +167,8 @@ namespace Playable
             if (aiming) _player.SetAimYaw(_camera.Yaw);
             else _player.StopAiming();
             // Bone poses come exclusively from animation clips; the gun follows its hand socket.
+            if (_heroWeaponSocket != null)
+                _weapon.SetPositionAndRotation(_heroWeaponSocket.position, _heroWeaponSocket.rotation);
             if (_emitShot) { _emitShot = false; FireProjectile(); }
         }
         public bool TryFire()
@@ -174,7 +188,11 @@ namespace Playable
             if (!IsEquipped || _paused) return;
             if (eventName == "OnAnimatorItemUse" && _shotPending && !_reloading)
             { _shotPending = false; _emitShot = true; }
-            else if (eventName == "OnAnimatorItemEquipComplete") _equipping = false;
+            else if (eventName == "OnAnimatorItemEquipComplete" && _equipping)
+            {
+                _equipping = false;
+                _player.SetMovementLocked(false);
+            }
             else if (eventName == "OnAnimatorItemReload" && _reloading && !_refilled)
             {
                 int count = _reserve < 0 ? _magazineSize - _ammo : Mathf.Min(_magazineSize - _ammo, _reserve);
@@ -234,6 +252,7 @@ namespace Playable
             free.Launch(this, origin, (point - origin).normalized * free.Speed);
             if (!_infiniteAmmo) _ammo--;
             ShotsFired++;
+            ShotFired?.Invoke();
             _flashTime = 0.07f;
             _camera.AddFeedback(new Vector2(Random.Range(-1f, 1f), Random.Range(-2f, -0.5f)));
             if (_audio != null && _shotSound != null) _audio.PlayOneShot(_shotSound);
@@ -258,6 +277,17 @@ namespace Playable
             float height = _crosshairParent != null ? _crosshairParent.rect.height : 0f;
             _crosshair.anchoredPosition = _crosshairBasePosition +
                 Vector2.up * (height * _portraitCrosshairHeightOffset * portraitWeight);
+        }
+
+        public bool TryGetAimRay(out Ray ray)
+        {
+            ray = default(Ray);
+            if (_crosshair == null || _crosshairCanvas == null || _camera == null || _camera.OutputCamera == null)
+                return false;
+            // Apply the existing framing before its first rendered frame after Equip.
+            if (IsEquipped) UpdateCrosshairScale(_camera.OutputCamera.aspect);
+            ray = GetAimRay();
+            return true;
         }
 
         private Ray GetAimRay()
