@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 42155,
-    "creativeName": "C1_2611_HuyNQ_CCPW_V04_AnhPP",
+    "creativeName": "C1_2611_HuyNQ_CCPW_V05_AnhPP",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -37764,6 +37764,10 @@
                     {
                         "name": "PlayEndSound",
                         "excluded": false
+                    },
+                    {
+                        "name": "ShowLoseEndCard",
+                        "excluded": false
                     }
                 ]
             },
@@ -38087,6 +38091,14 @@
                     },
                     {
                         "name": "SetMovementLocked",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DeathAnimationDuration#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayDeath",
                         "excluded": false
                     }
                 ]

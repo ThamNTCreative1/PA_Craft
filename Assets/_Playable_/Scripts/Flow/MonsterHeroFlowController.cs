@@ -111,7 +111,7 @@ namespace Playable
             _monster.Activate(_health);
         }
         private void OnMonsterDefeated() { _game.EndWithWin(); }
-        private void OnPlayerDied() { _game.EndWithLose(); }
+        private void OnPlayerDied() { _game.EndWithLose(_player.DeathAnimationDuration); }
         private void OnEnded()
         {
             if (_phase == Phase.Ended) return;
@@ -126,6 +126,7 @@ namespace Playable
             _touch.gameObject.SetActive(false);
             _hud.SetActive(false);
             _objective.SetActive(false);
+            if (_health.IsDead) _player.PlayDeath();
         }
     }
 }

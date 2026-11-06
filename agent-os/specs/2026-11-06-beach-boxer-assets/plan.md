@@ -1,0 +1,6 @@
+# Beach map and Boxer visual replacement
+Status: APPROVED
+Approved by: user ("hãy t?o thêm anim ch?t là du?c; còn l?i duy?t h?t")
+Scope: Gameplay.unity map visuals replaced by CityMap_Beach.fbx; BoxCollider surfaces for solid terrain/buildings, excluding water/foliage; align map to current player/monster spawn. Preserve existing gameplay scripts, component identities, combat settings, health bar, aim point and audio. Replace Huggy visual children with Boxer_Rig_Animations.fbx, normalize visual size/grounding to the existing monster. Retain Idle/Run/Attack/Death state names and create an animation-only fall clip for Death. Use the Boxer's included Idle/Walk/Attack clips through an animator asset binding. No .cs files changed.
+Assets: Assets/_Playable_/Scenes/Gameplay.unity; new Boxer clips/controller under Assets/_Playable_/Animations/Monster/Boxer/. Existing source FBX and materials remain unchanged.
+Verification: compare C# hashes and serialized gameplay component references/settings; ground/collider/spawn checks; Unity play player movement, monster approach/attack/hit/death and health fill; animation pose previews and Console. Report Luna build and package size separately if not tested.

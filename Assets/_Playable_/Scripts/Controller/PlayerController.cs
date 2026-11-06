@@ -61,6 +61,29 @@ namespace Playable
         public event Action MovementRequested;
         private bool _movementLocked;
         public bool IsMovementLocked => _movementLocked;
+        public float DeathAnimationDuration => 1.2f;
+
+        public void PlayDeath()
+        {
+            IsWorking = false;
+            SetMovementLocked(true);
+            if (_rigidbody != null)
+            {
+                if (!_rigidbody.isKinematic)
+                {
+                    _rigidbody.linearVelocity = Vector3.zero;
+                    _rigidbody.angularVelocity = Vector3.zero;
+                }
+                _rigidbody.isKinematic = true;
+            }
+            if (_animator == null) return;
+            // The common end flow pauses the weapon Animator before death playback.
+            _animator.speed = 1f;
+            _animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            _animator.Play("Death", 0, 0f);
+            _animator.Update(0f);
+        }
+
         public void SetMovementLocked(bool locked)
         {
             _movementLocked = locked;

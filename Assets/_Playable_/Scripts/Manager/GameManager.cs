@@ -31,6 +31,7 @@ namespace Playable
         private int _endedFrame;
         private bool _autoInstalled;
         private float _autoCtaAt = -1f;
+        private float _loseCardAt = -1f;
         private Sprite _backgroundSprite;
 
         public event Action Ended;
@@ -66,7 +67,13 @@ namespace Playable
         {
             if (IsEnded)
             {
-                if (!_autoInstalled && _autoCtaAt >= 0f && Time.realtimeSinceStartup >= _autoCtaAt)
+                if (_loseCardAt >= 0f && Time.realtimeSinceStartup >= _loseCardAt)
+                {
+                    _loseCardAt = -1f;
+                    ShowLoseEndCard();
+                }
+                if (!_autoInstalled && _autoCtaAt >= 0f && Time.frameCount > _endedFrame &&
+                    Time.realtimeSinceStartup >= _autoCtaAt)
                 {
                     _autoInstalled = true;
                     RequestInstall();
@@ -103,9 +110,20 @@ namespace Playable
             FinishEnd();
         }
 
-        public void EndWithLose()
+        public void EndWithLose(float animationSeconds = 0f)
         {
             if (!TryBeginEnd()) return;
+            if (animationSeconds > 0f && !float.IsInfinity(animationSeconds))
+            {
+                _loseCardAt = Time.realtimeSinceStartup + animationSeconds;
+                return;
+            }
+            ShowLoseEndCard();
+        }
+
+        private void ShowLoseEndCard()
+        {
+            _endedFrame = Time.frameCount;
             if (_failPanel != null)
             {
                 _failPanel.transform.SetAsLastSibling();
@@ -157,7 +175,7 @@ namespace Playable
 
         public void RequestInstall()
         {
-            if (!IsEnded || Time.frameCount <= _endedFrame) return;
+            if (!IsEnded || _autoCtaAt < 0f || Time.frameCount <= _endedFrame) return;
             if (LunaServices.Controller != null) LunaServices.Controller.InstallFullGame();
             else Debug.LogError("Cannot open store: LunaController is not registered.", this);
         }
