@@ -258,13 +258,13 @@ public static class EggRaisingSceneSetup
         var ctaTitle = cta.transform.Find("Title").GetComponent<Image>(); ctaTitle.sprite = Sprite(Art + "text.png"); ctaTitle.preserveAspect = true;
         var ctaButton = Get<Button>(cta, "_retryButton"); ctaButton.image.sprite = Sprite(Art + "button.png"); ctaButton.image.preserveAspect = true;
         ctaButton.onClick = new Button.ButtonClickedEvent();
-        var layout = cta.gameObject.AddComponent<EggCtaLayout>();
-        Set(layout, "_title", ctaTitle.rectTransform); Set(layout, "_button", (RectTransform)ctaButton.transform);
+        // The root ResponsiveCanvasScaler scales the authored end-card layout.
         Set(game, "_cta", cta); cta.gameObject.SetActive(false);
         string[] soundFields = { "_selectSound", "_placeSound", "_tickSound", "_readySound", "_hatchSound", "_ctaSound" };
         string[] sounds = { "Assets/SoundFX/sfx_click.wav", "Assets/SoundFX/plant a tree.mp3", "Assets/SoundFX/sfx_click.wav",
             "Assets/Epic Toon FX/Sound/etfx_explosion_sparkle2.wav", "Assets/Epic Toon FX/Sound/etfx_explosion_magic.wav", "Assets/_Playable_/Sound/yeah-kids.mp3" };
         for (int i = 0; i < sounds.Length; i++) Set(game, soundFields[i], Asset<AudioClip>(sounds[i]));
+        Set(game, "_hatchlingRoar", Asset<AudioClip>("Assets/_Playable_/Sound/505131__mitchanary__monster-roar_8.wav"));
         Set(manager, "_eggRaisingMode", true);
         Get<WinPanel>(manager, "_winPanel").gameObject.SetActive(false);
         originalFail.gameObject.SetActive(false);

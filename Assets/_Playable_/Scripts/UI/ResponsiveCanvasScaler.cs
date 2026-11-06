@@ -8,6 +8,8 @@ namespace Playable
     {
         [Header("Reference Resolution")] [SerializeField]
         private Vector2 _referenceResolution = new Vector2(1080f, 1920f);
+        [SerializeField] private bool _useOrientationReference;
+        [SerializeField] private Vector2 _landscapeResolution = new Vector2(1920f, 1080f);
 
         [Header("Match Settings")] [SerializeField] [Range(0f, 1f)]
         private float _portraitMatch = 1f;
@@ -80,9 +82,11 @@ namespace Playable
                 _canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             }
 
-            if (_canvasScaler.referenceResolution != _referenceResolution)
+            Vector2 resolution = _useOrientationReference && aspectRatio >= 1f
+                ? _landscapeResolution : _referenceResolution;
+            if (_canvasScaler.referenceResolution != resolution)
             {
-                _canvasScaler.referenceResolution = _referenceResolution;
+                _canvasScaler.referenceResolution = resolution;
             }
 
             if (_canvasScaler.screenMatchMode != CanvasScaler.ScreenMatchMode.MatchWidthOrHeight)

@@ -13,7 +13,8 @@ namespace Playable
             WaitingToChase,
             Patrolling,
             PatrolResting,
-            ApproachingHome
+            ApproachingHome,
+            ReturningToNest
         }
 
         [Header("Movement")] [LunaPlaygroundField("Monster Speed", 2, "Gameplay")] [SerializeField, Min(0f)]
@@ -44,7 +45,7 @@ namespace Playable
 
         [SerializeField] private Vector2 _patrolRadii = new Vector2(18f, 22f);
         [SerializeField, Min(0f)] private float _patrolSpeed = 8f;
-        [SerializeField, Min(0f)] private float _patrolAnimationSpeed = .6f;
+        [SerializeField, Min(0f)] private float _patrolAnimationSpeed = 2.4f;
         private float _patrolAngle;
         private float _patrolHeight;
         [SerializeField] private Vector2 _patrolWalkDuration = new Vector2(3f, 6f);
@@ -52,6 +53,7 @@ namespace Playable
         private float _patrolPhaseRemaining;
 
         [Header("Animation")] [SerializeField] private Animator _animator;
+        [SerializeField, Min(0f)] private float _runAnimationSpeed = 1.6f;
         [SerializeField] private string _isRunningParam = "IsRun";
         [SerializeField] private string _isWalkingParam = "";
         [SerializeField] private string _idleState = "Idle";
@@ -106,9 +108,7 @@ namespace Playable
             if (_chaseFootstepSource == null) return;
 
             // Use a separate loop so footsteps can play alongside the chase roar.
-            bool isChasing = _moveSpeed > 0f &&
-                ((State == MonsterState.Chasing && _target != null) ||
-                 (State == MonsterState.ApproachingHome && _homeChaseStopPoint != null));
+            bool isChasing = _moveSpeed > 0f && State == MonsterState.Chasing && _target != null;
             if (isChasing)
             {
                 if (!_chaseFootstepSource.isPlaying && _chaseFootstepSource.clip != null)
@@ -127,6 +127,11 @@ namespace Playable
 
         private void Update()
         {
+            if (State == MonsterState.ReturningToNest)
+            {
+                UpdateReturnToNest();
+                return;
+            }
             if ((State == MonsterState.WaitingToChase || State == MonsterState.Chasing) &&
                 IsTargetInCourtyard())
             {
@@ -239,6 +244,7 @@ namespace Playable
             _targetCollider = null;
             _chaseDelayRemaining = 0f;
             State = MonsterState.ApproachingHome;
+            if (_chaseFootstepSource != null) _chaseFootstepSource.Stop();
             SetRunning(_moveSpeed > 0f);
         }
 
@@ -294,6 +300,32 @@ namespace Playable
             State = MonsterState.Idle;
             SetRunning(false);
             SetSleeping(false);
+        }
+
+        public void ReturnToNest()
+        {
+            Stop();
+            if (_patrolCenter == null) return;
+            State = MonsterState.ReturningToNest;
+            SetRunning(true);
+        }
+
+        private void UpdateReturnToNest()
+        {
+            if (_patrolCenter == null) { Stop(); return; }
+            Vector3 destination = _patrolCenter.position + Vector3.right * _patrolRadii.x;
+            destination.y = transform.position.y;
+            Vector3 direction = destination - transform.position;
+            float travel = _moveSpeed * Time.deltaTime;
+            if (direction.sqrMagnitude <= Mathf.Max(.01f, travel * travel))
+            {
+                transform.position = destination;
+                StartPatrolling();
+                return;
+            }
+            transform.position = Vector3.MoveTowards(transform.position, destination, travel);
+            transform.rotation = Quaternion.Slerp(transform.rotation,
+                Quaternion.LookRotation(direction), _rotationSpeed * Time.deltaTime);
         }
 
         public void ResetMonster(Vector3 position, Quaternion rotation)
@@ -400,7 +432,8 @@ namespace Playable
         private void SetRunning(bool isRunning)
         {
             if (_animator != null)
-                _animator.speed = isRunning && State == MonsterState.Patrolling ? _patrolAnimationSpeed : 1f;
+                _animator.speed = !isRunning ? 1f :
+                    State == MonsterState.Patrolling ? _patrolAnimationSpeed : _runAnimationSpeed;
             if (_hasRunParameter)
             {
                 _animator.SetBool(_isRunningHash, isRunning && (!_hasWalkParameter || State != MonsterState.Patrolling));

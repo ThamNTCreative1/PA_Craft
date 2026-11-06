@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 43297,
-    "creativeName": "C1_2610_HuyNQ_SAEHR_V06_NgocNDL",
+    "creativeName": "C1_2611_HuyNQ_SAEHR_V08_NgocNDL",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -81,7 +81,7 @@
             "externalJSLibraries": [],
             "scriptingDefines": [],
             "msbuildVersion": "18.9",
-            "monoVersion": "9.0.3",
+            "monoVersion": "N/A",
             "dotnetVersion": ""
         },
         "assets": {
@@ -3581,10 +3581,6 @@
             },
             {
                 "name": "UnityEngine.U2D.SpriteAtlas",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.WaitForSecondsRealtime",
                 "excluded": true
             },
             {
@@ -8317,6 +8313,10 @@
             },
             {
                 "name": "Playable.EggRaisingController.Phase",
+                "excluded": false
+            },
+            {
+                "name": "Playable.StealHatchController.Phase",
                 "excluded": false
             }
         ],
@@ -24809,7 +24809,7 @@
                     },
                     {
                         "name": "rectTransform#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "rootCanvasRect#get",
@@ -24833,7 +24833,7 @@
                     },
                     {
                         "name": "IsRaycastLocationValid",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PerformClipping",
@@ -37838,6 +37838,14 @@
                     {
                         "name": "OnDestroy",
                         "excluded": true
+                    },
+                    {
+                        "name": "HasEnded#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CompleteStealAndHatch",
+                        "excluded": false
                     }
                 ]
             },
@@ -38763,7 +38771,7 @@
                     },
                     {
                         "name": "OnDisable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnDrawGizmosSelected",
@@ -38879,6 +38887,14 @@
                     },
                     {
                         "name": "UpdateHomeApproach",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReturnToNest",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateReturnToNest",
                         "excluded": false
                     }
                 ]
@@ -39470,24 +39486,6 @@
                 ]
             },
             {
-                "className": "Playable.EggCtaLayout",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.EggRaisingController",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -39541,6 +39539,26 @@
                     },
                     {
                         "name": "UpdateHeldEggRotation",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginStolenEgg",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShakeEgg",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OpenShell",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnHatchling",
                         "excluded": false
                     }
                 ]
@@ -39623,6 +39641,96 @@
                     },
                     {
                         "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WaitForSecondsRealtime",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "keepWaiting#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Reset",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.StealHatchController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "StolenCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "InsideHome",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Steal",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hatched",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GuideToNextEgg",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Caught",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Freeze",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.StealHatchLayout",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Place",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
                         "excluded": false
                     }
                 ]
@@ -40156,6 +40264,86 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/Sound/Push-Long-Version(chosic.com).mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:04.727",
+                        "lengthInSeconds": 4.7270002365112309,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/Sound/yeah-kids.mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:02.555",
+                        "lengthInSeconds": 2.555000066757202,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/Sound/505131__mitchanary__monster-roar_8.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:02.555",
+                        "lengthInSeconds": 2.555000066757202,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/Sound/ohh-no (mp3cut.net).mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:02.555",
+                        "lengthInSeconds": 2.555000066757202,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/Sound/Monster_Footsteps_2x.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:02.555",
+                        "lengthInSeconds": 2.555000066757202,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/SoundFX/plant a tree.mp3"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:02.555",
+                        "lengthInSeconds": 2.555000066757202,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Epic Toon FX/Sound/etfx_explosion_magic.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:02.555",
+                        "lengthInSeconds": 2.555000066757202,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Epic Toon FX/Sound/etfx_explosion_sparkle2.wav"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:30.000",
+                        "lengthInSeconds": 0.0,
+                        "bitrate": 128,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/Sound/Player/grass2.ogg"
                     }
                 ]
             },

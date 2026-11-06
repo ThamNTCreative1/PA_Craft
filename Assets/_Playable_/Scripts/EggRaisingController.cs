@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -22,6 +23,20 @@ namespace Playable
         [SerializeField] private float _creatureScaleMultiplier = 3f;
         [SerializeField, Min(.1f)] private float _openRadius = 8f;
         [SerializeField] private AudioClip _selectSound, _placeSound, _tickSound, _readySound, _hatchSound, _ctaSound;
+        [SerializeField] private AudioClip _hatchlingRoar;
+        [Header("Steal and hatch")]
+        [SerializeField] private bool _stealFlow;
+        [SerializeField, Min(.1f)] private float _incubationSeconds = 2f;
+        [SerializeField] private GameObject _revealAura;
+        [SerializeField] private Transform _hatchGround;
+        [SerializeField, Min(.1f)] private float _revealSeconds = 1f;
+        [SerializeField, Min(.1f)] private float _hatchShakeSeconds = .75f;
+        private Vector3 _eggRestPosition, _eggRestScale;
+        private Quaternion _eggRestRotation;
+        private bool _shellOpened;
+        private PenWanderer _revealedMonster;
+        private bool _revealSpawned;
+        public event Action HatchFinished;
         private GameObject _egg;
         private int _selected, _lastTick;
         private float _elapsed;
@@ -30,19 +45,29 @@ namespace Playable
         private void Start()
         {
             State = Phase.Selecting;
+            foreach (var resident in _residents)
+            {
+                if (resident == null) continue;
+                resident.transform.localScale *= _creatureScaleMultiplier;
+                resident.Bind(_pen);
+            }
+            if (_stealFlow)
+            {
+                _action.gameObject.SetActive(false);
+                _countdown.gameObject.SetActive(false);
+                if (_selection != null) _selection.SetActive(false);
+                _action.onClick.AddListener(Act);
+                return;
+            }
             _player.IsWorking = false; _cameraInput.enabled = false;
             _tutorial.HideAll(); _line.StopDraw();
             _action.gameObject.SetActive(false); _countdown.gameObject.SetActive(false);
             _selection.SetActive(true); _cta.gameObject.SetActive(false);
             _action.onClick.AddListener(Act);
-            foreach (var resident in _residents)
-            {
-                resident.transform.localScale *= _creatureScaleMultiplier;
-                resident.Bind(_pen);
-            }
         }
         public void SelectEgg(int index)
         {
+            if (_stealFlow) return;
             if (State != Phase.Selecting || index < 0 || index >= _eggs.Length) return;
             _selected = index; _egg = Instantiate(_eggs[index], _holdPoint, false);
             _egg.transform.localScale *= _creatureScaleMultiplier;
@@ -50,6 +75,18 @@ namespace Playable
             UpdateHeldEggRotation();
             _player.SetCarryingEgg(true); _player.IsWorking = true; _cameraInput.enabled = true;
             _tutorial.ShowMovementTutorial(); _line.StartDraw(_nest, _player.transform); Sound(_selectSound);
+        }
+        public void BeginStolenEgg(Egg egg)
+        {
+            if (!_stealFlow || egg == null || !egg.IsHeld) return;
+            _egg = egg.gameObject;
+            _selected = 0;
+            _atPen = false;
+            State = Phase.Carrying;
+            _label.text = "HATCH";
+            _action.interactable = true;
+            _action.gameObject.SetActive(false);
+            UpdateHeldEggRotation();
         }
         private void LateUpdate()
         {
@@ -92,10 +129,10 @@ namespace Playable
             }
             else if (State == Phase.Incubating)
             {
-                _elapsed += Time.deltaTime; _countdown.Progress = _elapsed / 3f;
+                _elapsed += Time.deltaTime; _countdown.Progress = _elapsed / _incubationSeconds;
                 int tick = Mathf.FloorToInt(_elapsed);
-                if (tick != _lastTick && tick < 3) { _lastTick = tick; Sound(_tickSound); }
-                if (_elapsed >= 3f)
+                if (tick != _lastTick && tick < _incubationSeconds) { _lastTick = tick; Sound(_tickSound); }
+                if (_elapsed >= _incubationSeconds)
                 {
                     State = Phase.Ready; _action.interactable = true; _countdown.gameObject.SetActive(false);
                     Sound(_readySound);
@@ -109,7 +146,24 @@ namespace Playable
             else if (State == Phase.Revealing)
             {
                 _elapsed += Time.deltaTime;
-                if (_elapsed >= 3f)
+                if (_elapsed < _hatchShakeSeconds)
+                {
+                    ShakeEgg();
+                    return;
+                }
+                if (!_shellOpened) OpenShell();
+                float revealElapsed = _elapsed - _hatchShakeSeconds;
+                if (_stealFlow)
+                {
+                    if (!_revealSpawned && revealElapsed >= .4f) SpawnHatchling();
+                    if (revealElapsed >= _revealSeconds)
+                    {
+                        State = Phase.Complete;
+                        HatchFinished?.Invoke();
+                    }
+                    return;
+                }
+                if (revealElapsed >= 3f)
                 {
                     State = Phase.Complete; _cameraInput.enabled = false;
                     _player.IsWorking = false;
@@ -126,11 +180,15 @@ namespace Playable
                 State = Phase.Incubating;
                 _player.SetCarryingEgg(false);
                 // Put the egg ahead of the player, clamped inside the existing pen.
-                Vector3 local = _pen.transform.InverseTransformPoint(_player.transform.position + _player.transform.forward * 3f);
-                Vector3 half = _pen.size * .5f;
-                local.x = Mathf.Clamp(local.x, _pen.center.x - half.x + 3f, _pen.center.x + half.x - 3f);
-                local.z = Mathf.Clamp(local.z, _pen.center.z - half.z + 3f, _pen.center.z + half.z - 3f);
-                Vector3 placement = _pen.transform.TransformPoint(local); placement.y = _nest.position.y;
+                Vector3 placement = _nest.position;
+                if (!_stealFlow)
+                {
+                    Vector3 local = _pen.transform.InverseTransformPoint(_player.transform.position + _player.transform.forward * 3f);
+                    Vector3 half = _pen.size * .5f;
+                    local.x = Mathf.Clamp(local.x, _pen.center.x - half.x + 3f, _pen.center.x + half.x - 3f);
+                    local.z = Mathf.Clamp(local.z, _pen.center.z - half.z + 3f, _pen.center.z + half.z - 3f);
+                    placement = _pen.transform.TransformPoint(local); placement.y = _nest.position.y;
+                }
                 _nest.position = placement;
                 _egg.transform.SetParent(null, true); _egg.transform.SetPositionAndRotation(placement, Quaternion.identity);
                 AddPlacedEggCollider();
@@ -140,12 +198,60 @@ namespace Playable
             }
             else if (State == Phase.Ready && NearEgg())
             {
-                State = Phase.Revealing; _action.gameObject.SetActive(false); _tutorial.HideAll(); Destroy(_egg);
-                var monster = Instantiate(_hatchlings[_selected], _nest.position, Quaternion.identity);
-                monster.transform.localScale *= _creatureScaleMultiplier;
-                monster.Bind(_pen);
-                _elapsed = 0f; Sound(_hatchSound);
+                if (_egg == null) return;
+                State = Phase.Revealing; _action.gameObject.SetActive(false); _tutorial.HideAll();
+                _revealSpawned = false;
+                _shellOpened = false;
+                _eggRestPosition = _egg.transform.position;
+                _eggRestRotation = _egg.transform.rotation;
+                _eggRestScale = _egg.transform.localScale;
+                // Wobbling the shell is visual; its placed collider must not push the player.
+                foreach (var collider in _egg.GetComponents<Collider>()) collider.enabled = false;
+                _elapsed = 0f;
             }
+        }
+        private void ShakeEgg()
+        {
+            if (_egg == null) return;
+            float progress = Mathf.Clamp01(_elapsed / _hatchShakeSeconds);
+            float phase = progress * Mathf.PI * (8f + progress * 4f);
+            float wobble = Mathf.Sin(phase);
+            float tilt = Mathf.Lerp(4f, 15f, progress);
+            _egg.transform.SetPositionAndRotation(
+                _eggRestPosition + new Vector3(wobble * .08f, Mathf.Abs(Mathf.Sin(phase * .5f)) * .16f, 0),
+                _eggRestRotation * Quaternion.Euler(wobble * tilt * .3f, 0, wobble * tilt));
+            float squash = wobble * .045f;
+            _egg.transform.localScale = Vector3.Scale(_eggRestScale, new Vector3(1 + squash, 1 - squash, 1 + squash));
+        }
+        private void OpenShell()
+        {
+            _shellOpened = true;
+            if (_egg != null) Destroy(_egg);
+            if (_stealFlow && _revealAura != null)
+            {
+                var aura = Instantiate(_revealAura, _nest.position + Vector3.up * 1.5f, Quaternion.identity);
+                aura.transform.localScale *= 3f;
+                Destroy(aura, 2f);
+            }
+            if (!_stealFlow) SpawnHatchling();
+            Sound(_hatchSound);
+        }
+        private void OnDisable()
+        {
+            if (State != Phase.Revealing || _shellOpened || _egg == null) return;
+            _egg.transform.SetPositionAndRotation(_eggRestPosition, _eggRestRotation);
+            _egg.transform.localScale = _eggRestScale;
+        }
+        private void SpawnHatchling()
+        {
+            if (_revealSpawned) return;
+            _revealSpawned = true;
+            Vector3 position = _nest.position;
+            if (_stealFlow && _hatchGround != null) position.y = _hatchGround.position.y;
+            _revealedMonster = Instantiate(_hatchlings[_selected], position, Quaternion.identity);
+            _revealedMonster.transform.localScale *= _creatureScaleMultiplier;
+            _revealedMonster.Bind(_pen);
+            Sound(_hatchlingRoar);
         }
         private void AddPlacedEggCollider()
         {

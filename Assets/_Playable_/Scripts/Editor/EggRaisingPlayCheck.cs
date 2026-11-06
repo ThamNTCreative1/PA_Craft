@@ -130,19 +130,25 @@ public static class EggRaisingPlayCheck
                 action.onClick.Invoke(); action.onClick.Invoke();
                 Check(game.State == EggRaisingController.Phase.Revealing, "Open enters reveal.");
                 var monsters = Object.FindObjectsByType<PenWanderer>(FindObjectsSortMode.None);
-                Check(monsters.Length == 3, "Exactly one hatchling, including repeated clicks.");
-                string expected = Get<PenWanderer[]>(game, "_hatchlings")[choice].name;
-                Check(monsters.Any(x => x.name == expected + "(Clone)"), "Correct selected monster must hatch.");
+                Check(monsters.Length == 2, "Egg must shake before spawning a hatchling, including repeated clicks.");
                 stageTime = Time.time; screenshotTaken = false; stage = 5;
             }
             else if (stage == 5)
             {
                 var cta = Get<FailPanel>(game, "_cta");
-                if (elapsed < 2.9f) Check(!cta.gameObject.activeSelf, "CTA must wait 3 seconds.");
+                float shake = Get<float>(game, "_hatchShakeSeconds");
+                if (elapsed > shake + .1f)
+                {
+                    var monsters = Object.FindObjectsByType<PenWanderer>(FindObjectsSortMode.None);
+                    string expected = Get<PenWanderer[]>(game, "_hatchlings")[choice].name;
+                    Check(monsters.Length == 3 && monsters.Any(x => x.name == expected + "(Clone)"),
+                        "Exactly one selected hatchling appears after shaking.");
+                }
+                if (elapsed < shake + 2.9f) Check(!cta.gameObject.activeSelf, "CTA must wait for shaking and 3 seconds of reveal.");
                 if (!screenshotTaken && elapsed > 1) { Capture("hatched"); screenshotTaken = true; }
                 if (game.State == EggRaisingController.Phase.Complete)
                 {
-                    Check(elapsed >= 2.95f && cta.gameObject.activeSelf, "CTA appears after reveal.");
+                    Check(elapsed >= shake + 2.95f && cta.gameObject.activeSelf, "CTA appears after shaking and reveal.");
                     Check(!Get<PlayerController>(game, "_player").IsWorking, "CTA blocks movement.");
                     Capture("cta");
                     Result = "PASS egg " + choice + " at " + Screen.width + "x" + Screen.height + ": selection, tutorial, entrance, mobile incubation, proximity Open, correct hatchling, 3s CTA.";

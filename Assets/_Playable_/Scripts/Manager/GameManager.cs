@@ -17,6 +17,11 @@ namespace Playable
 
         public static GameManager Instance;
         [SerializeField] private bool _eggRaisingMode;
+        [SerializeField] private bool _stealAndHatchMode;
+        [SerializeField] private FailPanel _stealHatchCta;
+        private bool _storeOpened;
+        public bool HasEnded => _gameEnded;
+        public event System.Action GameplayEnded;
 
         [Header("Gameplay CTA")] [LunaPlaygroundField("CTA On Steal", 1, "CTA")] [SerializeField]
         private bool _ctaOnSteal;
@@ -32,6 +37,7 @@ namespace Playable
 
         [SerializeField] private HomeRewardPopup _homeRewardPopup;
         private Coroutine _endCountdown;
+        private float _timerStartedAt;
         private Tween _pendingCta;
         private bool _gameEnded;
 
@@ -79,6 +85,7 @@ namespace Playable
 
         public void EndGame()
         {
+            if (_gameEnded) return;
             CancelPendingEnd();
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
@@ -87,6 +94,8 @@ namespace Playable
 
         public void ShowCTA()
         {
+            if (_storeOpened) return;
+            _storeOpened = true;
             CancelPendingEnd();
             Debug.Log("Show CTA");
             Luna.Unity.Playable.InstallFullGame();
@@ -104,7 +113,24 @@ namespace Playable
         {
             if (_gameEnded) return;
             _gameEnded = true;
+            GameplayEnded?.Invoke();
             Luna.Unity.LifeCycle.GameEnded();
+        }
+
+        public void CompleteStealAndHatch(bool caught)
+        {
+            if (_gameEnded) return;
+            EndGame();
+            FailPanel panel = caught ? _failPanel : _stealHatchCta;
+            if (panel != null)
+            {
+                panel.transform.SetAsLastSibling();
+                panel.Show();
+            }
+            // Keep the existing Retry artwork; all end-screen touches install.
+            if (_btnBlock.transform.parent != null) _btnBlock.transform.parent.SetAsLastSibling();
+            _btnBlock.transform.SetAsLastSibling();
+            _pendingCta = DOVirtual.DelayedCall(1f, ShowCTA, true).SetUpdate(true);
         }
 
         private void CancelPendingEnd()
@@ -164,14 +190,20 @@ namespace Playable
             CancelPendingEnd();
             // Zero disables the timer for creatives driven by gameplay checkpoints.
             if (_eggRaisingMode || _gameEnded || _endTime <= 0) return;
+            _timerStartedAt = Time.realtimeSinceStartup;
             _endCountdown = StartCoroutine(IECountdownEndGame());
         }
 
         private IEnumerator IECountdownEndGame()
         {
-            yield return new WaitForSeconds(_endTime);
+            yield return new WaitForSecondsRealtime(_endTime);
             _endCountdown = null;
             EndGame();
+            if (_stealAndHatchMode)
+            {
+                ShowCTA();
+                yield break;
+            }
             if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
         }
 
@@ -201,6 +233,11 @@ namespace Playable
 
         public void RetryGame()
         {
+            if (_gameEnded)
+            {
+                ShowCTA();
+                return;
+            }
             if (_failPanel == null || !_failPanel.gameObject.activeSelf) return;
             if (_retryCount >= 3)
             {
