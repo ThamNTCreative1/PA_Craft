@@ -5,7 +5,6 @@ namespace Playable
         Day = 0,
         Sunny = 1,
         Rain = 2,
-        Night = 3,
-        Flood = 4
+        Night = 3
     }
 }

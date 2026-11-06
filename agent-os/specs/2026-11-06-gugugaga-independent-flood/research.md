@@ -1,0 +1,2 @@
+# Research
+HeroSlotOption.Panda is serialized as 4. HeroRoster tooltips name Panda and Gameplay has a single _displayName: Panda. GameController currently exports weather values 0-4, with Flood occupying 4. WeatherPresetController activates rain and flood through mutually exclusive comparisons to that enum. Gameplay currently uses Weather=0. Preserve existing five serialized skybox entries; only the first four remain selectable, avoiding unrelated skybox asset migration.

@@ -6,8 +6,10 @@ namespace Playable
     public class GameController : MonoBehaviour
     {
         [Header("Fixed Weather")]
-        [LunaPlaygroundField("Weather (0 Day, 1 Sunny, 2 Rain, 3 Night, 4 Flood)", fieldOrder: 1, fieldSection: "Environment")]
-        [SerializeField, Range(0, 4)] private int _weather;
+        [LunaPlaygroundField("Weather (0 Day, 1 Sunny, 2 Rain, 3 Night)", fieldOrder: 1, fieldSection: "Environment")]
+        [SerializeField, Range(0, 3)] private int _weather;
+        [LunaPlaygroundField("Flood", fieldOrder: 3, fieldSection: "Environment")]
+        [SerializeField] private bool _flood;
         [SerializeField] private WeatherPresetController _weatherController;
 
         [Header("Game Brightness")]
@@ -26,13 +28,13 @@ namespace Playable
                 return;
             }
 
-            if (_weather < 0 || _weather > 4)
+            if (_weather < 0 || _weather > 3)
             {
-                Debug.LogWarning("Weather value must be 0-4; using Day.", this);
+                Debug.LogWarning("Weather value must be 0-3; using Day.", this);
                 _weather = 0;
             }
 
-            _weatherController.Initialize((WeatherPreset)_weather);
+            _weatherController.Initialize((WeatherPreset)_weather, _flood);
         }
 
         private void OnEnable()

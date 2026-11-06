@@ -21,11 +21,12 @@ namespace Playable
 
         private bool _initialized;
         private WeatherPreset _selectedWeather;
+        private bool _floodEnabled;
         private Material _skyboxInstance;
         private Material _originalSkybox;
         private CameraClearFlags _originalClearFlags;
 
-        public void Initialize(WeatherPreset weather)
+        public void Initialize(WeatherPreset weather, bool flood = false)
         {
             if (_initialized)
             {
@@ -33,13 +34,13 @@ namespace Playable
                 return;
             }
             if (_camera == null || _rain == null || _rainAudio == null ||
-                _flood == null || _presets == null || _presets.Length != 5)
+                _flood == null || _presets == null || _presets.Length < 4)
             {
-                Debug.LogError("Weather needs camera, rain particles/audio, flood view and five skybox presets.", this);
+                Debug.LogError("Weather needs camera, rain particles/audio, flood view and four skybox presets.", this);
                 enabled = false;
                 return;
             }
-            for (int i = 0; i < _presets.Length; i++)
+            for (int i = 0; i < 4; i++)
             {
                 Material material = _presets[i].Skybox;
                 if (material == null || !material.HasProperty("_Tint") || !material.HasProperty("_Exposure"))
@@ -49,9 +50,9 @@ namespace Playable
                     return;
                 }
             }
-            if ((int)weather < 0 || (int)weather >= _presets.Length)
+            if ((int)weather < 0 || (int)weather > 3)
             {
-                Debug.LogWarning("Weather value must be 0-4; using Day.", this);
+                Debug.LogWarning("Weather value must be 0-3; using Day.", this);
                 weather = WeatherPreset.Day;
             }
 
@@ -65,6 +66,7 @@ namespace Playable
             RenderSettings.skybox = _skyboxInstance;
             _camera.clearFlags = CameraClearFlags.Skybox;
             _selectedWeather = weather;
+            _floodEnabled = flood;
             _initialized = true;
             ParticleSystem.MainModule main = _rain.main;
             main.loop = true;
@@ -82,7 +84,7 @@ namespace Playable
 
         private void ApplyFlood()
         {
-            if (isActiveAndEnabled && _selectedWeather == WeatherPreset.Flood) _flood.BeginFlood();
+            if (isActiveAndEnabled && _floodEnabled) _flood.BeginFlood();
             else _flood.HideFlood();
         }
 

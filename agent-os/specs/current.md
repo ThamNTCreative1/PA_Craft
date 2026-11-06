@@ -1,3 +1,3 @@
 # Current work item
-Spec folder: agent-os/specs/2026-11-05-2248-selection-roar-equip-lock/
-Status: APPROVED implementation complete. Editor compile/selection/audio/equip-lock/tutorial/watchdog/cleanup checks passed. Play stopped. Browser/build unverified. See implementation-report.md.
+Spec folder: agent-os/specs/2026-11-06-npc5-cutout-arms/
+Status: APPROVED implementation complete. Pixel comparison, Cutout settings and Unity idle/run previews checked; Console has no errors. Luna build/browser unverified. See implementation-report.md.
