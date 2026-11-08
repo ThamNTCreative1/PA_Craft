@@ -6,7 +6,7 @@ namespace Playable
 {
     public class EggRaisingController : MonoBehaviour
     {
-        public enum Phase { Selecting, Carrying, Incubating, Ready, Revealing, Complete }
+        public enum Phase { Selecting, Carrying, Incubating, Ready, Revealing, Complete, Placing }
         [SerializeField] private PlayerController _player;
         [SerializeField] private Transform _holdPoint, _nest;
         [SerializeField] private BoxCollider _pen;
@@ -21,6 +21,7 @@ namespace Playable
         [SerializeField] private GameObject[] _eggs;
         [SerializeField] private PenWanderer[] _hatchlings, _residents;
         [SerializeField] private float _creatureScaleMultiplier = 3f;
+        [SerializeField, Min(0f)] private float _nestClearance = 7f;
         [SerializeField, Min(.1f)] private float _openRadius = 8f;
         [SerializeField] private AudioClip _selectSound, _placeSound, _tickSound, _readySound, _hatchSound, _ctaSound;
         [SerializeField] private AudioClip _hatchlingRoar;
@@ -31,12 +32,24 @@ namespace Playable
         [SerializeField] private Transform _hatchGround;
         [SerializeField, Min(.1f)] private float _revealSeconds = 1f;
         [SerializeField, Min(.1f)] private float _hatchShakeSeconds = .75f;
+        [Header("Nest arrival")]
+        [SerializeField] private NestArrivalSequence _arrival;
+        [SerializeField] private Renderer _nestVisual;
+        [SerializeField, Min(.1f)] private float _eggJumpSeconds = .65f;
+        [SerializeField, Min(0f)] private float _eggJumpHeight = 2.5f;
+        private bool _arrivalStarted;
+        private Vector3 _jumpStart, _jumpEnd;
+        private Quaternion _jumpRotation;
         private Vector3 _eggRestPosition, _eggRestScale;
         private Quaternion _eggRestRotation;
         private bool _shellOpened;
         private PenWanderer _revealedMonster;
         private bool _revealSpawned;
         public event Action HatchFinished;
+        public void ReleaseArrivalCamera()
+        {
+            if (_arrival != null) _arrival.ReleaseForDeparture();
+        }
         private GameObject _egg;
         private int _selected, _lastTick;
         private float _elapsed;
@@ -44,12 +57,13 @@ namespace Playable
         public Phase State { get; private set; }
         private void Start()
         {
+            if (_revealAura != null) _revealAura.SetActive(false);
             State = Phase.Selecting;
             foreach (var resident in _residents)
             {
                 if (resident == null) continue;
                 resident.transform.localScale *= _creatureScaleMultiplier;
-                resident.Bind(_pen);
+                resident.Bind(_pen, _nest, _nestClearance);
             }
             if (_stealFlow)
             {
@@ -82,6 +96,7 @@ namespace Playable
             _egg = egg.gameObject;
             _selected = 0;
             _atPen = false;
+            _arrivalStarted = false;
             State = Phase.Carrying;
             _label.text = "HATCH";
             _action.interactable = true;
@@ -120,11 +135,33 @@ namespace Playable
             if (State == Phase.Carrying)
             {
                 bool inside = InsidePen();
-                if (inside != _atPen)
+                if (_stealFlow && inside && !_arrivalStarted)
                 {
-                    _atPen = inside; _label.text = "HATCH";
-                    _action.gameObject.SetActive(inside); _tutorial.SetStealHintVisible(inside);
+                    _arrivalStarted = true;
+                    _tutorial.HideAll();
+                    _line.StopDraw();
+                    if (_arrival != null) _arrival.Begin();
+                }
+                bool available = inside && (!_stealFlow || NearEgg() && (_arrival == null || !_arrival.IsWalking));
+                if (available != _atPen)
+                {
+                    _atPen = available; _label.text = "HATCH";
+                    _action.gameObject.SetActive(available); _tutorial.SetStealHintVisible(available);
                     if (inside) _line.StopDraw(); else _line.StartDraw(_nest, _player.transform);
+                }
+            }
+            else if (State == Phase.Placing)
+            {
+                _elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(_elapsed / _eggJumpSeconds);
+                _egg.transform.SetPositionAndRotation(
+                    Vector3.Lerp(_jumpStart, _jumpEnd, t) + Vector3.up * (4f * _eggJumpHeight * t * (1f - t)),
+                    Quaternion.Slerp(_jumpRotation, Quaternion.identity, t));
+                if (t >= 1f)
+                {
+                    AddPlacedEggCollider();
+                    BeginIncubation();
+                    if (_arrival != null) _arrival.Finish();
                 }
             }
             else if (State == Phase.Incubating)
@@ -177,6 +214,12 @@ namespace Playable
         {
             if (State == Phase.Carrying && InsidePen())
             {
+                if (_egg == null || _stealFlow && (!NearEgg() || _arrival != null && _arrival.IsWalking)) return;
+                if (_stealFlow)
+                {
+                    JumpIntoNest();
+                    return;
+                }
                 State = Phase.Incubating;
                 _player.SetCarryingEgg(false);
                 // Put the egg ahead of the player, clamped inside the existing pen.
@@ -192,9 +235,7 @@ namespace Playable
                 _nest.position = placement;
                 _egg.transform.SetParent(null, true); _egg.transform.SetPositionAndRotation(placement, Quaternion.identity);
                 AddPlacedEggCollider();
-                _tutorial.HideAll(); _line.StopDraw(); _label.text = "OPEN"; _action.interactable = false;
-                _countdown.Progress = 0f; _countdown.gameObject.SetActive(true); _elapsed = 0f; _lastTick = 0; Sound(_placeSound);
-                UpdateOpenVisibility();
+                BeginIncubation();
             }
             else if (State == Phase.Ready && NearEgg())
             {
@@ -210,6 +251,60 @@ namespace Playable
                 _elapsed = 0f;
             }
         }
+        private void BeginIncubation()
+        {
+            State = Phase.Incubating;
+            _tutorial.HideAll(); _line.StopDraw(); _label.text = "OPEN"; _action.interactable = false;
+            _countdown.Progress = 0f; _countdown.gameObject.SetActive(true);
+            _elapsed = 0f; _lastTick = 0; Sound(_placeSound);
+            UpdateOpenVisibility();
+        }
+
+        private Bounds EggBounds()
+        {
+            var renderers = _egg.GetComponentsInChildren<MeshRenderer>();
+            Bounds bounds = new Bounds(_egg.transform.position, Vector3.zero);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                if (i == 0) bounds = renderers[i].bounds;
+                else bounds.Encapsulate(renderers[i].bounds);
+            }
+            return bounds;
+        }
+
+        private void JumpIntoNest()
+        {
+            State = Phase.Placing;
+            _player.SetCarryingEgg(false);
+            _action.gameObject.SetActive(false);
+            _tutorial.HideAll(); _line.StopDraw();
+            _egg.transform.SetParent(null, true);
+            foreach (var collider in _egg.GetComponentsInChildren<Collider>()) collider.enabled = false;
+            _jumpStart = _egg.transform.position;
+            _jumpRotation = _egg.transform.rotation;
+            // Measure the upright mesh, not its hand pivot, so the shell seats in the nest bowl.
+            _egg.transform.rotation = Quaternion.identity;
+            Bounds bounds = EggBounds();
+            Vector3 seat = _nest.position;
+            if (_nestVisual != null)
+            {
+                Bounds bowl = _nestVisual.bounds;
+                float diameter = Mathf.Max(bounds.size.x, bounds.size.z);
+                float fit = Mathf.Min(bowl.size.x, bowl.size.z) * .72f;
+                if (diameter > fit && diameter > .001f)
+                {
+                    _egg.transform.localScale *= fit / diameter;
+                    bounds = EggBounds();
+                }
+                seat = new Vector3(bowl.center.x, bowl.min.y + .12f, bowl.center.z);
+            }
+            _jumpEnd = _egg.transform.position + new Vector3(seat.x - bounds.center.x,
+                seat.y - bounds.min.y, seat.z - bounds.center.z);
+            _egg.transform.rotation = _jumpRotation;
+            _nest.position = seat;
+            _elapsed = 0f;
+        }
+
         private void ShakeEgg()
         {
             if (_egg == null) return;
@@ -229,15 +324,20 @@ namespace Playable
             if (_egg != null) Destroy(_egg);
             if (_stealFlow && _revealAura != null)
             {
-                var aura = Instantiate(_revealAura, _nest.position + Vector3.up * 1.5f, Quaternion.identity);
-                aura.transform.localScale *= 3f;
-                Destroy(aura, 2f);
+                _revealAura.SetActive(true);
+                foreach (var particles in _revealAura.GetComponentsInChildren<ParticleSystem>(true))
+                {
+                    particles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    particles.Play(false);
+                }
             }
             if (!_stealFlow) SpawnHatchling();
             Sound(_hatchSound);
         }
         private void OnDisable()
         {
+            if (_arrival != null) _arrival.Finish();
+            if (State == Phase.Placing && _egg != null) _egg.transform.SetPositionAndRotation(_jumpEnd, Quaternion.identity);
             if (State != Phase.Revealing || _shellOpened || _egg == null) return;
             _egg.transform.SetPositionAndRotation(_eggRestPosition, _eggRestRotation);
             _egg.transform.localScale = _eggRestScale;
@@ -250,7 +350,7 @@ namespace Playable
             if (_stealFlow && _hatchGround != null) position.y = _hatchGround.position.y;
             _revealedMonster = Instantiate(_hatchlings[_selected], position, Quaternion.identity);
             _revealedMonster.transform.localScale *= _creatureScaleMultiplier;
-            _revealedMonster.Bind(_pen);
+            _revealedMonster.Bind(_pen, startImmediately: true);
             Sound(_hatchlingRoar);
         }
         private void AddPlacedEggCollider()

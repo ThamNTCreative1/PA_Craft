@@ -522,7 +522,14 @@ public static class StealHatchSceneSetup
         Set(raising, "_incubationSeconds", 2f); Set(raising, "_creatureScaleMultiplier", 1f);
         Set(raising, "_hatchlingRoar", Asset<AudioClip>("Assets/_Playable_/Sound/505131__mitchanary__monster-roar_8.wav"));
         Set(raising, "_hatchlings", new[] { Asset<GameObject>(Output + "/Cosmic Dragon Hatchling.prefab").GetComponent<PenWanderer>() });
-        ConfigurePenResidents(); Set(raising, "_revealAura", Asset<GameObject>(Output + "/Hatch Aura.prefab"));
+        ConfigurePenResidents();
+        var hatchAura = (GameObject)PrefabUtility.InstantiatePrefab(Asset<GameObject>(Output + "/Hatch Aura.prefab"), nest);
+        hatchAura.name = "Hatch VFX";
+        hatchAura.transform.localPosition = Vector3.up * 1.5f;
+        hatchAura.transform.localRotation = Quaternion.identity;
+        hatchAura.transform.localScale = Vector3.one * 18f;
+        hatchAura.SetActive(false);
+        Set(raising, "_revealAura", hatchAura);
         Set(raising, "_eggs", new GameObject[0]);
         Set(raising, "_hatchGround", Point(map.transform, "Hatchling Ground", new Vector3(nest.position.x, .1f, nest.position.z)));
         Set(raising, "_openRadius", 8f);

@@ -29,6 +29,7 @@ namespace Playable
         [SerializeField, Min(.1f)] private float _footstepInterval = .28f;
         private float _footstepTimer;
         private int _footstepIndex;
+        private bool _footstepsSuppressed;
 
         [Header("Movement")]
         [LunaPlaygroundField("Player Move Speed", 1, "Gameplay")] [SerializeField, Min(0f)] private float _moveSpeed = 4f;
@@ -55,6 +56,8 @@ namespace Playable
 
         private Transform _transform;
         private Vector2 _moveInput;
+        private bool _cinematicMovement;
+        private Vector3 _cinematicVelocity;
         private Vector3 _verticalVelocity;
         private bool _isGrounded;
         private int _speedParamHash;
@@ -257,13 +260,23 @@ namespace Playable
             _moveInput = ApplyEditorKeyboardInput(_moveInput);
 #endif
 
+            if (_cinematicMovement)
+                _moveInput = _cinematicVelocity.sqrMagnitude > .001f ? Vector2.up : Vector2.zero;
             UpdateAnimator();
             UpdateFootsteps();
         }
 
+        public void SetFootstepsSuppressed(bool suppressed)
+        {
+            _footstepsSuppressed = suppressed;
+            if (!suppressed) return;
+            _footstepTimer = 0f;
+            if (_footstepSource != null) _footstepSource.Stop();
+        }
+
         private void UpdateFootsteps()
         {
-            if (!_isGrounded || _moveInput.sqrMagnitude < .01f)
+            if (_footstepsSuppressed || !_isGrounded || _moveInput.sqrMagnitude < .01f)
             {
                 _footstepTimer = 0f;
                 return;
@@ -306,8 +319,27 @@ namespace Playable
 
         public void OnJumpButtonPressed()
         {
-            if (!_isWorking) return;
+            if (!_isWorking || _cinematicMovement) return;
             _jumpBufferTimer = _jumpBufferTime;
+        }
+
+        public void SetCinematicMovement(Vector3 velocity)
+        {
+            _cinematicMovement = true;
+            _cinematicVelocity = velocity;
+            _cinematicVelocity.y = 0f;
+            _moveInput = velocity.sqrMagnitude > .001f ? Vector2.up : Vector2.zero;
+            _jumpBufferTimer = 0f;
+        }
+
+        public void EndCinematicMovement()
+        {
+            _cinematicMovement = false;
+            _cinematicVelocity = Vector3.zero;
+            _moveInput = Vector2.zero;
+            Vector3 velocity = _rigidbody.linearVelocity;
+            velocity.x = velocity.z = 0f;
+            _rigidbody.linearVelocity = velocity;
         }
 
         public void SetMoveJoystick(UltimateJoystick joystick)
@@ -441,9 +473,10 @@ namespace Playable
             /*
              * TÍNH HƯỚNG DI CHUYỂN
              */
-            Vector3 moveDirection = ComputeMoveDirection(input);
+            Vector3 moveDirection = _cinematicMovement
+                ? _cinematicVelocity / Mathf.Max(.01f, _moveSpeed) : ComputeMoveDirection(input);
 
-            if (hasInput)
+            if (hasInput && moveDirection.sqrMagnitude > .0001f)
             {
                 RotateTowards(moveDirection);
             }

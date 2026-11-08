@@ -34,6 +34,16 @@ namespace Playable
         [Tooltip("Starting yaw offset in degrees relative to the follow target's heading.")]
         [SerializeField] private float _initialYaw;
 
+        private float _shakeRemaining, _shakeDuration, _shakeStrength;
+        [SerializeField, Min(0f)] private float _chaseShakeStrength = .035f;
+        private bool _chaseShake;
+        private Vector3 _shakeOffset;
+        private Transform _cinematicLookTarget;
+        private bool _raisingTutorialView;
+        private bool _tutorialView;
+        private float _tutorialViewElapsed, _tutorialStartPitch;
+        private Vector3 _tutorialStartOffset;
+        [SerializeField, Min(.1f)] private float _tutorialRiseSeconds = 2f;
         private float _yaw;
         private float _pitch;
         private Transform _transform;
@@ -75,17 +85,74 @@ namespace Playable
 
         private void LateUpdate()
         {
+            RemoveShakeOffset();
             if (_target == null)
             {
                 return;
             }
 
+            if (_cinematicLookTarget != null)
+            {
+                Vector3 direction = _cinematicLookTarget.position - GetFollowAnchor().position;
+                float blend = 1f - Mathf.Exp(-3f * Time.deltaTime);
+                _yaw = Mathf.LerpAngle(_yaw, Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg, blend);
+                float pitch = -Mathf.Atan2(direction.y, new Vector2(direction.x, direction.z).magnitude) * Mathf.Rad2Deg;
+                if (!_raisingTutorialView)
+                    _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(_tutorialView ? 32f : pitch, _pitchMin, _pitchMax), blend);
+            }
+            if (_raisingTutorialView)
+            {
+                _tutorialViewElapsed += Time.deltaTime;
+                float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(_tutorialViewElapsed / _tutorialRiseSeconds));
+                _pitch = Mathf.Lerp(_tutorialStartPitch, Mathf.Clamp(32f, _pitchMin, _pitchMax), t);
+                Vector3 raisedOffset = new Vector3(_tutorialStartOffset.x,
+                    Mathf.Max(_tutorialStartOffset.y, 3f), Mathf.Min(_tutorialStartOffset.z, -10f));
+                _thirdPersonOffset = Vector3.Lerp(_tutorialStartOffset, raisedOffset, t);
+                if (t >= 1f) _raisingTutorialView = false;
+            }
             UpdateRigRotation();
             UpdateCameraPosition();
+            if ((_chaseShake || _shakeRemaining > 0f) && _cameraTransform != null)
+            {
+                _shakeRemaining = Mathf.Max(0f, _shakeRemaining - Time.deltaTime);
+                float fade = _shakeRemaining / Mathf.Max(.01f, _shakeDuration);
+                float strength = Mathf.Max(_chaseShake ? _chaseShakeStrength : 0f, _shakeStrength * fade);
+                float phase = Time.time * 48f;
+                _shakeOffset = _cameraTransform.right * (Mathf.Sin(phase) * strength)
+                    + _cameraTransform.up * (Mathf.Sin(phase * 1.37f) * strength * .6f);
+                _cameraTransform.position += _shakeOffset;
+            }
+        }
+
+        public void Shake(float duration = .65f, float strength = .08f)
+        {
+            _shakeRemaining = _shakeDuration = Mathf.Max(.01f, duration);
+            _shakeStrength = Mathf.Max(0f, strength);
+        }
+
+        public void SetChaseShake(bool active) { _chaseShake = active; }
+        public void SetCinematicLookTarget(Transform target) { _cinematicLookTarget = target; }
+        public void ShowTutorialView()
+        {
+            _viewMode = ViewMode.ThirdPerson;
+            _tutorialStartPitch = _pitch;
+            _tutorialStartOffset = _thirdPersonOffset;
+            _tutorialViewElapsed = 0f;
+            _raisingTutorialView = true;
+            _tutorialView = true;
+        }
+
+        private void RemoveShakeOffset()
+        {
+            if (_cameraTransform != null) _cameraTransform.position -= _shakeOffset;
+            _shakeOffset = Vector3.zero;
         }
 
         private void OnDisable()
         {
+            RemoveShakeOffset();
+            _chaseShake = false;
+            _shakeRemaining = 0f;
             if (_touchController != null)
             {
                 _touchController.OnLookDelta -= OnLookDelta;
@@ -149,6 +216,7 @@ namespace Playable
 
         private void OnLookDelta(Vector2 delta)
         {
+            if (_cinematicLookTarget != null || _raisingTutorialView) return;
 #if UNITY_EDITOR
             if (Input.GetMouseButton(1))
             {

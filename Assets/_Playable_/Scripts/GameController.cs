@@ -31,8 +31,6 @@ namespace Playable
         [SerializeField, Min(.1f)] private float _homeRouteArrivalRadius = 3f;
 
         [Header("Map CTA Regions")]
-        [SerializeField] private BoxCollider _purpleGardenZone;
-        [SerializeField] private BoxCollider _desertZone;
 
         [Header("UI")] [SerializeField] private Button _stealButton;
         [SerializeField] private GameObject _title;
@@ -55,8 +53,6 @@ namespace Playable
         private bool _initialized;
         private bool _started;
         private int _homeRouteIndex;
-        private bool _insidePurpleGarden;
-        private bool _insideDesert;
         private float _failPanelTimer;
         private bool _failPanelShown;
 
@@ -137,7 +133,6 @@ namespace Playable
 
             CheckFinishFlag();
             if (State == GameState.Won) return;
-            CheckMapCTA();
             UpdateHomeRoute();
         }
 
@@ -180,21 +175,6 @@ namespace Playable
             return Mathf.Abs(local.x) <= half.x && Mathf.Abs(local.z) <= half.z;
         }
 
-        private void CheckMapCTA()
-        {
-            CheckMapZone(_purpleGardenZone, ref _insidePurpleGarden, GameManager.GameplayCtaPoint.PurpleGarden);
-            CheckMapZone(_desertZone, ref _insideDesert, GameManager.GameplayCtaPoint.Desert);
-        }
-
-        private void CheckMapZone(BoxCollider zone, ref bool wasInside, GameManager.GameplayCtaPoint point)
-        {
-            bool inside = ContainsXZ(zone, _playerTransform.position);
-            if (inside && !wasInside && State == GameState.Escaping &&
-                _egg != null && _egg.IsHeld && GameManager.Instance != null)
-                GameManager.Instance.TryShowGameplayCTA(point);
-            wasInside = inside;
-        }
-
         private void UpdateHomeRoute()
         {
             if (State != GameState.Escaping || _homeRoute == null) return;
@@ -231,8 +211,6 @@ namespace Playable
             SetActiveIfChanged(_title, false);
             _monster.StartChasing(_playerTransform);
             SetState(GameState.Escaping);
-            if (GameManager.Instance != null)
-                GameManager.Instance.TryShowGameplayCTA(GameManager.GameplayCtaPoint.Steal);
             CheckFinishFlag();
         }
 
@@ -249,8 +227,6 @@ namespace Playable
             if (GameManager.Instance != null) GameManager.Instance.ResetGameplayCtas();
             SetActiveIfChanged(_title, true);
             _player.ResetPlayer(_playerStartPosition, _playerStartRotation);
-            _insidePurpleGarden = ContainsXZ(_purpleGardenZone, _playerStartPosition);
-            _insideDesert = ContainsXZ(_desertZone, _playerStartPosition);
             _player.IsWorking = true;
             _monster.ResetMonster(_monsterStartPosition, _monsterStartRotation);
 

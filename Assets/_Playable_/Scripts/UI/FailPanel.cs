@@ -23,7 +23,7 @@ public class FailPanel : MonoBehaviour
         {
             _retryButton.onClick.AddListener(Retry);
             _scaleTween = _retryButton.transform.DOScale(_baseScale * 1.08f, .5f)
-                .SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
+                .SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo).SetUpdate(true);
         }
         if (_line != null && _lineArea != null)
         {
@@ -31,7 +31,7 @@ public class FailPanel : MonoBehaviour
             float distance = (_lineArea.rect.width + _line.rect.width) * .5f;
             _line.anchoredPosition = new Vector2(-distance, _line.anchoredPosition.y);
             _lineTween = _line.DOAnchorPosX(distance, 1.2f).SetEase(Ease.Linear)
-                .SetLoops(-1, LoopType.Restart);
+                .SetLoops(-1, LoopType.Restart).SetUpdate(true);
         }
     }
 

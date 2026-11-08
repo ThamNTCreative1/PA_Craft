@@ -11,13 +11,13 @@ public static class HatchFlashVfxSetup
         var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
         if (mat == null)
         {
-            mat = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
+            mat = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended"));
             AssetDatabase.CreateAsset(mat, path);
         }
         // Bake the procedural shape in the editor so Luna only samples a texture.
-        mat.shader = Shader.Find("Legacy Shaders/Particles/Additive");
+        mat.shader = Shader.Find("Legacy Shaders/Particles/Alpha Blended");
         mat.shaderKeywords = new string[0];
-        mat.SetColor("_TintColor", new Color(1f, .96f, .8f, .5f));
+        mat.SetColor("_TintColor", new Color(.35f, .45f, .5f, .35f));
         mat.mainTexture = BakeTexture(name, rays, glow);
         EditorUtility.SetDirty(mat);
         return mat;
@@ -78,7 +78,7 @@ public static class HatchFlashVfxSetup
     {
         var go = new GameObject(name);
         go.transform.SetParent(parent, false);
-        go.transform.localScale = Vector3.one * 3f;
+        go.transform.localScale = Vector3.one;
         var ps = go.AddComponent<ParticleSystem>();
         ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         var main = ps.main;
@@ -89,7 +89,7 @@ public static class HatchFlashVfxSetup
         main.startDelay = delay;
         main.startSpeed = 0;
         main.startSize = size;
-        main.startColor = Color.white;
+        main.startColor = new Color(.7f, .9f, 1f, .65f);
         main.maxParticles = 1;
         main.simulationSpace = ParticleSystemSimulationSpace.Local;
         main.scalingMode = ParticleSystemScalingMode.Hierarchy;
@@ -111,7 +111,7 @@ public static class HatchFlashVfxSetup
         var renderer = ps.GetComponent<ParticleSystemRenderer>();
         renderer.renderMode = ParticleSystemRenderMode.Billboard;
         renderer.sharedMaterial = material;
-        renderer.maxParticleSize = 2;
+        renderer.maxParticleSize = 1f;
         renderer.shadowCastingMode = ShadowCastingMode.Off;
         renderer.receiveShadows = false;
     }
@@ -120,12 +120,12 @@ public static class HatchFlashVfxSetup
     public static void Build()
     {
         var root = new GameObject("Hatch Aura");
-        root.transform.localScale = Vector3.one * 3f;
+        root.transform.localScale = Vector3.one;
         try
         {
-            Layer(root.transform, "Radial light shafts", Material("Hatch Flash Rays", 3.6f, .7f), 28.5f, .8f, 0);
-            Layer(root.transform, "White ignition flash", Material("Hatch Flash Core", 0, 5f), 26f, .24f, 0);
-            Layer(root.transform, "Soft light afterglow", Material("Hatch Flash Halo", 0, 1.4f), 33f, .6f, .04f);
+            Layer(root.transform, "Radial light shafts", Material("Hatch Flash Rays", 3.6f, .7f), 3.2f, .8f, 0);
+            Layer(root.transform, "White ignition flash", Material("Hatch Flash Core", 0, 5f), 1.8f, .24f, 0);
+            Layer(root.transform, "Soft light afterglow", Material("Hatch Flash Halo", 0, 1.4f), 4.2f, .6f, .04f);
             PrefabUtility.SaveAsPrefabAsset(root, StealHatchSceneSetup.Output + "/Hatch Aura.prefab");
             AssetDatabase.SaveAssets();
         }

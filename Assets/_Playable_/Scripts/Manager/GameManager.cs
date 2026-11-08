@@ -7,14 +7,6 @@ namespace Playable
 {
     public class GameManager : MonoBehaviour
     {
-        public enum GameplayCtaPoint
-        {
-            Steal,
-            PurpleGarden,
-            Desert,
-            Home
-        }
-
         public static GameManager Instance;
         [SerializeField] private bool _eggRaisingMode;
         [SerializeField] private bool _stealAndHatchMode;
@@ -22,18 +14,6 @@ namespace Playable
         private bool _storeOpened;
         public bool HasEnded => _gameEnded;
         public event System.Action GameplayEnded;
-
-        [Header("Gameplay CTA")] [LunaPlaygroundField("CTA On Steal", 1, "CTA")] [SerializeField]
-        private bool _ctaOnSteal;
-
-        [LunaPlaygroundField("CTA On Sakura", 2, "CTA")] [SerializeField]
-        private bool _ctaOnSakura;
-
-        [LunaPlaygroundField("CTA On Desert", 3, "CTA")] [SerializeField]
-        private bool _ctaOnDesert;
-
-        [LunaPlaygroundField("CTA On Home", 4, "CTA")] [SerializeField]
-        private bool _ctaOnHome;
 
         [SerializeField] private HomeRewardPopup _homeRewardPopup;
         private Coroutine _endCountdown;
@@ -61,7 +41,6 @@ namespace Playable
         [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
 
-        private int _shownGameplayCtas;
         private int _quantityEvent = 0;
         private int _retryCount;
         public bool IsFirstAttempt => _retryCount == 0;
@@ -90,6 +69,13 @@ namespace Playable
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
             NotifyGameEnded();
+            if (_stealAndHatchMode && _failPanel != null)
+            {
+                _btnBlock.gameObject.SetActive(false);
+                if (_stealHatchCta != null) _stealHatchCta.gameObject.SetActive(false);
+                _failPanel.transform.SetAsLastSibling();
+                _failPanel.Show();
+            }
         }
 
         public void ShowCTA()
@@ -122,15 +108,14 @@ namespace Playable
             if (_gameEnded) return;
             EndGame();
             FailPanel panel = caught ? _failPanel : _stealHatchCta;
+            FailPanel otherPanel = caught ? _stealHatchCta : _failPanel;
+            if (otherPanel != null) otherPanel.gameObject.SetActive(false);
             if (panel != null)
             {
+                _btnBlock.gameObject.SetActive(false);
                 panel.transform.SetAsLastSibling();
                 panel.Show();
             }
-            // Keep the existing Retry artwork; all end-screen touches install.
-            if (_btnBlock.transform.parent != null) _btnBlock.transform.parent.SetAsLastSibling();
-            _btnBlock.transform.SetAsLastSibling();
-            _pendingCta = DOVirtual.DelayedCall(1f, ShowCTA, true).SetUpdate(true);
         }
 
         private void CancelPendingEnd()
@@ -143,37 +128,13 @@ namespace Playable
 
         public void ResetGameplayCtas()
         {
-            _shownGameplayCtas = 0;
             if (_homeRewardPopup != null) _homeRewardPopup.Hide();
         }
 
         public void CompleteHome()
         {
-            if (_ctaOnHome)
-            {
-                TryShowGameplayCTA(GameplayCtaPoint.Home);
-                return;
-            }
-            if (!_ctaOnSteal && !_ctaOnSakura && !_ctaOnDesert)
-            {
-                CancelPendingEnd();
-                if (_homeRewardPopup != null) _homeRewardPopup.ShowOpen();
-                return;
-            }
-            ShowWinPanel();
-        }
-
-        public void TryShowGameplayCTA(GameplayCtaPoint point)
-        {
-            bool enabled = point == GameplayCtaPoint.Steal ? _ctaOnSteal :
-                point == GameplayCtaPoint.PurpleGarden ? _ctaOnSakura :
-                point == GameplayCtaPoint.Desert ? _ctaOnDesert :
-                point == GameplayCtaPoint.Home && _ctaOnHome;
-            int bit = 1 << (int)point;
-            if (!enabled || (_shownGameplayCtas & bit) != 0) return;
-            _shownGameplayCtas |= bit;
-            EndGame();
-            ShowCTA();
+            CancelPendingEnd();
+            if (_homeRewardPopup != null) _homeRewardPopup.ShowOpen();
         }
 
         public void CountEvent()
@@ -201,7 +162,6 @@ namespace Playable
             EndGame();
             if (_stealAndHatchMode)
             {
-                ShowCTA();
                 yield break;
             }
             if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);

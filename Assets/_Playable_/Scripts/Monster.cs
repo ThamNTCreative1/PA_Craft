@@ -25,7 +25,7 @@ namespace Playable
         [SerializeField, Min(0f)] private float _attackContactPadding = .75f;
         private Collider _bodyCollider;
         private Collider _targetCollider;
-        [SerializeField, Min(0f)] private float _chaseDelay = 1f;
+        [SerializeField, Min(0f)] private float _chaseDelay = 2f;
 
         [Header("Safe Area")]
         [Tooltip("Protect the player inside these XZ bounds and finish the chase at the home entrance.")]
@@ -73,6 +73,7 @@ namespace Playable
         public MonsterState State { get; private set; } = MonsterState.Idle;
         public float AttackDistance => _attackDistance;
         public event Action OnPlayerReached;
+        public event Action ChaseStarted;
 
         private void Awake()
         {
@@ -184,6 +185,7 @@ namespace Playable
                 State = MonsterState.Chasing;
                 SetRunning(true);
                 PlayVoice(_chaseRoar);
+                ChaseStarted?.Invoke();
             }
 
             if (State != MonsterState.Chasing || _target == null)
@@ -286,7 +288,11 @@ namespace Playable
             _chaseDelayRemaining = Mathf.Max(0f, _chaseDelay);
             State = _chaseDelayRemaining > 0f ? MonsterState.WaitingToChase : MonsterState.Chasing;
             SetRunning(State == MonsterState.Chasing);
-            if (State == MonsterState.Chasing) PlayVoice(_chaseRoar);
+            if (State == MonsterState.Chasing)
+            {
+                PlayVoice(_chaseRoar);
+                ChaseStarted?.Invoke();
+            }
         }
 
         public void Stop()
