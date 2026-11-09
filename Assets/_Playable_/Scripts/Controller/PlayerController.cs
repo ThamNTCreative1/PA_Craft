@@ -26,6 +26,7 @@ namespace Playable
         [Header("Footsteps")]
         [SerializeField] private AudioSource _footstepSource;
         [SerializeField] private AudioClip[] _footstepClips;
+        [SerializeField] private AudioClip _runningLoop;
         [SerializeField, Min(.1f)] private float _footstepInterval = .28f;
         private float _footstepTimer;
         private int _footstepIndex;
@@ -279,6 +280,17 @@ namespace Playable
             if (_footstepsSuppressed || !_isGrounded || _moveInput.sqrMagnitude < .01f)
             {
                 _footstepTimer = 0f;
+                if (_runningLoop != null && _footstepSource != null) _footstepSource.Stop();
+                return;
+            }
+            if (_runningLoop != null && _footstepSource != null)
+            {
+                // Luna stops the current sound when clip is assigned, even for the same clip.
+                // Configure only when it changes so playback can advance between frames.
+                if (_footstepSource.clip != _runningLoop)
+                    _footstepSource.clip = _runningLoop;
+                if (!_footstepSource.loop) _footstepSource.loop = true;
+                if (!_footstepSource.isPlaying) _footstepSource.Play();
                 return;
             }
             _footstepTimer -= Time.deltaTime;

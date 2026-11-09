@@ -57,6 +57,9 @@ namespace Playable
         public Phase State { get; private set; }
         private void Start()
         {
+            // The active game mode owns completion; opening the first egg never ends this mode.
+            if (GameManager.Instance != null && GameManager.Instance.IsStealAndHatchMode)
+                _stealFlow = true;
             if (_revealAura != null) _revealAura.SetActive(false);
             State = Phase.Selecting;
             foreach (var resident in _residents)
@@ -84,6 +87,7 @@ namespace Playable
             if (_stealFlow) return;
             if (State != Phase.Selecting || index < 0 || index >= _eggs.Length) return;
             _selected = index; _egg = Instantiate(_eggs[index], _holdPoint, false);
+            _cameraInput.SetCarriedEggShakeTarget(_egg.transform);
             _egg.transform.localScale *= _creatureScaleMultiplier;
             _selection.SetActive(false); State = Phase.Carrying;
             UpdateHeldEggRotation();
@@ -94,6 +98,7 @@ namespace Playable
         {
             if (!_stealFlow || egg == null || !egg.IsHeld) return;
             _egg = egg.gameObject;
+            _cameraInput.SetCarriedEggShakeTarget(_egg.transform);
             _selected = 0;
             _atPen = false;
             _arrivalStarted = false;
@@ -233,6 +238,7 @@ namespace Playable
                     placement = _pen.transform.TransformPoint(local); placement.y = _nest.position.y;
                 }
                 _nest.position = placement;
+                _cameraInput.SetCarriedEggShakeTarget(null);
                 _egg.transform.SetParent(null, true); _egg.transform.SetPositionAndRotation(placement, Quaternion.identity);
                 AddPlacedEggCollider();
                 BeginIncubation();
@@ -274,6 +280,7 @@ namespace Playable
 
         private void JumpIntoNest()
         {
+            _cameraInput.SetCarriedEggShakeTarget(null);
             State = Phase.Placing;
             _player.SetCarryingEgg(false);
             _action.gameObject.SetActive(false);
@@ -368,6 +375,10 @@ namespace Playable
             collider.isTrigger = false;
         }
         private void Sound(AudioClip clip) { if (AudioManager.Instance != null) AudioManager.Instance.PlayOneShot(clip); }
-        private void OnDestroy() { if (_action != null) _action.onClick.RemoveListener(Act); }
+        private void OnDestroy()
+        {
+            if (_cameraInput != null) _cameraInput.SetCarriedEggShakeTarget(null);
+            if (_action != null) _action.onClick.RemoveListener(Act);
+        }
     }
 }

@@ -16575,7 +16575,7 @@
                     },
                     {
                         "name": "InverseTransformVector",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "TransformVector",
@@ -37838,6 +37838,10 @@
                     {
                         "name": "CompleteStealAndHatch",
                         "excluded": false
+                    },
+                    {
+                        "name": "IsStealAndHatchMode#get",
+                        "excluded": false
                     }
                 ]
             },
@@ -38717,6 +38721,14 @@
                     },
                     {
                         "name": "ShowTutorialView",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetCarriedEggShakeTarget",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RemoveEggShakeOffset",
                         "excluded": false
                     }
                 ]
@@ -40460,6 +40472,16 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/Sound/Player/grass2.ogg"
+                    },
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:17.707",
+                        "lengthInSeconds": 17.707000732421876,
+                        "bitrate": 56,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/Sound/Player Run on Wood.mp3"
                     }
                 ]
             },

@@ -13,6 +13,7 @@ namespace Playable
         [SerializeField] private FailPanel _stealHatchCta;
         private bool _storeOpened;
         public bool HasEnded => _gameEnded;
+        public bool IsStealAndHatchMode => _stealAndHatchMode;
         public event System.Action GameplayEnded;
 
         [SerializeField] private HomeRewardPopup _homeRewardPopup;
@@ -56,6 +57,11 @@ namespace Playable
             _btnBlock.onClick.AddListener(ShowCTA);
             _btnBlock.gameObject.SetActive(false);
 
+            if (_stealAndHatchMode)
+            {
+                if (_stealHatchCta != null) _stealHatchCta.gameObject.SetActive(false);
+                if (_failPanel != null) _failPanel.gameObject.SetActive(false);
+            }
             if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
             if (!_eggRaisingMode) CountdownEndGame();
@@ -89,6 +95,7 @@ namespace Playable
 
         public void CompleteEggRaising()
         {
+            if (_stealAndHatchMode) return;
             CancelPendingEnd();
             // The egg CTA panel owns input; keep the full-screen blocker out of its way.
             _btnBlock.gameObject.SetActive(false);
@@ -106,7 +113,9 @@ namespace Playable
         public void CompleteStealAndHatch(bool caught)
         {
             if (_gameEnded) return;
-            EndGame();
+            CancelPendingEnd();
+            NotifyGameEnded();
+            _btnBlock.gameObject.SetActive(true);
             FailPanel panel = caught ? _failPanel : _stealHatchCta;
             FailPanel otherPanel = caught ? _stealHatchCta : _failPanel;
             if (otherPanel != null) otherPanel.gameObject.SetActive(false);
@@ -133,6 +142,7 @@ namespace Playable
 
         public void CompleteHome()
         {
+            if (_stealAndHatchMode) return;
             CancelPendingEnd();
             if (_homeRewardPopup != null) _homeRewardPopup.ShowOpen();
         }
@@ -159,11 +169,12 @@ namespace Playable
         {
             yield return new WaitForSecondsRealtime(_endTime);
             _endCountdown = null;
-            EndGame();
             if (_stealAndHatchMode)
             {
+                CompleteStealAndHatch(false);
                 yield break;
             }
+            EndGame();
             if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
         }
 

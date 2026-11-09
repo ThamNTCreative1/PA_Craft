@@ -28,7 +28,7 @@ namespace Playable
         [SerializeField, Min(0f)] private float _chaseDelay = 2f;
 
         [Header("Safe Area")]
-        [Tooltip("Protect the player inside these XZ bounds and finish the chase at the home entrance.")]
+        [Tooltip("Stop chasing and return to the nest as soon as the player enters these XZ bounds.")]
         [SerializeField] private Renderer _grassCourtyard;
         [Tooltip("Final position outside the home gate. The monster cannot attack while approaching it.")]
         [SerializeField] private Transform _homeChaseStopPoint;
@@ -136,7 +136,8 @@ namespace Playable
             if ((State == MonsterState.WaitingToChase || State == MonsterState.Chasing) &&
                 IsTargetInCourtyard())
             {
-                ChaseToHomeEntrance();
+                ReturnToNest();
+                return;
             }
 
             if (State == MonsterState.ApproachingHome)

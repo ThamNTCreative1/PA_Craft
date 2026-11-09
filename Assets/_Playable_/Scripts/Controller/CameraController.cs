@@ -35,9 +35,11 @@ namespace Playable
         [SerializeField] private float _initialYaw;
 
         private float _shakeRemaining, _shakeDuration, _shakeStrength;
-        [SerializeField, Min(0f)] private float _chaseShakeStrength = .035f;
+        [SerializeField, Min(0f)] private float _chaseShakeStrength = .18f;
         private bool _chaseShake;
         private Vector3 _shakeOffset;
+        private Transform _carriedEggShakeTarget, _shakenEggParent;
+        private Vector3 _eggLocalShakeOffset;
         private Transform _cinematicLookTarget;
         private bool _raisingTutorialView;
         private bool _tutorialView;
@@ -121,6 +123,13 @@ namespace Playable
                 _shakeOffset = _cameraTransform.right * (Mathf.Sin(phase) * strength)
                     + _cameraTransform.up * (Mathf.Sin(phase * 1.37f) * strength * .6f);
                 _cameraTransform.position += _shakeOffset;
+                if (_carriedEggShakeTarget != null)
+                {
+                    _shakenEggParent = _carriedEggShakeTarget.parent;
+                    _eggLocalShakeOffset = _shakenEggParent != null
+                        ? _shakenEggParent.InverseTransformVector(_shakeOffset) : _shakeOffset;
+                    _carriedEggShakeTarget.localPosition += _eggLocalShakeOffset;
+                }
             }
         }
 
@@ -142,10 +151,26 @@ namespace Playable
             _tutorialView = true;
         }
 
+        public void SetCarriedEggShakeTarget(Transform egg)
+        {
+            if (_carriedEggShakeTarget == egg) return;
+            RemoveEggShakeOffset();
+            _carriedEggShakeTarget = egg;
+        }
+
+        private void RemoveEggShakeOffset()
+        {
+            if (_carriedEggShakeTarget != null && _carriedEggShakeTarget.parent == _shakenEggParent)
+                _carriedEggShakeTarget.localPosition -= _eggLocalShakeOffset;
+            _eggLocalShakeOffset = Vector3.zero;
+            _shakenEggParent = null;
+        }
+
         private void RemoveShakeOffset()
         {
             if (_cameraTransform != null) _cameraTransform.position -= _shakeOffset;
             _shakeOffset = Vector3.zero;
+            RemoveEggShakeOffset();
         }
 
         private void OnDisable()

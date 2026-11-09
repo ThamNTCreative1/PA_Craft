@@ -82,9 +82,11 @@ public static class StealHatchPlayCheck
                 if (manager.HasEnded)
                 {
                     Check(timerElapsed >= 29.95f && timerElapsed < 31.5f, "Timeout must be 30 real seconds from entry.");
-                    Check(Get<bool>(manager, "_storeOpened"), "Timeout must open the store immediately without a touch.");
+                    Check(!Get<bool>(manager, "_storeOpened"), "Timeout waits for an endcard click before opening the store.");
+                    Check(Get<FailPanel>(manager, "_stealHatchCta").gameObject.activeSelf, "Timeout shows the endcard.");
+                    Check(!Get<FailPanel>(manager, "_failPanel").gameObject.activeSelf, "Timeout hides the fail popup.");
                     Check(!player.IsWorking && flow.State == StealHatchController.Phase.Ending, "Timeout freezes gameplay.");
-                    Complete("30s timeout from entry, no initial touch, immediate store.");
+                    Complete("30s timeout from entry, endcard visible, fail popup hidden.");
                 }
                 return;
             }
