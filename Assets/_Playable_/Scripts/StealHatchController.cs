@@ -14,6 +14,7 @@ namespace Playable
         [SerializeField] private Monster _guard;
         [SerializeField] private Egg[] _eggs;
         [SerializeField] private BoxCollider _home;
+        [SerializeField] private Renderer[] _homeGrounds;
         [SerializeField] private Transform _homeGate;
         [SerializeField] private EggRaisingController _raising;
         [SerializeField] private TutorialLineIndicator _line;
@@ -60,6 +61,7 @@ namespace Playable
         private void Start()
         {
             State = Phase.Seeking;
+            _guard.BindHomeSafety(this);
             foreach (var egg in _eggs) egg.BindPlayer(_player);
             _guard.OnPlayerReached += Caught;
             _guard.ChaseStarted += OnChaseStarted;
@@ -111,8 +113,19 @@ namespace Playable
             }
         }
 
+        public bool IsPlayerSafeAtHome => InsideHome();
+
         private bool InsideHome()
         {
+            if (_homeGrounds != null)
+                foreach (var ground in _homeGrounds)
+                {
+                    if (ground == null) continue;
+                    Bounds bounds = ground.bounds;
+                    Vector3 position = _player.transform.position;
+                    if (position.x >= bounds.min.x && position.x <= bounds.max.x &&
+                        position.z >= bounds.min.z && position.z <= bounds.max.z) return true;
+                }
             Vector3 p = _home.transform.InverseTransformPoint(_player.transform.position) - _home.center;
             Vector3 half = _home.size * .5f;
             return Mathf.Abs(p.x) <= half.x && Mathf.Abs(p.z) <= half.z;

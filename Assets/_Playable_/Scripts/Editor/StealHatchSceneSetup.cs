@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -152,6 +152,7 @@ public static class StealHatchSceneSetup
             bounds = VisualBounds(root);
             Set(wanderer, "_edgePadding", Mathf.Max(bounds.extents.x, bounds.extents.z) + .5f);
         }
+        if (name == "T-Rex Guard" || name == "Ankylosaurus Hatchling") DinosaurGroundingSetup.Bake(root);
         var prefab = PrefabUtility.SaveAsPrefabAsset(root, Output + "/" + name + ".prefab");
         Object.DestroyImmediate(root);
         return prefab;
@@ -205,10 +206,11 @@ public static class StealHatchSceneSetup
     {
         Directory.CreateDirectory(Output + "/Materials"); Directory.CreateDirectory(Output + "/Map");
         AssetDatabase.Refresh(); Materials.Clear();
-        Creature("Cerberus Guard", Animal + "Monsters/Cerberus.fbx", 8f, true);
-        Creature("Cosmic Dragon Hatchling", Animal + "Cosmic/Cosmic_Dragon.fbx", 7f, false);
-        foreach (var name in new[] { "Cyan Orbit Egg", "Violet Reactor Egg", "Neon Crescent Egg", "Prism Unicorn Egg" }) EggPrefab(name);
-        HatchFlashVfxSetup.Build();
+        Creature("T-Rex Guard", Animal + "Monsters/T-Rex.fbx", 16f, true);
+        Creature("Ankylosaurus Hatchling", Animal + "Monsters/Ankylosaurus.fbx", 7f, false);
+        foreach (var name in new[] { "Amber Stone Egg", "Steel Vanguard Egg", "Sunstone Monolith Egg", "Umber Terraced Egg" }) EggPrefab(name);
+        if (AssetDatabase.LoadAssetAtPath<GameObject>(Output + "/Hatch Aura.prefab") == null)
+            HatchFlashVfxSetup.Build();
         AssetDatabase.SaveAssets();
     }
 
@@ -500,7 +502,7 @@ public static class StealHatchSceneSetup
         var pen = BuildHome(map.transform, routeScale, homeLength, halfWidth, out var nest, out var gate);
         var nestPrefab = Asset<GameObject>(Animal + "Trap&nest.fbx").transform.Find("nest").gameObject;
         var eggs = new Egg[4];
-        string[] names = { "Cyan Orbit Egg", "Violet Reactor Egg", "Neon Crescent Egg", "Prism Unicorn Egg" };
+        string[] names = { "Amber Stone Egg", "Steel Vanguard Egg", "Sunstone Monolith Egg", "Umber Terraced Egg" };
         float spacing = Mathf.Min(9f, halfWidth * .65f);
         var positions = new[] { new Vector3(0, 0, length - 8), new Vector3(-spacing, 0, length - 8), new Vector3(spacing, 0, length - 8), new Vector3(-spacing * .5f, 0, length - 18), new Vector3(spacing * .5f, 0, length - 18) };
         for (int i = 0; i < 5; i++)
@@ -513,7 +515,7 @@ public static class StealHatchSceneSetup
             egg.transform.SetParent(map.transform); egg.transform.position = positions[i] + Vector3.up * 1.15f;
             eggs[i] = egg.GetComponent<Egg>();
         }
-        var guard = ((GameObject)PrefabUtility.InstantiatePrefab(Asset<GameObject>(Output + "/Cerberus Guard.prefab"))).GetComponent<Monster>();
+        var guard = ((GameObject)PrefabUtility.InstantiatePrefab(Asset<GameObject>(Output + "/T-Rex Guard.prefab"))).GetComponent<Monster>();
         guard.transform.SetParent(map.transform);
         var patrol = Point(map.transform, "Cerberus Patrol Center", new Vector3(0, 0, length - 30));
         Set(guard, "_patrolCenter", patrol); Set(guard, "_patrolRadii", new Vector2(Mathf.Min(7, halfWidth - 5), 3));
@@ -521,7 +523,7 @@ public static class StealHatchSceneSetup
         Set(raising, "_nest", nest); Set(raising, "_pen", pen); Set(raising, "_stealFlow", true);
         Set(raising, "_incubationSeconds", 2f); Set(raising, "_creatureScaleMultiplier", 1f);
         Set(raising, "_hatchlingRoar", Asset<AudioClip>("Assets/_Playable_/Sound/505131__mitchanary__monster-roar_8.wav"));
-        Set(raising, "_hatchlings", new[] { Asset<GameObject>(Output + "/Cosmic Dragon Hatchling.prefab").GetComponent<PenWanderer>() });
+        Set(raising, "_hatchlings", new[] { Asset<GameObject>(Output + "/Ankylosaurus Hatchling.prefab").GetComponent<PenWanderer>() });
         ConfigurePenResidents();
         var hatchAura = (GameObject)PrefabUtility.InstantiatePrefab(Asset<GameObject>(Output + "/Hatch Aura.prefab"), nest);
         hatchAura.name = "Hatch VFX";
@@ -531,7 +533,7 @@ public static class StealHatchSceneSetup
         hatchAura.SetActive(false);
         Set(raising, "_revealAura", hatchAura);
         Set(raising, "_eggs", new GameObject[0]);
-        Set(raising, "_hatchGround", Point(map.transform, "Hatchling Ground", new Vector3(nest.position.x, .1f, nest.position.z)));
+        Set(raising, "_hatchGround", Point(map.transform, "Hatchling Ground", new Vector3(nest.position.x, 0f, nest.position.z)));
         Set(raising, "_openRadius", 8f);
         var selection = Get<GameObject>(raising, "_selection");
         if (selection != null) Object.DestroyImmediate(selection);
@@ -540,6 +542,7 @@ public static class StealHatchSceneSetup
         var flow = raising.GetComponent<StealHatchController>(); if (flow == null) flow = raising.gameObject.AddComponent<StealHatchController>();
         Set(flow, "_player", player); Set(flow, "_camera", camera); Set(flow, "_holdPoint", Get<Transform>(raising, "_holdPoint"));
         Set(flow, "_guard", guard); Set(flow, "_eggs", eggs); Set(flow, "_home", pen); Set(flow, "_homeGate", gate);
+        DinosaurArtSetup.ConfigureHomeSafety(flow);
         Set(flow, "_raising", raising); Set(flow, "_line", line); Set(flow, "_tutorial", tutorial);
         Set(flow, "_action", action); Set(flow, "_actionLabel", Get<TMP_Text>(raising, "_label"));
         Set(flow, "_stealTitle", title.gameObject); Set(flow, "_runTitle", run.gameObject);

@@ -224,8 +224,16 @@ namespace Playable
                 _rotationSpeed * Time.deltaTime);
         }
 
+        private StealHatchController _homeSafety;
+
+        public void BindHomeSafety(StealHatchController homeSafety)
+        {
+            _homeSafety = homeSafety;
+        }
+
         private bool IsTargetInCourtyard()
         {
+            if (_target != null && _homeSafety != null && _homeSafety.IsPlayerSafeAtHome) return true;
             if (_target == null || _grassCourtyard == null) return false;
             Bounds bounds = _grassCourtyard.bounds;
             Vector3 position = _target.position;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -96,7 +96,7 @@ public static class StealHatchPlayCheck
                 Check(Get<GameObject>(raising, "_selection") == null, "Egg selection must be removed.");
                 Check(eggs.Length == 4 && Object.FindObjectsByType<PenWanderer>(FindObjectsSortMode.None).Length == 2, "Four eggs and two initial pen residents.");
                 Check(Mathf.Abs(guard.transform.position.y) < .25f, "Guard remains on the ground.");
-                Check(guard.State == Monster.MonsterState.Patrolling || guard.State == Monster.MonsterState.PatrolResting, "Cerberus patrols before stealing.");
+                Check(guard.State == Monster.MonsterState.Patrolling || guard.State == Monster.MonsterState.PatrolResting, "T-Rex patrols before stealing.");
                 var tutorial = Get<HandTutorial>(flow, "_tutorial");
                 Check(Get<RectTransform>(tutorial, "_infinityGraphic").gameObject.activeSelf, "Camera tutorial must appear first.");
                 Capture("home-camera-tutorial");
@@ -153,7 +153,7 @@ public static class StealHatchPlayCheck
                 {
                     Axes(0, 0);
                     Check(elapsed < 1f, "Player passes through the actual pen gate.");
-                    Check(guard.State == Monster.MonsterState.ReturningToNest, "Home makes Cerberus return to its nests.");
+                    Check(guard.State == Monster.MonsterState.ReturningToNest, "Home makes T-Rex return to its nests.");
                     returnStart = guard.transform.position.z;
                     Check(action.gameObject.activeSelf, "HATCH is offered inside home.");
                     Capture("hatch-at-home"); action.onClick.Invoke(); action.onClick.Invoke();
@@ -183,16 +183,16 @@ public static class StealHatchPlayCheck
                 if (flow.State == StealHatchController.Phase.Seeking)
                 {
                     var hatchlings = Object.FindObjectsByType<PenWanderer>(FindObjectsSortMode.None);
-                    Check(hatchlings.Length == 3 && hatchlings.Count(w => w.name.Contains("Cosmic Dragon")) == 1, "One Cosmic Dragon hatches alongside two residents.");
+                    Check(hatchlings.Length == 3 && hatchlings.Count(w => w.name.Contains("Ankylosaurus")) == 1, "One Ankylosaurus hatches alongside two residents.");
                     Check(Get<GameObject>(flow, "_stealTitle").activeSelf, "STEAL AN EGG returns after opening.");
                     Check(Get<TutorialLineIndicator>(flow, "_line").GetComponent<LineRenderer>().positionCount == 2, "A new guide line points to a remaining egg.");
-                    beforeMove = hatchlings.First(w => w.name.Contains("Cosmic Dragon")).transform.position;
-                    Capture("cosmic-dragon-in-pen"); Stage(8);
+                    beforeMove = hatchlings.First(w => w.name.Contains("Ankylosaurus")).transform.position;
+                    Capture("ankylosaurus-in-pen"); Stage(8);
                 }
             }
             else if (stage == 8 && elapsed > 2.5f)
             {
-                var dragon = Object.FindObjectsByType<PenWanderer>(FindObjectsSortMode.None).First(w => w.name.Contains("Cosmic Dragon"));
+                var dragon = Object.FindObjectsByType<PenWanderer>(FindObjectsSortMode.None).First(w => w.name.Contains("Ankylosaurus"));
                 Check((dragon.transform.position - beforeMove).sqrMagnitude > .1f, "Hatched dragon walks around the pen.");
                 if (guard.State == Monster.MonsterState.Patrolling || guard.State == Monster.MonsterState.PatrolResting)
                 {
@@ -232,7 +232,7 @@ public static class StealHatchPlayCheck
                 {
                     Check(sinceEnd >= .75f && sinceEnd < 1.3f, "Store opens after approximately 1s.");
                     Complete(mode == "caught" ? "caught => immediate FAIL, Retry visible, auto-store 1s, no retry." :
-                        "camera/joystick tutorials; actual pickup; gate traversal; guard returns/patrols; 2s incubation; aura then one wandering Cosmic Dragon; renewed guide; second steal => CTA then auto-store 1s.");
+                        "camera/joystick tutorials; actual pickup; gate traversal; guard returns/patrols; 2s incubation; aura then one wandering Ankylosaurus; renewed guide; second steal => CTA then auto-store 1s.");
                 }
             }
         }
