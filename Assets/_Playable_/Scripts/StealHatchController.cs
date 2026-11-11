@@ -123,6 +123,8 @@ namespace Playable
             if (State != Phase.Seeking || _candidate == null) return;
             Egg egg = _candidate;
             if (!egg.TryPickUp(_player, _holdPoint)) return;
+            GameManager.Instance.CountEvent();
+            if (GameManager.Instance.HasEnded) return;
             _stolen++;
             _player.SetCarryingEgg(true);
             _tutorial.HideAll();

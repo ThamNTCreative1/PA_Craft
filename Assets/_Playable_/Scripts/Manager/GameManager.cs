@@ -86,7 +86,6 @@ namespace Playable
 
         public void ShowCTA()
         {
-            if (_storeOpened) return;
             _storeOpened = true;
             CancelPendingEnd();
             Debug.Log("Show CTA");
@@ -147,12 +146,26 @@ namespace Playable
             if (_homeRewardPopup != null) _homeRewardPopup.ShowOpen();
         }
 
+        private void EndToStore()
+        {
+            if (_gameEnded) return;
+            CancelPendingEnd();
+            NotifyGameEnded();
+            if (_stealHatchCta != null) _stealHatchCta.gameObject.SetActive(false);
+            if (_failPanel != null) _failPanel.gameObject.SetActive(false);
+            if (_winPanel != null) _winPanel.gameObject.SetActive(false);
+            _btnBlock.transform.SetAsLastSibling();
+            _btnBlock.gameObject.SetActive(true);
+            ShowCTA();
+        }
+
         public void CountEvent()
         {
+            if (_gameEnded) return;
             _quantityEvent++;
-            if (_quantityEvent >= _totalEvent)
+            if (_totalEvent > 0 && _quantityEvent >= _totalEvent)
             {
-                EndGame();
+                EndToStore();
             }
         }
 
@@ -169,13 +182,7 @@ namespace Playable
         {
             yield return new WaitForSecondsRealtime(_endTime);
             _endCountdown = null;
-            if (_stealAndHatchMode)
-            {
-                CompleteStealAndHatch(false);
-                yield break;
-            }
-            EndGame();
-            if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
+            EndToStore();
         }
 
         private Sprite CreateSprite(Texture2D texture)

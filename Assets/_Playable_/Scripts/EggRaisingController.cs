@@ -217,9 +217,12 @@ namespace Playable
         }
         public void Act()
         {
+            if (GameManager.Instance != null && GameManager.Instance.HasEnded) return;
             if (State == Phase.Carrying && InsidePen())
             {
                 if (_egg == null || _stealFlow && (!NearEgg() || _arrival != null && _arrival.IsWalking)) return;
+                GameManager.Instance.CountEvent();
+                if (GameManager.Instance.HasEnded) return;
                 if (_stealFlow)
                 {
                     JumpIntoNest();
@@ -246,6 +249,8 @@ namespace Playable
             else if (State == Phase.Ready && NearEgg())
             {
                 if (_egg == null) return;
+                GameManager.Instance.CountEvent();
+                if (GameManager.Instance.HasEnded) return;
                 State = Phase.Revealing; _action.gameObject.SetActive(false); _tutorial.HideAll();
                 _revealSpawned = false;
                 _shellOpened = false;
