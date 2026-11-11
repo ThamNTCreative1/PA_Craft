@@ -137,6 +137,11 @@ namespace Playable
             Egg egg = _candidate;
             if (!egg.TryPickUp(_player, _holdPoint)) return;
             _stolen++;
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.CountEvent();
+                if (GameManager.Instance.HasEnded) return;
+            }
             _player.SetCarryingEgg(true);
             _tutorial.HideAll();
             ShowStealTitle(false);

@@ -86,7 +86,6 @@ namespace Playable
 
         public void ShowCTA()
         {
-            if (_storeOpened) return;
             _storeOpened = true;
             CancelPendingEnd();
             Debug.Log("Show CTA");
@@ -121,10 +120,46 @@ namespace Playable
             if (otherPanel != null) otherPanel.gameObject.SetActive(false);
             if (panel != null)
             {
-                _btnBlock.gameObject.SetActive(false);
                 panel.transform.SetAsLastSibling();
                 panel.Show();
             }
+            EnableStoreClickBlocker();
+        }
+
+        private void EndToStore()
+        {
+            if (_gameEnded) return;
+            CancelPendingEnd();
+            NotifyGameEnded();
+            if (_failPanel != null) _failPanel.gameObject.SetActive(false);
+            if (_stealHatchCta != null) _stealHatchCta.gameObject.SetActive(false);
+            if (_winPanel != null) _winPanel.gameObject.SetActive(false);
+            ResetGameplayCtas();
+            EnableStoreClickBlocker();
+            ShowCTA();
+        }
+
+        private void EnableStoreClickBlocker()
+        {
+            _btnBlock.gameObject.SetActive(true);
+            // Both terminal cards install on a tap anywhere, including their artwork.
+            _btnBlock.interactable = true;
+            var clickSurface = _btnBlock.GetComponent<Image>();
+            if (clickSurface != null)
+            {
+                clickSurface.color = Color.clear;
+                clickSurface.raycastTarget = true;
+            }
+            _btnBlock.transform.SetAsLastSibling();
+            // The gameplay touch canvas can otherwise intercept the terminal card.
+            var parentCanvas = _btnBlock.transform.parent.GetComponentInParent<Canvas>();
+            int topOrder = parentCanvas != null ? parentCanvas.rootCanvas.sortingOrder : 0;
+            var storeCanvas = _btnBlock.GetComponent<Canvas>();
+            if (storeCanvas == null) storeCanvas = _btnBlock.gameObject.AddComponent<Canvas>();
+            storeCanvas.overrideSorting = true;
+            storeCanvas.sortingOrder = topOrder + 1;
+            if (_btnBlock.GetComponent<GraphicRaycaster>() == null)
+                _btnBlock.gameObject.AddComponent<GraphicRaycaster>();
         }
 
         private void CancelPendingEnd()
@@ -149,10 +184,12 @@ namespace Playable
 
         public void CountEvent()
         {
+            if (_gameEnded) return;
             _quantityEvent++;
-            if (_quantityEvent >= _totalEvent)
+            // Zero leaves completion to the timer and gameplay checkpoints.
+            if (_totalEvent > 0 && _quantityEvent >= _totalEvent)
             {
-                EndGame();
+                EndToStore();
             }
         }
 
@@ -169,13 +206,7 @@ namespace Playable
         {
             yield return new WaitForSecondsRealtime(_endTime);
             _endCountdown = null;
-            if (_stealAndHatchMode)
-            {
-                CompleteStealAndHatch(false);
-                yield break;
-            }
-            EndGame();
-            if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
+            EndToStore();
         }
 
         private Sprite CreateSprite(Texture2D texture)
