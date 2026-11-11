@@ -227,6 +227,11 @@ namespace Playable
                 return;
             }
 
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.CountEvent();
+                if (GameManager.Instance.HasEnded) return;
+            }
             _player.SetCarryingEgg(true);
             SetActiveIfChanged(_title, false);
             _monster.StartChasing(_playerTransform);

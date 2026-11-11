@@ -3584,10 +3584,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.WaitForSecondsRealtime",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.WaitUntil",
                 "excluded": true
             },
@@ -37777,7 +37773,7 @@
                     },
                     {
                         "name": "CountEvent",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "IECountdownEndGame",
@@ -37838,6 +37834,14 @@
                     {
                         "name": "OnDestroy",
                         "excluded": true
+                    },
+                    {
+                        "name": "HasEnded#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndToStore",
+                        "excluded": false
                     }
                 ]
             },
@@ -38990,6 +38994,10 @@
                     {
                         "name": "UpdateFootsteps",
                         "excluded": false
+                    },
+                    {
+                        "name": "CountMovementEvent",
+                        "excluded": false
                     }
                 ]
             },
@@ -39542,6 +39550,10 @@
                     {
                         "name": "UpdateHeldEggRotation",
                         "excluded": false
+                    },
+                    {
+                        "name": "CountActionAndCheckEnded",
+                        "excluded": false
                     }
                 ]
             },
@@ -39623,6 +39635,28 @@
                     },
                     {
                         "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.WaitForSecondsRealtime",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "keepWaiting#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Reset",
                         "excluded": false
                     }
                 ]

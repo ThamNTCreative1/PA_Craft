@@ -226,12 +226,19 @@ namespace Playable
         private void OnEnable()
         {
             if (_btnJump != null) _btnJump.onClick.AddListener(OnJumpButtonPressed);
+            if (_moveJoystick != null) _moveJoystick.OnPointerDownCallback += CountMovementEvent;
         }
 
         private void OnDisable()
         {
             if (_footstepSource != null) _footstepSource.Stop();
             if (_btnJump != null) _btnJump.onClick.RemoveListener(OnJumpButtonPressed);
+            if (_moveJoystick != null) _moveJoystick.OnPointerDownCallback -= CountMovementEvent;
+        }
+
+        private void CountMovementEvent()
+        {
+            if (_isWorking && GameManager.Instance != null) GameManager.Instance.CountEvent();
         }
 
         private void Update()

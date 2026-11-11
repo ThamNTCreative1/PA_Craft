@@ -44,6 +44,7 @@ namespace Playable
         public void SelectEgg(int index)
         {
             if (State != Phase.Selecting || index < 0 || index >= _eggs.Length) return;
+            if (CountActionAndCheckEnded()) return;
             _selected = index; _egg = Instantiate(_eggs[index], _holdPoint, false);
             _egg.transform.localScale *= _creatureScaleMultiplier;
             _selection.SetActive(false); State = Phase.Carrying;
@@ -80,6 +81,7 @@ namespace Playable
         }
         private void Update()
         {
+            if (GameManager.Instance != null && GameManager.Instance.HasEnded) return;
             if (State == Phase.Carrying)
             {
                 bool inside = InsidePen();
@@ -119,10 +121,19 @@ namespace Playable
                 }
             }
         }
+        private bool CountActionAndCheckEnded()
+        {
+            if (GameManager.Instance == null) return false;
+            GameManager.Instance.CountEvent();
+            return GameManager.Instance.HasEnded;
+        }
+
         public void Act()
         {
+            if (GameManager.Instance != null && GameManager.Instance.HasEnded) return;
             if (State == Phase.Carrying && InsidePen())
             {
+                if (CountActionAndCheckEnded()) return;
                 State = Phase.Incubating;
                 _player.SetCarryingEgg(false);
                 // Put the egg ahead of the player, clamped inside the existing pen.
@@ -140,6 +151,7 @@ namespace Playable
             }
             else if (State == Phase.Ready && NearEgg())
             {
+                if (CountActionAndCheckEnded()) return;
                 State = Phase.Revealing; _action.gameObject.SetActive(false); _tutorial.HideAll(); Destroy(_egg);
                 var monster = Instantiate(_hatchlings[_selected], _nest.position, Quaternion.identity);
                 monster.transform.localScale *= _creatureScaleMultiplier;

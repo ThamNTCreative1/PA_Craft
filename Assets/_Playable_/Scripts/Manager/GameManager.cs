@@ -58,6 +58,7 @@ namespace Playable
         private int _shownGameplayCtas;
         private int _quantityEvent = 0;
         private int _retryCount;
+        public bool HasEnded => _gameEnded;
         public bool IsFirstAttempt => _retryCount == 0;
         [SerializeField] private GameController _gameController;
 
@@ -70,10 +71,10 @@ namespace Playable
         {
             _btnBlock.onClick.AddListener(ShowCTA);
             _btnBlock.gameObject.SetActive(false);
+            CountdownEndGame();
 
             if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
-            if (!_eggRaisingMode) CountdownEndGame();
         }
 
 
@@ -123,6 +124,7 @@ namespace Playable
 
         public void CompleteHome()
         {
+            if (_gameEnded) return;
             if (_ctaOnHome)
             {
                 TryShowGameplayCTA(GameplayCtaPoint.Home);
@@ -139,6 +141,7 @@ namespace Playable
 
         public void TryShowGameplayCTA(GameplayCtaPoint point)
         {
+            if (_gameEnded) return;
             bool enabled = point == GameplayCtaPoint.Steal ? _ctaOnSteal :
                 point == GameplayCtaPoint.PurpleGarden ? _ctaOnSakura :
                 point == GameplayCtaPoint.Desert ? _ctaOnDesert :
@@ -150,12 +153,24 @@ namespace Playable
             ShowCTA();
         }
 
+        private void EndToStore()
+        {
+            if (_gameEnded) return;
+            EndGame();
+            if (_failPanel != null) _failPanel.gameObject.SetActive(false);
+            if (_winPanel != null) _winPanel.gameObject.SetActive(false);
+            if (_homeRewardPopup != null) _homeRewardPopup.Hide();
+            _btnBlock.transform.SetAsLastSibling();
+            ShowCTA();
+        }
+
         public void CountEvent()
         {
+            if (_gameEnded) return;
             _quantityEvent++;
-            if (_quantityEvent >= _totalEvent)
+            if (_totalEvent > 0 && _quantityEvent >= _totalEvent)
             {
-                EndGame();
+                EndToStore();
             }
         }
 
@@ -163,16 +178,15 @@ namespace Playable
         {
             CancelPendingEnd();
             // Zero disables the timer for creatives driven by gameplay checkpoints.
-            if (_eggRaisingMode || _gameEnded || _endTime <= 0) return;
+            if (_gameEnded || _endTime <= 0) return;
             _endCountdown = StartCoroutine(IECountdownEndGame());
         }
 
         private IEnumerator IECountdownEndGame()
         {
-            yield return new WaitForSeconds(_endTime);
+            yield return new WaitForSecondsRealtime(_endTime);
             _endCountdown = null;
-            EndGame();
-            if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
+            EndToStore();
         }
 
         private Sprite CreateSprite(Texture2D texture)
@@ -185,6 +199,7 @@ namespace Playable
 
         public void ShowWinPanel()
         {
+            if (_gameEnded) return;
             EndGame();
             if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA);
             if (_winPanel == null) return;
@@ -193,6 +208,7 @@ namespace Playable
 
         public void ShowFailPanel()
         {
+            if (_gameEnded) return;
             // Keep Retry accessible; failure is not the final CTA until retries run out.
             CancelPendingEnd();
             if (_failPanel == null) return;
@@ -215,7 +231,7 @@ namespace Playable
             _btnBlock.gameObject.SetActive(false);
             _quantityEvent = 0;
             _gameController.ResetGame();
-            if (!_eggRaisingMode) CountdownEndGame();
+            CountdownEndGame();
         }
 
         private void OnDestroy()
