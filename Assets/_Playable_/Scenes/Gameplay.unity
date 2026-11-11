@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: ad7c1e064f7aa884fb1d90f932c65dfd, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 2ab598a43d3289b4ebe8b9935c7df27d, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -2088,7 +2088,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &469265251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3511,6 +3511,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3791338694366148034, guid: 9a89fdbf8bed5f8419b6bd3f462ec664,
         type: 3}
+      propertyPath: _pitchMin
+      value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3791338694366148034, guid: 9a89fdbf8bed5f8419b6bd3f462ec664,
+        type: 3}
       propertyPath: _initialYaw
       value: 0
       objectReference: {fileID: 0}
@@ -3533,6 +3538,31 @@ PrefabInstance:
         type: 3}
       propertyPath: _thirdPersonOffset.z
       value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305093202829324079, guid: 9a89fdbf8bed5f8419b6bd3f462ec664,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305093202829324079, guid: 9a89fdbf8bed5f8419b6bd3f462ec664,
+        type: 3}
+      propertyPath: m_BackGroundColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305093202829324079, guid: 9a89fdbf8bed5f8419b6bd3f462ec664,
+        type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.9882353
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305093202829324079, guid: 9a89fdbf8bed5f8419b6bd3f462ec664,
+        type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.8352941
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305093202829324079, guid: 9a89fdbf8bed5f8419b6bd3f462ec664,
+        type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.4627451
       objectReference: {fileID: 0}
     - target: {fileID: 4398915735319478777, guid: 9a89fdbf8bed5f8419b6bd3f462ec664,
         type: 3}
@@ -3691,7 +3721,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _player: {fileID: 714906720}
   _monster: {fileID: 0}
-  TypeBoss: 0
+  TypeBoss: 2
   listBoss:
   - {fileID: 1070905098}
   - {fileID: 1534229090}
@@ -7292,12 +7322,12 @@ PrefabInstance:
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 254.74695
+      value: 254.55846
       objectReference: {fileID: 0}
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 254.74695
+      value: 254.55846
       objectReference: {fileID: 0}
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
@@ -7337,12 +7367,12 @@ PrefabInstance:
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 165.58551
+      value: 165.46298
       objectReference: {fileID: 0}
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 483.41626
+      value: 483.66107
       objectReference: {fileID: 0}
     - target: {fileID: 224359097860930428, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
@@ -7362,12 +7392,12 @@ PrefabInstance:
     - target: {fileID: 224549901600871832, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 254.74695
+      value: 254.55846
       objectReference: {fileID: 0}
     - target: {fileID: 224549901600871832, guid: db11844ca22a56c4c8acfe5ce99da848,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 254.74695
+      value: 254.55846
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
