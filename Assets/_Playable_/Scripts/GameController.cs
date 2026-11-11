@@ -201,6 +201,12 @@ namespace Playable
                 return;
             }
 
+            if (GameManager.Instance != null)
+            {
+                if (GameManager.Instance.HasEnded) return;
+                GameManager.Instance.CountEvent();
+                if (GameManager.Instance.HasEnded) return;
+            }
             if (!_egg.TryPickUp(_player, _eggHoldPoint))
             {
                 RefreshEggState();

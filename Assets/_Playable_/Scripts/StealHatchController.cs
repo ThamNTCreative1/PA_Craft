@@ -134,6 +134,12 @@ namespace Playable
         public void Steal()
         {
             if (State != Phase.Seeking || _candidate == null) return;
+            if (GameManager.Instance != null)
+            {
+                if (GameManager.Instance.HasEnded) return;
+                GameManager.Instance.CountEvent();
+                if (GameManager.Instance.HasEnded) return;
+            }
             Egg egg = _candidate;
             if (!egg.TryPickUp(_player, _holdPoint)) return;
             _stolen++;

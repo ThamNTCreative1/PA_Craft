@@ -227,13 +227,20 @@ namespace Playable
             // Cache trước để ProbeGround() khỏi đọc property + tính lại phép trừ/nhân mỗi FixedUpdate.
         }
 
+        private void CountMovementClick()
+        {
+            if (_isWorking && GameManager.Instance != null) GameManager.Instance.CountEvent();
+        }
+
         private void OnEnable()
         {
+            if (_moveJoystick != null) _moveJoystick.OnPointerDownCallback += CountMovementClick;
             if (_btnJump != null) _btnJump.onClick.AddListener(OnJumpButtonPressed);
         }
 
         private void OnDisable()
         {
+            if (_moveJoystick != null) _moveJoystick.OnPointerDownCallback -= CountMovementClick;
             if (_footstepSource != null) _footstepSource.Stop();
             if (_btnJump != null) _btnJump.onClick.RemoveListener(OnJumpButtonPressed);
         }
@@ -356,7 +363,11 @@ namespace Playable
 
         public void SetMoveJoystick(UltimateJoystick joystick)
         {
+            if (isActiveAndEnabled && _moveJoystick != null)
+                _moveJoystick.OnPointerDownCallback -= CountMovementClick;
             _moveJoystick = joystick;
+            if (isActiveAndEnabled && _moveJoystick != null)
+                _moveJoystick.OnPointerDownCallback += CountMovementClick;
         }
 
         public void SetCameraController(CameraController cameraController)

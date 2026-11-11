@@ -11,7 +11,6 @@ namespace Playable
         [SerializeField] private bool _eggRaisingMode;
         [SerializeField] private bool _stealAndHatchMode;
         [SerializeField] private FailPanel _stealHatchCta;
-        private bool _storeOpened;
         public bool HasEnded => _gameEnded;
         public bool IsStealAndHatchMode => _stealAndHatchMode;
         public event System.Action GameplayEnded;
@@ -86,8 +85,6 @@ namespace Playable
 
         public void ShowCTA()
         {
-            if (_storeOpened) return;
-            _storeOpened = true;
             CancelPendingEnd();
             Debug.Log("Show CTA");
             Luna.Unity.Playable.InstallFullGame();
@@ -149,10 +146,11 @@ namespace Playable
 
         public void CountEvent()
         {
+            if (_gameEnded) return;
             _quantityEvent++;
-            if (_quantityEvent >= _totalEvent)
+            if (_totalEvent > 0 && _quantityEvent >= _totalEvent)
             {
-                EndGame();
+                EndToStore();
             }
         }
 
@@ -169,13 +167,21 @@ namespace Playable
         {
             yield return new WaitForSecondsRealtime(_endTime);
             _endCountdown = null;
-            if (_stealAndHatchMode)
-            {
-                CompleteStealAndHatch(false);
-                yield break;
-            }
-            EndGame();
-            if (!_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
+            EndToStore();
+        }
+
+        private void EndToStore()
+        {
+            if (_gameEnded) return;
+            CancelPendingEnd();
+            NotifyGameEnded();
+            if (_stealHatchCta != null) _stealHatchCta.gameObject.SetActive(false);
+            if (_failPanel != null) _failPanel.gameObject.SetActive(false);
+            if (_winPanel != null) _winPanel.gameObject.SetActive(false);
+            _btnBlock.transform.SetAsLastSibling();
+            _btnBlock.gameObject.SetActive(true);
+            _btnBlock.interactable = true;
+            ShowCTA();
         }
 
         private Sprite CreateSprite(Texture2D texture)

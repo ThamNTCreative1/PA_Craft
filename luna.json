@@ -37773,7 +37773,7 @@
                     },
                     {
                         "name": "CountEvent",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "IECountdownEndGame",
@@ -37841,6 +37841,10 @@
                     },
                     {
                         "name": "IsStealAndHatchMode#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndToStore",
                         "excluded": false
                     }
                 ]
@@ -39037,6 +39041,10 @@
                     },
                     {
                         "name": "EndCinematicMovement",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CountMovementClick",
                         "excluded": false
                     }
                 ]
