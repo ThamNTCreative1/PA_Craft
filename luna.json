@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 43297,
-    "creativeName": "C1_2611_HuyNQ_SAEHR_V11_NgocNDL",
+    "creativeName": "C1_2611_HuyNQ_SAEHR_V12_NgocNDL",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -14829,7 +14829,7 @@
                     },
                     {
                         "name": "SmoothDamp",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SmoothDampAngle$1",
@@ -39737,6 +39737,10 @@
                 "instanceMethods": [
                     {
                         "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
                         "excluded": false
                     }
                 ]

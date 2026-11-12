@@ -10,6 +10,10 @@ namespace Playable
         [SerializeField] private Transform[] _contactBones;
         [SerializeField] private Vector3[] _contactPoints;
         [SerializeField] private float[] _contactWeights;
+        [SerializeField, Min(0f)] private float _smoothingTime;
+        private float _heightOffset, _heightVelocity;
+        private bool _hasHeightOffset;
+        private void OnEnable() { _hasHeightOffset = false; _heightVelocity = 0f; }
         private void LateUpdate()
         {
             if (_visual == null || _contactBones == null || _contactPoints == null) return;
@@ -28,7 +32,16 @@ namespace Playable
             }
             if (bottom == float.MaxValue) return;
             float floor = transform.position.y;
-            _visual.position += Vector3.up * (floor - bottom);
+            float targetOffset = _visual.position.y - bottom;
+            if (!_hasHeightOffset || _smoothingTime <= 0f)
+                _heightOffset = targetOffset;
+            else
+                _heightOffset = Mathf.SmoothDamp(_heightOffset, targetOffset, ref _heightVelocity, _smoothingTime);
+            _hasHeightOffset = true;
+            var position = _visual.position;
+            position.y = floor + _heightOffset;
+            _visual.position = position;
         }
     }
 }
+

@@ -31,7 +31,8 @@ public static class DinosaurGroundingSetup
                     !(bone.StartsWith("Forearm_") && (bone.EndsWith(".002") || bone.EndsWith(".003"))) &&
                     !(bone.StartsWith("Hind_") && (bone.EndsWith(".002") || bone.EndsWith(".003"))) &&
                     !(bone.StartsWith("Foreleg_") && bone.EndsWith(".001")) &&
-                    !(bone.StartsWith("Hind_") && bone.EndsWith(".001"))) continue;
+                    !(bone.StartsWith("Hind_") && bone.EndsWith(".001")) &&
+                    !(bone.StartsWith("mixamorig:") && (bone.Contains("Foot") || bone.Contains("Toe")))) continue;
                 if (!candidates.ContainsKey(dominant)) candidates.Add(dominant, new List<int>());
                 candidates[dominant].Add(i);
             }
@@ -85,3 +86,4 @@ public static class DinosaurGroundingSetup
         AssetDatabase.SaveAssets();
     }
 }
+

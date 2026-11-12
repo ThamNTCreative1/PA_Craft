@@ -306,13 +306,7 @@ namespace Playable
             if (_nestVisual != null)
             {
                 Bounds bowl = _nestVisual.bounds;
-                float diameter = Mathf.Max(bounds.size.x, bounds.size.z);
-                float fit = Mathf.Min(bowl.size.x, bowl.size.z) * .72f;
-                if (diameter > fit && diameter > .001f)
-                {
-                    _egg.transform.localScale *= fit / diameter;
-                    bounds = EggBounds();
-                }
+                // Preserve the stolen egg size; only align its base with the bowl.
                 seat = new Vector3(bowl.center.x, bowl.min.y + .12f, bowl.center.z);
             }
             _jumpEnd = _egg.transform.position + new Vector3(seat.x - bounds.center.x,
@@ -392,3 +386,4 @@ namespace Playable
         }
     }
 }
+
