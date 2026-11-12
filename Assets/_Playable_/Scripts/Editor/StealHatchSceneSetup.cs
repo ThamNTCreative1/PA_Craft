@@ -98,7 +98,7 @@ public static class StealHatchSceneSetup
         if (guard)
         {
             controller.AddParameter("IsRun", AnimatorControllerParameterType.Bool);
-            var run = machine.AddState("Run"); run.motion = walk; run.speed = 2.2f;
+            var run = machine.AddState("Run"); run.motion = walk; run.speed = name == "Cerberus Guard" ? 1f : 2.2f;
             var runTransition = machine.AddAnyStateTransition(run);
             runTransition.canTransitionToSelf = false; runTransition.hasExitTime = false; runTransition.duration = .15f;
             runTransition.AddCondition(AnimatorConditionMode.If, 0, "IsRun");
@@ -152,7 +152,8 @@ public static class StealHatchSceneSetup
             bounds = VisualBounds(root);
             Set(wanderer, "_edgePadding", Mathf.Max(bounds.extents.x, bounds.extents.z) + .5f);
         }
-        if (name == "T-Rex Guard" || name == "Ankylosaurus Hatchling") DinosaurGroundingSetup.Bake(root);
+        if (name == "T-Rex Guard" || name == "Ankylosaurus Hatchling" || name == "Cerberus Guard" || name == "LavaDragon Hatchling")
+            DinosaurGroundingSetup.Bake(root);
         var prefab = PrefabUtility.SaveAsPrefabAsset(root, Output + "/" + name + ".prefab");
         Object.DestroyImmediate(root);
         return prefab;

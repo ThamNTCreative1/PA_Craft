@@ -54,6 +54,8 @@ namespace Playable
 
         [Header("Animation")] [SerializeField] private Animator _animator;
         [SerializeField, Min(0f)] private float _runAnimationSpeed = 1.6f;
+        [Tooltip("Chase animation speed relative to the patrol walk animation.")]
+        [SerializeField, Min(1f)] private float _chaseAnimationMultiplier = 3f;
         [SerializeField] private string _isRunningParam = "IsRun";
         [SerializeField] private string _isWalkingParam = "";
         [SerializeField] private string _idleState = "Idle";
@@ -448,6 +450,7 @@ namespace Playable
         {
             if (_animator != null)
                 _animator.speed = !isRunning ? 1f :
+                    State == MonsterState.Chasing ? _patrolAnimationSpeed * _chaseAnimationMultiplier :
                     State == MonsterState.Patrolling ? _patrolAnimationSpeed : _runAnimationSpeed;
             if (_hasRunParameter)
             {

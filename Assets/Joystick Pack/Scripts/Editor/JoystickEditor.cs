@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -26,7 +26,7 @@ public class JoystickEditor : Editor
         snapX = serializedObject.FindProperty("snapX");
         snapY = serializedObject.FindProperty("snapY");
         background = serializedObject.FindProperty("background");
-        handle = serializedObject.FindProperty("handle");
+        handle = serializedObject.FindProperty("joystickKnob");
         simulateLunaInput = serializedObject.FindProperty("simulateLunaInput");
         inputBlockers = serializedObject.FindProperty("inputBlockers");
     }

@@ -27,6 +27,9 @@ public static class DinosaurGroundingSetup
                 int dominant = indices[Array.IndexOf(values, values.Max())];
                 string bone = renderer.bones[dominant].name;
                 if (!(bone.StartsWith("Leg_") && bone.EndsWith(".002")) &&
+                    !(bone.StartsWith("Leg_") && (bone.EndsWith(".003") || bone.EndsWith(".004") || bone.EndsWith(".005"))) &&
+                    !(bone.StartsWith("Forearm_") && (bone.EndsWith(".002") || bone.EndsWith(".003"))) &&
+                    !(bone.StartsWith("Hind_") && (bone.EndsWith(".002") || bone.EndsWith(".003"))) &&
                     !(bone.StartsWith("Foreleg_") && bone.EndsWith(".001")) &&
                     !(bone.StartsWith("Hind_") && bone.EndsWith(".001"))) continue;
                 if (!candidates.ContainsKey(dominant)) candidates.Add(dominant, new List<int>());

@@ -31,7 +31,7 @@ namespace Playable
         [Header("Audio & Visual")] [LunaPlaygroundAsset("Background Music", 1, "Audio & Visual")] [SerializeField]
         private AudioClip _backgroundMusic;
 
-        [LunaPlaygroundAsset("Background Texture", 2, "Audio & Visual")] [SerializeField]
+        [SerializeField]
         private Texture2D _backgroundTexture;
 
         [Header("Ad Network")] [LunaPlaygroundField("Applovin", 1, "Ad Network")] [SerializeField]
@@ -39,6 +39,7 @@ namespace Playable
 
         [Header("UI References")] [SerializeField] private Button _btnBlock;
         [SerializeField] private Image _background;
+        [SerializeField] private Canvas[] _inputCanvases;
         [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
 
@@ -142,7 +143,14 @@ namespace Playable
         private void EnableStoreClickBlocker()
         {
             _btnBlock.gameObject.SetActive(true);
-            // Both terminal cards install on a tap anywhere, including their artwork.
+            // Cover the whole viewport, including the separate gameplay input canvas.
+            var rect = _btnBlock.transform as RectTransform;
+            if (rect != null)
+            {
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+                rect.offsetMin = rect.offsetMax = Vector2.zero;
+            }
             _btnBlock.interactable = true;
             var clickSurface = _btnBlock.GetComponent<Image>();
             if (clickSurface != null)
@@ -154,6 +162,10 @@ namespace Playable
             // The gameplay touch canvas can otherwise intercept the terminal card.
             var parentCanvas = _btnBlock.transform.parent.GetComponentInParent<Canvas>();
             int topOrder = parentCanvas != null ? parentCanvas.rootCanvas.sortingOrder : 0;
+            if (_inputCanvases != null)
+                foreach (var canvas in _inputCanvases)
+                    if (canvas != null && canvas.gameObject != _btnBlock.gameObject)
+                        topOrder = Mathf.Max(topOrder, canvas.sortingOrder);
             var storeCanvas = _btnBlock.GetComponent<Canvas>();
             if (storeCanvas == null) storeCanvas = _btnBlock.gameObject.AddComponent<Canvas>();
             storeCanvas.overrideSorting = true;
