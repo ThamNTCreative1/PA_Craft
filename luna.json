@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 43685,
-    "creativeName": "C1_2611_HuyNQ_OBP_V05_ThuLH",
+    "applicationID": 29023,
+    "creativeName": "C1_2611_HuyNQ_UAC_V83_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -8237,6 +8237,10 @@
             {
                 "name": "Playable.MonsterArmy.VfxKind",
                 "excluded": false
+            },
+            {
+                "name": "Playable.ChooseMonster.ChooseMonsterController.State",
+                "excluded": false
             }
         ],
         "unusedMethods": [
@@ -15064,7 +15068,7 @@
                     },
                     {
                         "name": "getDefaultValue",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "bottom#get",
@@ -17440,7 +17444,7 @@
                     },
                     {
                         "name": "sharedMaterials#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sharedMaterials#set",
@@ -17630,7 +17634,7 @@
                     },
                     {
                         "name": "OnDidApplyAnimationProperties",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -22292,7 +22296,7 @@
                     },
                     {
                         "name": "Emit",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Clear",
@@ -32028,11 +32032,11 @@
                     },
                     {
                         "name": "Complete",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Complete$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Flip",
@@ -32092,7 +32096,7 @@
                     },
                     {
                         "name": "WaitForCompletion",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "WaitForRewind",
@@ -32560,7 +32564,7 @@
                     },
                     {
                         "name": "WaitForCompletion",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "WaitForRewind",
@@ -43083,50 +43087,6 @@
                 ]
             },
             {
-                "className": "Playable.TempleRun.RunnerButtonPulse",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.MonsterArmy.EndcardLayout",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Place",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RefreshLayout",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "UnityEngine.WaitForSecondsRealtime",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -43144,6 +43104,552 @@
                     },
                     {
                         "name": "Reset",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.ChooseAudio",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Click",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Portal",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Roar",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Slam",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MonsterHit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "BossHit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Victory",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Defeat",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Possess",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayerSteps",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MonsterSteps",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopSteps",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StartSteps",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.ChooseHudLayout",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Place",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Size",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Refresh",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.ChooseMonsterController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Press",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PopIn",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideScaled",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Show",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RenderBounds",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "BeginChoose",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateHand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PickGate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TravelRoutine",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnGameEnded",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPlayerSpeed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FlashScreen",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.FighterView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Flat",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Height#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Reach#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsBusy#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsDead#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CacheRest",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetRunning",
+                        "excluded": true
+                    },
+                    {
+                        "name": "FaceTowards",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Attack",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Hit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Roar",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Die",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ResetPose",
+                        "excluded": true
+                    },
+                    {
+                        "name": "BeginAction",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EndAction",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Flash",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RestoreMaterials",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.HealthBarView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Setup",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetInstant",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.MonsterActor",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Height#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Reach#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetWalking",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FaceTowards",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Flash",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetFlash",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.MonsterGate",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Monster#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Portal#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LabelAnchor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Portrait#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Level#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.PortalView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "SurfacePosition#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Cache",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Open",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Close",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Surge",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.ScreenAnchor",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Target#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Target#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "WorldOffset#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "WorldOffset#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Bind",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Refresh",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Scale",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HalfSize",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Clamp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Avoid",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SafeArea",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.ShotCamera",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Camera#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetShot",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Follow",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Shake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateFollow",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyShake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Solve",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetShot$1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LockZ",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChooseMonster.ShotCamera.Margins",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Lerp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
                         "excluded": false
                     }
                 ]
@@ -43614,6 +44120,16 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/MonsterArmy/MonsterArmy.spriteatlasv2"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/ChooseMonster/Generated/FFFFORWA Static SDF.asset"
                     }
                 ]
             },

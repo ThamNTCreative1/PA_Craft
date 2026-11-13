@@ -35,6 +35,8 @@ namespace Playable
         [Header("End Game")] [LunaPlaygroundField("End Time", 1, "End Game")] [SerializeField]
         private int _endTime = 30;
         [SerializeField] private bool _tapToCtaMode;
+        // Hết End Time thì mở store ngay, không bật _btnBlock (nút CTA/endcard).
+        [SerializeField] private bool _storeOnEndTime;
         public int EndTime => _endTime;
 
         [LunaPlaygroundField("Total Event For CTA", 2, "End Game")] [SerializeField]
@@ -166,6 +168,12 @@ namespace Playable
         {
             yield return new WaitForSeconds(_endTime);
             _endCountdown = null;
+            if (_storeOnEndTime)
+            {
+                NotifyGameEnded();
+                ShowCTA();
+                yield break;
+            }
             EndGame();
             if (!_autoStoreAfterEndcard && !_isApplovin) _pendingCta = DOVirtual.DelayedCall(1, ShowCTA, false);
         }

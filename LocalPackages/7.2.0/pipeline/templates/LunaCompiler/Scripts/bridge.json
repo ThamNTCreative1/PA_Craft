@@ -1,0 +1,34 @@
+{
+    "output": "../bin/",
+    "typeMapPath": "../typemaps/user.typemap.json",
+    "outputFormatting": "Formatted",
+    "console": {
+        "enabled": false
+    },
+    "sourceMap": {
+        "enabled": false
+    },
+    "reflection": {
+        "target": "Inline"
+    },
+    "generateTypeScript": false,
+    "combineLocales": true,
+    "locales": "en-US;pt-BR;ru-RU",
+    "cleanOutputFolderBeforeBuild": false,
+    "report": {
+        "enabled": false
+    },
+    "rules": {
+        "anonymousType": "Plain",
+        "arrayIndex": "Plain",
+        "autoProperty": "Plain",
+        "boxing": "Managed",
+        "integer": "Managed",
+        "lambda": "Plain"
+    },
+    "ignoreDuplicateTypes": true,
+    "safeStructsInGenerics": true,
+    "deadCode": {
+        "classes": []
+    }
+}
