@@ -21,6 +21,7 @@ namespace CEBB.Playable
         public void ApplyView(){transform.rotation=Quaternion.Euler(0,yaw,0);playerCamera.transform.localPosition=new Vector3(0,eyeHeight,0);playerCamera.transform.localRotation=Quaternion.Euler(pitch,0,0);}
         public float bodyRadius=.22f;
         private Collider[] blockers;
+        private readonly RaycastHit[] aimHits=new RaycastHit[32];
         // Plain bounds test against solid colliders (no Physics.CheckCapsule) so movement behaves the same in Luna.
         private bool IsClear([Bridge.Ref] Vector3 p)
         {
@@ -39,7 +40,27 @@ namespace CEBB.Playable
             bool stuck=!IsClear(p);Vector3 x=p+new Vector3(motion.x,0,0);x.x=Mathf.Clamp(x.x,minRoom.x,maxRoom.x);if(stuck||IsClear(x))p=x;Vector3 z=p+new Vector3(0,0,motion.z);z.z=Mathf.Clamp(z.z,minRoom.y,maxRoom.y);if(stuck||IsClear(z))p=z;float moved=Vector3.Distance(transform.position,p);transform.position=p;if(moved>0)game.NotifyMoveDistance(moved);
         }
         public int FindAimedSlot()
-        {if(!game.CanAim)return -1;RaycastHit hit;if(Physics.Raycast(playerCamera.ViewportPointToRay(new Vector3(.5f,.5f,0)),out hit,buildReach,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Collide)){for(int i=0;i<game.slots.Length;i++)if(game.slots[i].targetCollider==hit.collider)return game.slots[i].built?-1:i;}return -1;}
+        {return FindSlotAlongRay(playerCamera.ViewportPointToRay(new Vector3(.5f,.5f,0)));}
+        public int FindSlotAlongRay([Bridge.Ref] Ray ray)
+        {
+            if(!game.CanAim)return -1;
+            int count=Physics.RaycastNonAlloc(ray,aimHits,buildReach,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Collide);
+            int best=-1;float nearest=buildReach,solid=buildReach;
+            for(int n=0;n<count;n++)
+            {
+                var hit=aimHits[n];bool placement=false;
+                for(int i=0;i<game.slots.Length;i++)if(game.slots[i].targetCollider==hit.collider)
+                {
+                    placement=true;
+                    // Placement bounds also contain porches and overhangs. A built
+                    // house's broad bounds must not swallow taps on nearby decor.
+                    if(!game.slots[i].built&&hit.distance<nearest){best=i;nearest=hit.distance;}
+                    break;
+                }
+                if(!placement&&!hit.collider.isTrigger)solid=Mathf.Min(solid,hit.distance);
+            }
+            return nearest<=solid?best:-1;
+        }
         public int FindHintCandidate()
         {
             int best=-1,fallback=-1;float score=float.MaxValue,nearest=float.MaxValue;Vector3 origin=playerCamera.transform.position;

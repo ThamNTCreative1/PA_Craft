@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using CEBB.Playable;
@@ -77,7 +78,7 @@ public static class BedroomInteriorRestyle
             s.definition.icon=BedroomSceneSetup.CaptureIcon(s.definition.prefab,s.definition.furnitureId);
             string path=Root+"Icons/"+s.definition.furnitureId+".png";var ti=(TextureImporter)AssetImporter.GetAtPath(path);ti.spriteImportMode=SpriteImportMode.Single;ti.SaveAndReimport();s.definition.icon=AssetDatabase.LoadAssetAtPath<Sprite>(path);
             s.button.transform.Find("Furniture icon").GetComponent<Image>().sprite=s.definition.icon;
-            var name=s.button.transform.Find("Name").GetComponent<Text>();name.text=s.definition.displayName;name.color=Color.white;name.fontSize=17;
+            var name=s.button.transform.Find("Name").GetComponent<TextMeshProUGUI>();name.text=s.definition.displayName;name.color=Color.white;name.fontSize=17;
             EditorUtility.SetDirty(s.definition);
         }
         var lightGo=new GameObject("Warm bedside light",typeof(Light));lightGo.transform.SetParent(room);lightGo.transform.position=new Vector3(.3f,3,-1.1f);var key=lightGo.GetComponent<Light>();key.type=LightType.Point;key.intensity=5;key.range=10;key.color=new Color(1,.73f,.43f);key.shadows=LightShadows.Soft;
@@ -86,7 +87,7 @@ public static class BedroomInteriorRestyle
         layout.lookTarget=new Vector3(-.4f,1.05f,.6f);layout.viewOffset=new Vector3(4f,2.15f,-6.1f);
         layout.roomCamera.cullingMask=-1;layout.roomCamera.clearFlags=CameraClearFlags.SolidColor;layout.roomCamera.backgroundColor=new Color(.12f,.11f,.10f);
         var headerImage=layout.header.GetComponent<Image>();headerImage.sprite=null;headerImage.color=Color.white;
-        var titleGo=new GameObject("Blue Bedroom Ideas",typeof(RectTransform),typeof(Text));titleGo.transform.SetParent(headerImage.transform,false);var tr=titleGo.GetComponent<RectTransform>();tr.anchorMin=Vector2.zero;tr.anchorMax=Vector2.one;tr.offsetMin=tr.offsetMax=Vector2.zero;var title=titleGo.GetComponent<Text>();title.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");title.fontStyle=FontStyle.Bold;title.text="<  BLUE BEDROOM IDEAS  >";title.color=new Color(.18f,.18f,.18f);title.alignment=TextAnchor.MiddleCenter;title.resizeTextForBestFit=true;title.resizeTextMinSize=14;title.resizeTextMaxSize=36;title.raycastTarget=false;titleGo.layer=5;
+        var titleGo=new GameObject("Blue Bedroom Ideas",typeof(RectTransform),typeof(TextMeshProUGUI));titleGo.transform.SetParent(headerImage.transform,false);var tr=titleGo.GetComponent<RectTransform>();tr.anchorMin=Vector2.zero;tr.anchorMax=Vector2.one;tr.offsetMin=tr.offsetMax=Vector2.zero;var title=titleGo.GetComponent<TextMeshProUGUI>();title.font=TmpSceneMigration.GetFont(Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"));title.fontStyle=FontStyles.Bold;title.text="<  BLUE BEDROOM IDEAS  >";title.color=new Color(.18f,.18f,.18f);title.alignment=TextAlignmentOptions.Center;title.enableAutoSizing=true;title.fontSizeMin=14;title.fontSizeMax=36;title.raycastTarget=false;titleGo.layer=5;
         var stats=m.timerText.transform.parent.GetComponent<RectTransform>();stats.anchorMin=new Vector2(.71f,.86f);stats.anchorMax=new Vector2(.96f,.91f);stats.offsetMin=stats.offsetMax=Vector2.zero;
         m.countText.fontSize=19;m.timerText.fontSize=24;layout.progress.gameObject.SetActive(false);
         layout.catalog.GetComponent<Image>().color=new Color(.08f,.07f,.055f,.75f);
@@ -96,7 +97,7 @@ public static class BedroomInteriorRestyle
     static GameObject Box(string name,Transform parent,Vector3 p,Vector3 s,Material m)
     {var go=GameObject.CreatePrimitive(PrimitiveType.Cube);go.name=name;go.transform.SetParent(parent,false);go.transform.localPosition=p;go.transform.localScale=s;go.GetComponent<Renderer>().sharedMaterial=m;Object.DestroyImmediate(go.GetComponent<Collider>());return go;}
     static Material Mat(string name,Color color,Texture texture=null)
-    {var m=new Material(Shader.Find("Universal Render Pipeline/Lit"));m.name=name;m.color=color;m.SetFloat("_Smoothness",.04f);if(texture!=null)m.mainTexture=texture;AssetDatabase.CreateAsset(m,Root+"Materials/"+name+".mat");return m;}
+    {var m=new Material(Shader.Find("CEBB/Scene Unlit"));m.name=name;m.color=color;if(texture!=null)m.mainTexture=texture;AssetDatabase.CreateAsset(m,Root+"Materials/"+name+".mat");return m;}
     static Texture2D WoodTexture()
     {
         var t=new Texture2D(32,32,TextureFormat.RGB24,false);t.filterMode=FilterMode.Point;

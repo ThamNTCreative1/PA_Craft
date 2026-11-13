@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using CEBB.Playable;
@@ -21,8 +22,8 @@ public static class BedroomFirstPersonSetup
         {
             var old=m.slots[i];definitions[i]=old.definition;
             var number=old.button.transform.Find("Slot number");if(number!=null)number.gameObject.SetActive(false);
-            var qty=Text("Remaining quantity",old.button.transform,"x1",26,Color.white);Anchors(qty.rectTransform,new Vector2(.55f,.72f),new Vector2(.94f,.96f));qty.alignment=TextAnchor.UpperRight;qty.gameObject.AddComponent<Outline>().effectDistance=new Vector2(1,-1);
-            old.builtBadge.GetComponentInChildren<Text>().text="EMPTY";
+            var qty=TextMeshProUGUI("Remaining quantity",old.button.transform,"x1",26,Color.white);Anchors(qty.rectTransform,new Vector2(.55f,.72f),new Vector2(.94f,.96f));qty.alignment=TextAlignmentOptions.TopRight;qty.gameObject.AddComponent<Outline>().effectDistance=new Vector2(1,-1);
+            old.builtBadge.GetComponentInChildren<TextMeshProUGUI>().text="EMPTY";
             m.inventory[i]=new FurnitureInventoryEntry{definition=old.definition,button=old.button,frame=old.frame,icon=old.button.transform.Find("Furniture icon").GetComponent<Image>(),quantityText=qty,emptyBadge=old.builtBadge};
         }
         var oldRoom=GameObject.Find("Minecraft bedroom interior");if(oldRoom!=null)Undo.DestroyObjectImmediate(oldRoom);
@@ -81,9 +82,9 @@ public static class BedroomFirstPersonSetup
         var look=Panel("Look area — drag or tap centre",layout.canvas.transform,new Color(1,1,1,.001f));Anchors(look.rectTransform,Vector2.zero,Vector2.one);look.transform.SetAsFirstSibling();look.raycastTarget=true;look.gameObject.AddComponent<RoomLookSurface>().player=player;
         var pad=Panel("Move joystick",layout.canvas.transform,new Color(.08f,.1f,.11f,.65f));pad.sprite=CircleSprite("MoveCircle",false);pad.raycastTarget=true;var move=pad.gameObject.AddComponent<RoomMovePad>();
         var knob=Panel("Thumb",pad.transform,new Color(.8f,.84f,.8f,.8f));knob.sprite=pad.sprite;knob.rectTransform.anchorMin=new Vector2(.3f,.3f);knob.rectTransform.anchorMax=new Vector2(.7f,.7f);knob.rectTransform.offsetMin=knob.rectTransform.offsetMax=Vector2.zero;move.thumbRect=knob.rectTransform;player.movePad=move;layout.movePad=pad.rectTransform;
-        var moveLabel=Text("Move label",pad.transform,"MOVE",23,new Color(.9f,.92f,.88f));Anchors(moveLabel.rectTransform,new Vector2(0,-.19f),new Vector2(1,-.01f));
+        var moveLabel=TextMeshProUGUI("Move label",pad.transform,"MOVE",23,new Color(.9f,.92f,.88f));Anchors(moveLabel.rectTransform,new Vector2(0,-.19f),new Vector2(1,-.01f));
         var reticle=Panel("Centre crosshair",layout.canvas.transform,Color.white);reticle.sprite=CircleSprite("CentreCrosshair",true);reticle.rectTransform.anchorMin=reticle.rectTransform.anchorMax=new Vector2(.5f,.5f);reticle.rectTransform.sizeDelta=new Vector2(32,32);reticle.rectTransform.anchoredPosition=Vector2.zero;player.reticle=reticle;
-        m.promptText.fontSize=34;m.promptText.resizeTextMaxSize=34;m.promptText.text="Move + drag to look around";m.countText.text="BUILT  0 / "+types.Length;
+        m.promptText.fontSize=34;m.promptText.fontSizeMax=34;m.promptText.text="Move + drag to look around";m.countText.text="BUILT  0 / "+types.Length;
         for(int i=0;i<m.inventory.Length;i++){int count=0;for(int j=0;j<types.Length;j++)if(types[j]==i)count++;m.inventory[i].quantityText.text="x"+count;m.inventory[i].emptyBadge.SetActive(false);}
         layout.ApplyLayout(9f/16f);SetLayer(layout.canvas.transform);EditorUtility.SetDirty(m);EditorUtility.SetDirty(layout);EditorUtility.SetDirty(player);AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene());Selection.activeGameObject=rig;
         Debug.Log("[CEBB] First-person home: "+types.Length+" placements, 12 inventory types.");
@@ -91,15 +92,15 @@ public static class BedroomFirstPersonSetup
     static GameObject Box(string name,Transform parent,Vector3 position,Vector3 size,Material mat,bool collider=true)
     {var go=GameObject.CreatePrimitive(PrimitiveType.Cube);go.name=name;go.transform.SetParent(parent,false);go.transform.localPosition=position;go.transform.localScale=size;go.GetComponent<Renderer>().sharedMaterial=mat;if(!collider)Object.DestroyImmediate(go.GetComponent<Collider>());return go;}
     static Material MakeMaterial(string name,Color color,Texture texture=null)
-    {var mat=new Material(Shader.Find("Universal Render Pipeline/Lit"));mat.name=name;mat.color=color;mat.SetFloat("_Smoothness",.03f);if(texture!=null)mat.mainTexture=texture;AssetDatabase.CreateAsset(mat,Root+"Materials/"+name+".mat");return mat;}
+    {var mat=new Material(Shader.Find("CEBB/Scene Unlit"));mat.name=name;mat.color=color;if(texture!=null)mat.mainTexture=texture;AssetDatabase.CreateAsset(mat,Root+"Materials/"+name+".mat");return mat;}
     static void LightAt(Transform root,string name,Vector3 p,float intensity,Color color)
     {var go=new GameObject(name,typeof(Light));go.transform.SetParent(root,false);go.transform.localPosition=p;var l=go.GetComponent<Light>();l.type=LightType.Point;l.range=12;l.intensity=intensity;l.color=color;l.shadows=LightShadows.Soft;}
     static void Window(Transform root,float x,float y,float z,Material glass,Material frame)
     {Box("Window frame",root,new Vector3(x,y,z),new Vector3(.06f,1.45f,1.95f),frame,false);float inset=x<0?.05f:-.05f;Box("Window pane",root,new Vector3(x+inset,y,z),new Vector3(.035f,1.25f,1.75f),glass,false);Box("Window mullion",root,new Vector3(x+inset*2,y,z),new Vector3(.04f,1.25f,.06f),frame,false);Box("Window crossbar",root,new Vector3(x+inset*2,y,z),new Vector3(.04f,.06f,1.75f),frame,false);}
     static Image Panel(string name,Transform parent,Color color)
     {var go=new GameObject(name,typeof(RectTransform),typeof(Image));go.transform.SetParent(parent,false);var image=go.GetComponent<Image>();image.color=color;image.raycastTarget=false;return image;}
-    static Text Text(string name,Transform parent,string value,int size,Color color)
-    {var go=new GameObject(name,typeof(RectTransform),typeof(Text));go.transform.SetParent(parent,false);var t=go.GetComponent<Text>();t.font=font;t.text=value;t.fontSize=size;t.fontStyle=FontStyle.Bold;t.color=color;t.alignment=TextAnchor.MiddleCenter;t.resizeTextForBestFit=true;t.resizeTextMinSize=12;t.resizeTextMaxSize=size;t.raycastTarget=false;return t;}
+    static TextMeshProUGUI TextMeshProUGUI(string name,Transform parent,string value,int size,Color color)
+    {var go=new GameObject(name,typeof(RectTransform),typeof(TextMeshProUGUI));go.transform.SetParent(parent,false);var t=go.GetComponent<TextMeshProUGUI>();t.font=TmpSceneMigration.GetFont(font);t.text=value;t.fontSize=size;t.fontStyle=FontStyles.Bold;t.color=color;t.alignment=TextAlignmentOptions.Center;t.enableAutoSizing=true;t.fontSizeMin=12;t.fontSizeMax=size;t.raycastTarget=false;return t;}
     static void Anchors(RectTransform r,Vector2 min,Vector2 max){r.anchorMin=min;r.anchorMax=max;r.offsetMin=r.offsetMax=Vector2.zero;}
     static void SetLayer(Transform t){t.gameObject.layer=5;foreach(Transform child in t)SetLayer(child);}
     static Sprite TightLogo()

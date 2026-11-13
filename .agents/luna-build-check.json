@@ -1,0 +1,56 @@
+{
+  "result": "Luna develop package bundled successfully",
+  "active_plugin": "F:/7.2.0",
+  "fixes": [
+    {
+      "file": "Assets/_Playable/Scripts/BedroomLayout.cs",
+      "line": 70,
+      "problem": "Legacy Bridge parser rejects the adjacent ternary token ?.245f",
+      "change": "gardenLandscape ? 0.245f : 0.255f"
+    },
+    {
+      "file": "Assets/_Playable/LivingRoom/Scripts/LivingRoomPlayable.cs",
+      "lines": [
+        419,
+        425,
+        426
+      ],
+      "problem": "Luna diagnostics LP3005 flags local variable on as reserved On",
+      "change": "Rename local variables to isVisible; serialized fields unchanged"
+    }
+  ],
+  "checks": {
+    "unity_console_errors": 0,
+    "msbuild_bridge_rebuild_exit": 0,
+    "luna_code_build_exit": 0,
+    "luna_assets_bundle_exit": 0,
+    "luna_code_bundle_exit": 0,
+    "luna_package_bundle_exit": 0
+  },
+  "target": "develop",
+  "asset_export": "Used the existing Stage1 export; did not re-export assets from Unity.",
+  "library_cache": "Not deleted or manually modified",
+  "logs": [
+    ".agents/luna-code-build.log",
+    ".agents/luna-msbuild.log",
+    ".agents/luna-assets-build.log",
+    ".agents/luna-code-bundle.log",
+    ".agents/luna-package-build.log"
+  ],
+  "latest_recheck": {
+    "trigger": "User build log: EPERM unlink stage3/engine/unity/bin/bridge.js, followed by missing stage3/assets",
+    "analysis": "Windows refused to remove a staging file; the missing assets directory is a downstream packaging failure. The log confirms C# compilation succeeds. No current file-lock owner was established.",
+    "assets_bundle_exit": 0,
+    "code_bundle_exit": 0,
+    "package_bundle_exit": 0,
+    "target": "develop",
+    "result": "Package bundled successfully on sequential retry using latest existing Stage1 export",
+    "logs": [
+      ".agents/luna-assets-recheck.log",
+      ".agents/luna-code-recheck.log",
+      ".agents/luna-package-recheck.log"
+    ],
+    "source_changes": false,
+    "manual_cache_modification": false
+  }
+}

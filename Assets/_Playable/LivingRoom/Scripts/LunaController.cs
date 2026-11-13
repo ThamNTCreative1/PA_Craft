@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 namespace CEBB.Playable
@@ -14,7 +15,7 @@ namespace CEBB.Playable
         public Image logoImage;
         public LivingRoomPlayable game;
         [Tooltip("Transparent full-screen button shown when the game ends")] public Button ctaOverlay;
-        public Text timerText;
+        public TMP_Text timerText;
         private bool started,ended,gameEndedSent;private float elapsed;private int lastSecond=-1,endedFrame=-1,lastCtaFrame=-1;
         public bool Ended {get{return ended;}}
         public float TimeLeft {get{return Mathf.Max(0,timeLimit-elapsed);}}

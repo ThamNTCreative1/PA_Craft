@@ -4,6 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 using CEBB.Playable;
 
 // "Living Room Tap": the SampleScene (bedroom) gameplay — fixed furniture spots, aim at a ghost and tap to build,
@@ -101,7 +102,7 @@ public static class LivingRoomTapSetup
         {
             var e=m.inventory[i];e.definition=defs[i];e.button.gameObject.name=defs[i].displayName;
             if(e.icon!=null){e.icon.sprite=defs[i].icon;e.icon.preserveAspect=true;}
-            var nameT=e.button.transform.Find("Name");if(nameT!=null){var tx=nameT.GetComponent<Text>();if(tx!=null)tx.text=defs[i].displayName.ToUpperInvariant();}
+            var nameT=e.button.transform.Find("Name");if(nameT!=null){var tx=nameT.GetComponent<TextMeshProUGUI>();if(tx!=null)tx.text=defs[i].displayName.ToUpperInvariant();}
             int count=0;foreach(int t in Types)if(t==i)count++;
             if(e.quantityText!=null)e.quantityText.text="x"+count;if(e.emptyBadge!=null)e.emptyBadge.SetActive(false);
         }

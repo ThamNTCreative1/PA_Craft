@@ -1,3 +1,4 @@
+using TMPro;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace CEBB.Playable
     public enum LivingStage { SelectItem, LookAround, PressBuild, Move, Free, Ended }
     [Serializable] public sealed class DecorCatalogEntry
     {
-        public DecorItem item;public Button button;public Image frame,icon;public Text quantityText,nameText;public GameObject emptyBadge;
+        public DecorItem item;public Button button;public Image frame,icon;public TMP_Text quantityText,nameText;public GameObject emptyBadge;
     }
     // Living room decorating playable (build / remove flow modelled on the AutoBuildHalloween playable).
     // 1) "Tap to decor": hand on the Sofa slot, then on BUILD (wiggles "drag to find a clear spot" while the ghost is blocked).
@@ -37,7 +38,7 @@ namespace CEBB.Playable
         [Header("End conditions + transparent CTA live in LunaController")]
         public LunaController luna;
         [Header("UI")]
-        public Text promptText,countText,buildLabel;public RectTransform hand;public Button buildButton,trashButton,rotateButton,ctaButton;public Image trashImage,reticle,buildFill;
+        public TMP_Text promptText,countText,buildLabel;public RectTransform hand;public Button buildButton,trashButton,rotateButton,ctaButton;public Image trashImage,reticle,buildFill;
         public string firstPrompt="TAP TO DECOR LIVING ROOM",selectPrompt="CHOOSE A FURNITURE",lookPrompt="DRAG TO LOOK AROUND",movePrompt="MOVE WITH THE JOYSTICK",aimPrompt="DRAG TO FIND A CLEAR SPOT",buildPrompt="TAP BUILD TO PLACE IT",freePrompt="DECORATE YOUR LIVING ROOM";
         public string trashPrompt="TAP TRASH TO REMOVE AN ITEM",deletePrompt="TAP AN ITEM TO REMOVE IT",emptyPrompt="PICK ANOTHER FURNITURE";
         public string overlapPrompt="OVERLAPS ANOTHER ITEM",playerPrompt="TOO CLOSE TO YOU",wallPrompt="PLACE IT ON A WALL",heightPrompt="NOT ENOUGH ROOM HERE";
@@ -416,14 +417,14 @@ namespace CEBB.Playable
         {
             bool playing=!endOverlayArmed;
             if(player!=null&&player.movePad!=null)player.movePad.demo=playing&&stage==LivingStage.Move&&removedOnce&&!deleteMode; // joystick pulls itself up, no hand
-            if(trashButton!=null){bool on=playing&&placed.Count>0;if(trashButton.gameObject.activeSelf!=on)trashButton.gameObject.SetActive(on);}
+            if(trashButton!=null){bool isVisible=playing&&placed.Count>0;if(trashButton.gameObject.activeSelf!=isVisible)trashButton.gameObject.SetActive(isVisible);}
             if(trashImage!=null)trashImage.color=deleteMode?Color.Lerp(trashActive,Color.white,.25f+.2f*Mathf.Sin(5f*Time.unscaledTime)):trashIdle;
             if(buildButton!=null)buildButton.interactable=!endOverlayArmed&&!deleteMode;
             if(buildFill!=null)buildFill.color=deleteMode?buildLocked:buildNormal;
             if(rotateButton!=null)
             {
-                bool on=playing&&!deleteMode&&stage!=LivingStage.SelectItem&&selected>=0&&Remaining(selected)>0&&catalog[selected].item.mount==DecorMount.Floor;
-                if(rotateButton.gameObject.activeSelf!=on)rotateButton.gameObject.SetActive(on);
+                bool isVisible=playing&&!deleteMode&&stage!=LivingStage.SelectItem&&selected>=0&&Remaining(selected)>0&&catalog[selected].item.mount==DecorMount.Floor;
+                if(rotateButton.gameObject.activeSelf!=isVisible)rotateButton.gameObject.SetActive(isVisible);
             }
             if(promptText!=null){string text=CurrentPrompt();if(promptText.text!=text)promptText.text=text;}
         }

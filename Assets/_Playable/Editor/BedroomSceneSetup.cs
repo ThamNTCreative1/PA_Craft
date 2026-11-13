@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.EventSystems;
 using CEBB.Playable;
 
@@ -121,13 +122,13 @@ public static class BedroomSceneSetup
     {var go=new GameObject(name,typeof(Camera));go.transform.SetParent(parent);var c=go.GetComponent<Camera>();c.depth=depth;c.cullingMask=mask;c.clearFlags=CameraClearFlags.SolidColor;c.farClipPlane=100;c.nearClipPlane=.1f;return c;}
     private static void SetUiLayer(Transform t){t.gameObject.layer=5;foreach(Transform child in t)SetUiLayer(child);}
     private static Material MakeMaterial(string name,Color color,Texture texture=null)
-    {var m=new Material(Shader.Find("Universal Render Pipeline/Unlit"));m.name=name;m.color=color;if(texture!=null)m.mainTexture=texture;AssetDatabase.CreateAsset(m,Root+"Materials/"+name+".mat");return m;}
+    {var m=new Material(Shader.Find("CEBB/Scene Unlit"));m.name=name;m.color=color;if(texture!=null)m.mainTexture=texture;AssetDatabase.CreateAsset(m,Root+"Materials/"+name+".mat");return m;}
     private static void Cube(string name,Transform parent,Vector3 position,Vector3 scale,Material material)
     {var go=GameObject.CreatePrimitive(PrimitiveType.Cube);go.name=name;go.transform.SetParent(parent);go.transform.localPosition=position;go.transform.localScale=scale;go.GetComponent<Renderer>().sharedMaterial=material;UnityEngine.Object.DestroyImmediate(go.GetComponent<Collider>());}
     private static Image Panel(string name,Transform parent,Color color)
     {var go=new GameObject(name,typeof(RectTransform),typeof(Image));go.transform.SetParent(parent,false);var image=go.GetComponent<Image>();image.color=color;image.raycastTarget=false;return image;}
-    private static Text Label(string name,Transform parent,string value,int size,Color color)
-    {var go=new GameObject(name,typeof(RectTransform),typeof(Text));go.transform.SetParent(parent,false);var t=go.GetComponent<Text>();t.font=font;t.text=value;t.fontSize=size;t.fontStyle=FontStyle.Bold;t.color=color;t.alignment=TextAnchor.MiddleCenter;t.resizeTextForBestFit=true;t.resizeTextMinSize=12;t.resizeTextMaxSize=size;t.raycastTarget=false;return t;}
+    private static TextMeshProUGUI Label(string name,Transform parent,string value,int size,Color color)
+    {var go=new GameObject(name,typeof(RectTransform),typeof(TextMeshProUGUI));go.transform.SetParent(parent,false);var t=go.GetComponent<TextMeshProUGUI>();t.font=TmpSceneMigration.GetFont(font);t.text=value;t.fontSize=size;t.fontStyle=FontStyles.Bold;t.color=color;t.alignment=TextAlignmentOptions.Center;t.enableAutoSizing=true;t.fontSizeMin=12;t.fontSizeMax=size;t.raycastTarget=false;return t;}
     private static void Stretch(Image i){Stretch(i.rectTransform);}
     private static void Stretch(RectTransform r){SetAnchors(r,Vector2.zero,Vector2.one);}
     private static void SetAnchors(RectTransform r,Vector2 min,Vector2 max){r.anchorMin=min;r.anchorMax=max;r.offsetMin=Vector2.zero;r.offsetMax=Vector2.zero;}

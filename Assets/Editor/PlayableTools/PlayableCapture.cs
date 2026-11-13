@@ -193,6 +193,8 @@ namespace PlayableTools
                 if (img != null && img.sprite != null) extra += " sprite=" + img.sprite.name;
                 var txt = g as UnityEngine.UI.Text;
                 if (txt != null) extra += " text=\"" + Esc(txt.text).Replace("\n", " ") + "\"";
+                var tmp = g as TMPro.TMP_Text;
+                if (tmp != null) extra += " text=\"" + Esc(tmp.text).Replace("\n", " ") + "\"";
                 if (!g.enabled) extra += " (disabled)";
                 sb.AppendLine(Line(rt, "UI", a, c, "canvas " + cv.sortingOrder, extra));
                 n++;

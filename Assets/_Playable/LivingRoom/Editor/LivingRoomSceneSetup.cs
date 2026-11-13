@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using CEBB.Playable;
 
 // Builds the decorating scenes from SampleScene (bedroom), keeping its UI style and the same gameplay / tutorial / Luna setup.
@@ -56,7 +57,7 @@ public static class LivingRoomSceneSetup
             var ti=(TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(guid));
             ti.filterMode=FilterMode.Point;ti.mipmapEnabled=false;ti.wrapMode=TextureWrapMode.Clamp;ti.alphaIsTransparency=true;ti.textureCompression=TextureImporterCompression.Uncompressed;ti.SaveAndReimport();
         }
-        var lit=Shader.Find("Universal Render Pipeline/Lit");
+        var lit=Shader.Find("CEBB/Scene Unlit");
         var models=AssetDatabase.FindAssets(V.prefix+" t:Model",new[]{Root+"Models"});
         foreach(var guid in models)
         {
@@ -96,8 +97,8 @@ public static class LivingRoomSceneSetup
         string matPath=Root+"Materials/LR_m"+matIndex.ToString("00")+".mat";var mat=AssetDatabase.LoadAssetAtPath<Material>(matPath);
         bool fresh=mat==null;if(fresh){mat=new Material(lit);mat.name="LR_m"+matIndex.ToString("00");}
         var tex=VividTexture(matIndex);
-        mat.SetTexture("_BaseMap",tex);mat.mainTexture=tex;mat.SetColor("_BaseColor",Color.white);mat.color=Color.white;
-        mat.SetFloat("_Smoothness",0f);mat.SetFloat("_Cull",0);mat.SetFloat("_AlphaClip",1);mat.SetFloat("_Cutoff",.5f);mat.EnableKeyword("_ALPHATEST_ON");mat.renderQueue=2450;
+        mat.mainTexture=tex;mat.color=Color.white;
+        mat.SetFloat("_Cull",0);mat.SetFloat("_AlphaClip",1);mat.SetFloat("_Cutoff",.5f);mat.renderQueue=2450;
         if(fresh)AssetDatabase.CreateAsset(mat,matPath);else EditorUtility.SetDirty(mat);
         return mat;
     }
@@ -250,7 +251,7 @@ public static class LivingRoomSceneSetup
         {
             var item=AssetDatabase.LoadAssetAtPath<DecorItem>(Root+"Data/"+CatalogModels[i]+".asset");var e=inv[i];
             e.button.gameObject.name=item.displayName;e.icon.sprite=item.icon;e.icon.preserveAspect=true;
-            var nameT=e.button.transform.Find("Name");Text nameText=nameT!=null?nameT.GetComponent<Text>():null;if(nameText!=null)nameText.text=item.displayName.ToUpperInvariant();
+            var nameT=e.button.transform.Find("Name");TextMeshProUGUI nameText=nameT!=null?nameT.GetComponent<TextMeshProUGUI>():null;if(nameText!=null)nameText.text=item.displayName.ToUpperInvariant();
             if(e.quantityText!=null)e.quantityText.text="x"+item.quantity;if(e.emptyBadge!=null)e.emptyBadge.SetActive(false);
             game.catalog[i]=new DecorCatalogEntry{item=item,button=e.button,frame=e.frame,icon=e.icon,quantityText=e.quantityText,nameText=nameText,emptyBadge=e.emptyBadge};
         }
@@ -272,12 +273,12 @@ public static class LivingRoomSceneSetup
         {
             ctaRoot.SetActive(true);var le=ctaRoot.GetComponent<LayoutElement>();if(le==null)le=ctaRoot.AddComponent<LayoutElement>();le.ignoreLayout=true;var cr=ctaRoot.GetComponent<RectTransform>();var statsT=canvas.Find("Stats");cr.SetParent(statsT!=null?statsT:canvas,false);cr.anchorMin=new Vector2(0,-.95f);cr.anchorMax=new Vector2(1,-.12f);cr.offsetMin=cr.offsetMax=Vector2.zero;
             var img=ctaRoot.GetComponent<Image>();if(img!=null)img.preserveAspect=true;
-            var ctaText=ctaRoot.GetComponentInChildren<Text>(true);if(ctaText!=null){ctaText.text="PLAY NOW";ctaText.font=font;ctaText.resizeTextForBestFit=false;ctaText.fontSize=34;ctaText.horizontalOverflow=HorizontalWrapMode.Overflow;ctaText.verticalOverflow=VerticalWrapMode.Overflow;ctaText.alignment=TextAnchor.MiddleCenter;var rt=ctaText.rectTransform;rt.anchorMin=new Vector2(.1f,.12f);rt.anchorMax=new Vector2(.9f,.88f);rt.offsetMin=rt.offsetMax=Vector2.zero;if(ctaText.GetComponent<Outline>()==null)ctaText.gameObject.AddComponent<Outline>().effectDistance=new Vector2(2,-2);}
+            var ctaText=ctaRoot.GetComponentInChildren<TextMeshProUGUI>(true);if(ctaText!=null){ctaText.text="PLAY NOW";ctaText.font=TmpSceneMigration.GetFont(font);ctaText.enableAutoSizing=false;ctaText.fontSize=34;ctaText.enableWordWrapping=false;ctaText.overflowMode=TextOverflowModes.Overflow;ctaText.alignment=TextAlignmentOptions.Center;var rt=ctaText.rectTransform;rt.anchorMin=new Vector2(.1f,.12f);rt.anchorMax=new Vector2(.9f,.88f);rt.offsetMin=rt.offsetMax=Vector2.zero;if(ctaText.GetComponent<Outline>()==null)ctaText.gameObject.AddComponent<Outline>().effectDistance=new Vector2(2,-2);}
         }
         if(movePad!=null){var ml=movePad.transform.Find("Move label");if(ml!=null)ml.gameObject.SetActive(false);}
         game.lookGuideRadius=new Vector2(170,59.5f);game.lookGuide=InfinityGuide(canvas,game.lookGuideRadius);
         if(hand!=null){hand.gameObject.SetActive(true);hand.SetParent(canvas,false);hand.SetAsLastSibling();}
-        prompt.fontSize=40;prompt.resizeTextMaxSize=40;prompt.text=game.firstPrompt;count.text="BUILT 0";
+        prompt.fontSize=40;prompt.fontSizeMax=40;prompt.text=game.firstPrompt;count.text="BUILT 0";
         var logoHolder=canvas.Find("Logo");if(logoHolder!=null)logoHolder.gameObject.SetActive(false);
         layout.firstPersonMode=true;EditorUtility.SetDirty(layout);SetLayer(canvas);layout.ApplyLayout(9f/16f);player.ApplyView();
         EditorUtility.SetDirty(game);EditorUtility.SetDirty(player);
@@ -290,8 +291,8 @@ public static class LivingRoomSceneSetup
     static void Save(Material m){string p=Root+"Materials/"+m.name+".mat";if(AssetDatabase.LoadAssetAtPath<Material>(p)!=null)AssetDatabase.DeleteAsset(p);AssetDatabase.CreateAsset(m,p);}
     static Material Mat(string name,Color color,Texture tex=null,Vector2? tiling=null)
     {
-        var m=new Material(Shader.Find("Universal Render Pipeline/Lit"));m.name="LR "+name;m.SetColor("_BaseColor",color);m.color=color;m.SetFloat("_Smoothness",.04f);
-        if(tex!=null){m.SetTexture("_BaseMap",tex);m.mainTexture=tex;var s=tiling??Vector2.one;m.SetTextureScale("_BaseMap",s);m.mainTextureScale=s;}
+        var m=new Material(Shader.Find("CEBB/Scene Unlit"));m.name="LR "+name;m.color=color;
+        if(tex!=null){m.mainTexture=tex;var s=tiling??Vector2.one;m.mainTextureScale=s;}
         Save(m);return m;
     }
     // 16x16 noisy Minecraft-style texture (style 1 grass, 2 leaves with holes darkened, 3 log, 4 stone)
@@ -391,8 +392,8 @@ public static class LivingRoomSceneSetup
     {var go=new GameObject(name,typeof(Light));go.transform.SetParent(root,false);go.transform.localPosition=p;var l=go.GetComponent<Light>();l.type=LightType.Point;l.range=7;l.intensity=intensity;l.color=color;l.shadows=LightShadows.None;}
     static Image Panel(string name,Transform parent,Color color)
     {var go=new GameObject(name,typeof(RectTransform),typeof(Image));go.transform.SetParent(parent,false);var image=go.GetComponent<Image>();image.color=color;image.raycastTarget=false;return image;}
-    static Text Label(string name,Transform parent,string value,int size)
-    {var go=new GameObject(name,typeof(RectTransform),typeof(Text));go.transform.SetParent(parent,false);var t=go.GetComponent<Text>();t.font=font;t.text=value;t.fontSize=size;t.color=Color.white;t.alignment=TextAnchor.MiddleCenter;t.resizeTextForBestFit=true;t.resizeTextMinSize=14;t.resizeTextMaxSize=size;t.raycastTarget=false;go.AddComponent<Outline>().effectDistance=new Vector2(2,-2);return t;}
+    static TextMeshProUGUI Label(string name,Transform parent,string value,int size)
+    {var go=new GameObject(name,typeof(RectTransform),typeof(TextMeshProUGUI));go.transform.SetParent(parent,false);var t=go.GetComponent<TextMeshProUGUI>();t.font=TmpSceneMigration.GetFont(font);t.text=value;t.fontSize=size;t.color=Color.white;t.alignment=TextAlignmentOptions.Center;t.enableAutoSizing=true;t.fontSizeMin=14;t.fontSizeMax=size;t.raycastTarget=false;go.AddComponent<Outline>().effectDistance=new Vector2(2,-2);return t;}
     static void Anchors(RectTransform r,Vector2 min,Vector2 max){r.anchorMin=min;r.anchorMax=max;r.offsetMin=r.offsetMax=Vector2.zero;}
     static void SetLayer(Transform t){t.gameObject.layer=5;foreach(Transform child in t)SetLayer(child);}
 }
