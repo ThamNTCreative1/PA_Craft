@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 29023,
-    "creativeName": "C1_2611_HuyNQ_OBP_V07_ThuLH",
+    "applicationID": 43685,
+    "creativeName": "C1_2611_HuyNQ_OBP_V08_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -13,6 +13,7 @@
             "excludes": [
                 "**/Editor/",
                 "Assets/_Playable_/MonsterArmy/Tests/",
+                "Assets/_Playable_/CartRescue/Tests/",
                 "**/Luna/RuntimeScripts/",
                 "**/FacebookSDK/",
                 "**/googleads**/",
@@ -8225,6 +8226,18 @@
             {
                 "name": "Playable.ChooseMonster.ChooseMonsterController.State",
                 "excluded": false
+            },
+            {
+                "name": "Playable.CartRescue.Core.CartPhase",
+                "excluded": false
+            },
+            {
+                "name": "Playable.CartRescue.Core.DeckEvent",
+                "excluded": false
+            },
+            {
+                "name": "Playable.CartRescue.TutorialHand.Mode",
+                "excluded": false
             }
         ],
         "unusedMethods": [
@@ -8784,7 +8797,7 @@
                     },
                     {
                         "name": "sign",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "umul",
@@ -23434,7 +23447,7 @@
                     },
                     {
                         "name": "SetPosition",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetPositions",
@@ -28714,7 +28727,7 @@
                     },
                     {
                         "name": "NormalStyle#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "name#get",
@@ -31136,7 +31149,7 @@
                     },
                     {
                         "name": "Pause",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PlayBackwards",
@@ -32048,7 +32061,7 @@
                     },
                     {
                         "name": "Pause",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PlayBackwards",
@@ -32350,7 +32363,7 @@
                     },
                     {
                         "name": "PrependInterval",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PrependCallback",
@@ -36264,7 +36277,7 @@
                     },
                     {
                         "name": "DoPrependInterval",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "UpdateDelay",
@@ -38396,11 +38409,11 @@
                     },
                     {
                         "name": "ApplyViewAlignment",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "EvaluateSegmentsNormalsForViewAlignment",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "EvaluateCornerAndEndNormals",
@@ -40188,40 +40201,6 @@
                     },
                     {
                         "name": "Update",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.ResponsiveCanvasScaler",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnValidate",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ApplyScaleSettings",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GetMatchValue",
                         "excluded": false
                     }
                 ]
@@ -43945,6 +43924,838 @@
                         "excluded": false
                     }
                 ]
+            },
+            {
+                "className": "Playable.CartRescue.AspectAnchor",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.CartBody",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Sim#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Deck#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tilt#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "X#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Speed#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SlotUnit#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DeckTransform#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DeckHalfLength#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Drag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Drive",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Simulate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DeckPointWorld",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.CartEngineAudio",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FadeOut",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.CartRescueCamera",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Cam#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Portrait#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Fit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Follow",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HoldAt",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Refresh",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Place",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.CartRescueController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ArrowPoint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleRope",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Drop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleCartDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPhase",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnStartClicked",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowWin",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowPlayNow",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowRopeHint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideRopeHint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowStart",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideStart",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowHintText",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideHintText",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.CartFlow",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "CartDraggable#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDropped",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PressStart",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Set",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.CartMotion",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Driving#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Drag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Drive",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Step",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.CartSimulation",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Step",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.CartTiltModel",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Reset",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Step",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.DeckConfig",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Default#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.DeckSolver",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Count#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "LoadMoment#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Position",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Velocity",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HalfWidth",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Slot",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Add",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Step",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Integrate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Separate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateSettle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SnapToSlots",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Unlock",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.IdleHint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Visible#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Touch",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tick",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.MotionConfig",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Default#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.RopeModel",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "VelocityX#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "VelocityY#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Grab",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Release",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Step",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.TiltConfig",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Default#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.DeckRiderView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "HalfWidth#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Bind",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BlendIn",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayLand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.PointerArrow",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Show",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hide",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.PointerInput",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "OrthoSize#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Poll",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ScreenToPlane",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.RopeHangView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "DistanceToSegment",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Grabbed#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Attached#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RiderCenter#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryGrab",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DragTo",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Release",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FlyAway",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetRope",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.TutorialHand",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowSwipe",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ShowTap",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hide",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Touch",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Restart",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateDrag",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateSwipe",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateTap",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TapOnce",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideTapFx",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayTapFx",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ToCanvas",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.WorldArrow",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Show",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hide",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.ScreenDrag",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "WorldX",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.Core.SlotAssigner",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Assign",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.AspectSwitch",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    }
+                ]
             }
         ],
         "stubberDataList": [],
@@ -44442,6 +45253,16 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/BrainrotPlayground/Generated/Title SDF.asset"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/CartRescue/Generated/Hint SDF.asset"
                     }
                 ]
             },
