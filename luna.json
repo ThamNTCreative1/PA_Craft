@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 29023,
-    "creativeName": "C1_2611_HuyNQ_UAC_V83_ThuLH",
+    "creativeName": "C1_2611_HuyNQ_OBP_V07_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -7411,10 +7411,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.UI.BaseMeshEffect",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.UI.CoroutineTween.FloatTween",
                 "excluded": true
             },
@@ -7431,19 +7427,11 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.UI.Shadow",
-                "excluded": true
-            },
-            {
                 "name": "UnityEngine.EventSystems.Physics2DRaycaster",
                 "excluded": true
             },
             {
                 "name": "UnityEngine.UI.Dropdown",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.UI.Outline",
                 "excluded": true
             },
             {
@@ -7472,7 +7460,7 @@
             },
             {
                 "name": "UnityEngine.UI.IMeshModifier",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.UI.ContentSizeFitter.FitMode",
@@ -7920,10 +7908,6 @@
             },
             {
                 "name": "DG.Tweening.Plugins.Color2Plugin",
-                "excluded": true
-            },
-            {
-                "name": "DG.Tweening.Plugins.ColorPlugin",
                 "excluded": true
             },
             {
@@ -15180,7 +15164,7 @@
                     },
                     {
                         "name": "Contains",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "equals",
@@ -17178,7 +17162,7 @@
                     },
                     {
                         "name": "ViewportToWorldPoint",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Render",
@@ -24384,7 +24368,7 @@
                     },
                     {
                         "name": "FromMesh",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -27592,15 +27576,15 @@
                 "instanceMethods": [
                     {
                         "name": "getDefaultValue",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ctor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Reset",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "getHashCode",
@@ -27612,7 +27596,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -31382,7 +31366,7 @@
                     },
                     {
                         "name": "ToAlpha",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Punch",
@@ -31822,7 +31806,7 @@
                     },
                     {
                         "name": "DOScaleY",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DOScaleZ",
@@ -32450,7 +32434,7 @@
                     },
                     {
                         "name": "SetOptions$4",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetOptions$6",
@@ -34978,7 +34962,7 @@
                     },
                     {
                         "name": "DOFade$2",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DOFade$3",
@@ -43179,36 +43163,6 @@
                 ]
             },
             {
-                "className": "Playable.ChooseMonster.ChooseHudLayout",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Place",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Size",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Refresh",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.ChooseMonster.ChooseMonsterController",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -43650,6 +43604,344 @@
                     },
                     {
                         "name": "$clone",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.BrainrotPlayground.BrainrotPlaygroundController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "PopIn",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Fade",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "StartHand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "KillLoops",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnTapped",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Choose",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnBrainrot",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SlotAt",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TargetIndex",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "WithAlpha",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayTapFx",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideTapFx",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ArrowNudge",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.BrainrotPlayground.BrainrotWalker",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Angle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetAngle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayDrop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PickTarget",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Animate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateDrop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateSorting",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.BrainrotPlayground.PlaygroundCamera",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Camera#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsPortrait#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Refresh",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.BrainrotPlayground.PlaygroundHudLayout",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Place",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlaceRotated",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlaceTopLeft",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TargetSlot#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Refresh",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ToViewportX",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ToViewportY",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlaceTitle",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.BrainrotPlayground.TapCatcher",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "OnPointerClick",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.UI.BaseMeshEffect",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "graphic#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDidApplyAnimationProperties",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ModifyMesh",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.UI.Shadow",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "effectColor#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "effectColor#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "effectDistance#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "effectDistance#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useGraphicAlpha#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "useGraphicAlpha#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyShadowZeroAlloc",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ApplyShadow",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ModifyMesh$1",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "UnityEngine.UI.Outline",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ModifyMesh$1",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "DG.Tweening.Plugins.ColorPlugin",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Reset",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetFrom$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetFrom",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ConvertToStartValue",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetRelativeEndValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetChangeValue",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetSpeedBasedDuration",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EvaluateAndApply",
                         "excluded": false
                     }
                 ]
@@ -44130,6 +44422,26 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/ChooseMonster/Generated/FFFFORWA Static SDF.asset"
+                    },
+                    {
+                        "maxWidth": 896,
+                        "maxHeight": 576,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/BrainrotPlayground/Generated/Map_Playground.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/BrainrotPlayground/Generated/Title SDF.asset"
                     }
                 ]
             },
