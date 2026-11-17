@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 43685,
-    "creativeName": "C1_2611_HuyNQ_OBP_V08_ThuLH",
+    "creativeName": "C1_2611_HuyNQ_OBP_V09_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -17099,7 +17099,7 @@
                     },
                     {
                         "name": "backgroundColor#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "pixelRect#get",
@@ -20595,7 +20595,7 @@
                     },
                     {
                         "name": "ambientMode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ambientMode#set",
@@ -20623,11 +20623,11 @@
                     },
                     {
                         "name": "ambientLight#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ambientLight#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ambientSkyColor#set",
@@ -23991,7 +23991,7 @@
                     },
                     {
                         "name": "rootCanvas#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "referencePixelsPerUnit#get",
@@ -24073,7 +24073,7 @@
                     },
                     {
                         "name": "interactable#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ignoreParentGroups#set",
@@ -35465,7 +35465,7 @@
                     },
                     {
                         "name": "UpdateEnvironmentLighting",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "UpdateSkyboxMaterial",
@@ -37743,7 +37743,7 @@
                     },
                     {
                         "name": "HasEnded#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DeferCountdownUntilGameplay",
@@ -44078,6 +44078,10 @@
                     {
                         "name": "Place",
                         "excluded": false
+                    },
+                    {
+                        "name": "Showcase",
+                        "excluded": false
                     }
                 ]
             },
@@ -44740,15 +44744,119 @@
                 ]
             },
             {
-                "className": "Playable.CartRescue.AspectSwitch",
+                "className": "Playable.CartRescue.FitInParent",
                 "staticMethods": [],
                 "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
                     {
                         "name": "OnEnable",
                         "excluded": false
                     },
                     {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.MapSelectFlow",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
                         "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateTimer",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NextCardHint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Choose",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowGameplay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OpenStore",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.MapTheme",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Label#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.WorldAnchoredUI",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SnapTip",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CartRescue.NotchSafeArea",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
                         "excluded": false
                     },
                     {

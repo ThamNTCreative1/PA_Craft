@@ -25,6 +25,11 @@ MESHES = [
     "helicopter-base", "helicopter-propeller-main",
     "crate-supply", "barrel", "package-box", "log", "flag-golf_red", "cannonball",
     "jeep-open-base", "jeep-open-wheel_FL",
+    # Bối cảnh 4 map (màn chọn map).
+    "ferris-wheel-main", "ferris-wheel-stand", "bumper-car-red", "bumper-car_blue", "hot-dog-stand", "bench-old",
+    "basketball-stand", "lamp-city", "building-cabin-small", "building-stadium", "car-broken", "fountain",
+    "farm-house", "haystack", "hay-pile", "hay-cube", "fence", "fence-classic", "horse", "farm-flower-bed",
+    "castle-medieval", "gate-medieval_medium", "flag-medieval", "japan-tree-tall", "mushroom-boletus", "grass-long",
 ]
 SPRITES = ["TutorialFinger"]
 AUDIO = ["Win", "action_jump", "Button", "tralalelotheme"]

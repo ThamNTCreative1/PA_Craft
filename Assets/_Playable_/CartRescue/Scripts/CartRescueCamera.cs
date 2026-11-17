@@ -24,6 +24,9 @@ namespace Playable.CartRescue
         private Transform _follow;
         private Vector2 _center;
         private bool _holding;
+        private bool _showcase;
+        private Rect _showcaseLandscape;
+        private Rect _showcasePortrait;
         private float _holdX;
 
         private Camera Cam => _camera != null ? _camera : (_camera = GetComponent<Camera>());
@@ -46,6 +49,21 @@ namespace Playable.CartRescue
         {
             _follow = target;
             _holding = false;
+        }
+
+        /// <summary>
+        /// Khung cố định cho màn chơi tĩnh (showcase): cả màn dọc lẫn ngang đều ôm trọn vùng focus (xe + drone + cổng
+        /// GOAL), không bám theo xe.
+        /// </summary>
+        public void Showcase(Rect landscape, Rect portrait)
+        {
+            _follow = null;
+            _holding = false;
+            _portraitTarget = null;
+            _showcase = true;
+            _showcaseLandscape = landscape;
+            _showcasePortrait = portrait;
+            Refresh();
         }
 
         /// <summary>Thôi bám xe, trượt về và đứng yên tại X (vd. cột cờ đích).</summary>
@@ -76,6 +94,13 @@ namespace Playable.CartRescue
         {
             Camera cam = Cam;
             _lastAspect = cam.aspect;
+            if (_showcase)
+            {
+                // Màn chơi tĩnh: khung riêng cho dọc / ngang, không bám xe.
+                _focus = Portrait ? _showcasePortrait : _showcaseLandscape;
+                _portraitWidth = _focus.width;
+                _center = _focus.center;
+            }
             cam.orthographic = true;
             // Nhìn chếch xuống _pitch độ làm chiều cao chiếu lên màn hình co lại theo cos(pitch).
             float halfH = _focus.height * 0.5f * Mathf.Cos(_pitch * Mathf.Deg2Rad);

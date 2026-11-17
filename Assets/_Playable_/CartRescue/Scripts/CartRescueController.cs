@@ -18,6 +18,9 @@ namespace Playable.CartRescue
     public sealed class CartRescueController : MonoBehaviour
     {
         [SerializeField] private GameManager _gameManager;
+        // Chế độ showcase (màn chọn map): chỉ dựng xe + nhân vật + drone làm cảnh tĩnh, không hướng dẫn, không nhận
+        // thao tác — MapSelectFlow điều khiển màn hình và CTA.
+        [SerializeField] private bool _showcase;
         [SerializeField] private PointerInput _input;
         [SerializeField] private CartBody _cart;
         [SerializeField] private DeckRiderView[] _riders;
@@ -73,18 +76,35 @@ namespace Playable.CartRescue
                 _riders[i].Bind(_cart, index);
             }
             _hangRider.enabled = false;
+            if (_showcase)
+            {
+                if (_startButton != null) _startButton.gameObject.SetActive(false);
+                if (_winText != null) _winText.gameObject.SetActive(false);
+                if (_winOverlay != null) _winOverlay.gameObject.SetActive(false);
+                if (_balanceHint != null) _balanceHint.gameObject.SetActive(false);
+                if (_ropeHint != null) _ropeHint.gameObject.SetActive(false);
+                if (_playNow != null) _playNow.gameObject.SetActive(false);
+                return;
+            }
 
             _flow = new CartFlow(_finishX);
             _flow.Changed += OnPhase;
 
-            _startButton.onClick.AddListener(OnStartClicked);
-            _startButton.gameObject.SetActive(false);
-            _winText.gameObject.SetActive(false);
+            if (_startButton != null)
+            {
+                _startButton.onClick.AddListener(OnStartClicked);
+                _startButton.gameObject.SetActive(false);
+            }
+            if (_winText != null) _winText.gameObject.SetActive(false);
             if (_winOverlay != null) _winOverlay.gameObject.SetActive(false);
             if (_balanceHint != null) _balanceHint.gameObject.SetActive(false);
             if (_playNow != null)
             {
-                _playNow.onClick.AddListener(_gameManager.ShowCTA);
+                _playNow.onClick.AddListener(() =>
+                {
+                    if (!_gameManager.HasEnded) _gameManager.EndGame();   // Luna GameEnded trước khi mở store
+                    _gameManager.ShowCTA();
+                });
                 _playNow.gameObject.SetActive(false);
             }
             ShowRopeHint();
@@ -104,6 +124,11 @@ namespace Playable.CartRescue
 
         private void Update()
         {
+            if (_showcase)
+            {
+                _cart.Simulate(Time.deltaTime);
+                return;
+            }
             _input.Poll();
             if (_input.Down || _input.Held) _hand.Touch();
 
@@ -189,7 +214,7 @@ namespace Playable.CartRescue
                     break;
                 case CartPhase.StartReady:
                     ShowStart();
-                    _hand.ShowTap((RectTransform)_startButton.transform);
+                    if (_startButton != null) _hand.ShowTap((RectTransform)_startButton.transform);
                     break;
                 case CartPhase.Driving:
                     _hand.Hide();
@@ -225,7 +250,7 @@ namespace Playable.CartRescue
                 _winOverlay.color = c;
                 _winOverlay.DOFade(_winOverlayAlpha, 0.35f).SetEase(Ease.OutQuad);
             }
-            _winText.gameObject.SetActive(true);
+            if (_winText != null) _winText.gameObject.SetActive(true);
             ShowPlayNow(0.2f);
         }
 
@@ -295,6 +320,7 @@ namespace Playable.CartRescue
 
         private void ShowStart()
         {
+            if (_startButton == null) return;
             Transform t = _startButton.transform;
             _startButton.gameObject.SetActive(true);
             t.DOKill();
@@ -307,6 +333,7 @@ namespace Playable.CartRescue
         private void HideStart()
         {
             _startPulse?.Kill();
+            if (_startButton == null) return;
             _startButton.transform.DOKill();
             _startButton.gameObject.SetActive(false);
         }

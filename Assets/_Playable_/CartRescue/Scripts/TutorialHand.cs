@@ -45,6 +45,7 @@ namespace Playable.CartRescue
         private Vector3 _baseScale = Vector3.one;
         private int _tappedCycle = -1;
         private bool _dragTap;
+        private bool _tapTapFx;
 
         private void Awake()
         {
@@ -72,10 +73,12 @@ namespace Playable.CartRescue
             Restart();
         }
 
-        public void ShowTap(RectTransform target)
+        /// <param name="tapEffect">Bật hiệu ứng tap (vòng sóng + tia sáng) mỗi lần tay nhấn xuống.</param>
+        public void ShowTap(RectTransform target, bool tapEffect = false)
         {
             _mode = Mode.Tap;
             _tapTarget = target;
+            _tapTapFx = tapEffect;
             Restart();
         }
 
@@ -177,6 +180,7 @@ namespace Playable.CartRescue
         {
             if (_tapTarget == null) return;
             float u = (_t % 0.9f) / 0.9f;
+            if (_tapTapFx) TapOnce(Mathf.FloorToInt(_t / 0.9f), u >= 0.3f);
             Vector2 screen = RectTransformUtility.WorldToScreenPoint(null, _tapTarget.position);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, screen, null, out Vector2 pos);
             float scale = u < 0.3f ? Mathf.Lerp(1.1f, 0.85f, u / 0.3f) : Mathf.Lerp(0.85f, 1.1f, (u - 0.3f) / 0.7f);

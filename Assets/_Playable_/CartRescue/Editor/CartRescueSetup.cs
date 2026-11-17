@@ -20,7 +20,7 @@ namespace Playable.CartRescue.EditorTools
     /// mesh/material dựng lại bằng CartRescueArt → Generated/.
     /// Gameplay diễn ra trên mặt phẳng XY (Z = 0), camera nhìn theo +Z.
     /// </summary>
-    public static class CartRescueSetup
+    public static partial class CartRescueSetup
     {
         private const string ScenePath = "Assets/_Playable_/Scenes/Gameplay.unity";
         private const string Root = CartRescueArt.Root;
@@ -73,10 +73,10 @@ namespace Playable.CartRescue.EditorTools
             CreateAudioManager(root.transform);
 
             Camera cam = CreateCamera(root.transform, out CartRescueCamera camFit);
-            CreateLight(root.transform);
+            Light light = CreateLight(root.transform);
             Transform world = new GameObject("World").transform;
             world.SetParent(root.transform, false);
-            BuildEnvironment(world);
+            GameObject room = null;   // nền phòng xám của gameplay cũ đã bỏ — nền là 4 map
 
             CartRefs cart = BuildCart(world);
             var riders = new List<Object>();
@@ -101,7 +101,7 @@ namespace Playable.CartRescue.EditorTools
 
             GameManager gameManager = root.AddComponent<GameManager>();
             var gm = new SerializedObject(gameManager);
-            gm.FindProperty("_endTime").intValue = 40;
+            gm.FindProperty("_endTime").intValue = 30;   // đồng hồ HUD đếm ngược 30s rồi mở store
             gm.FindProperty("_storeOnEndTime").boolValue = true;
             gm.FindProperty("_autoStoreAfterEndcard").boolValue = false;
             gm.FindProperty("_tapToCtaMode").boolValue = false;
@@ -137,151 +137,19 @@ namespace Playable.CartRescue.EditorTools
             so.FindProperty("_landClip").objectReferenceValue = Clip("action_jump");
             so.FindProperty("_buttonClip").objectReferenceValue = Clip("Button");
             so.FindProperty("_winClip").objectReferenceValue = Clip("Win");
+            so.FindProperty("_showcase").boolValue = true;
             so.ApplyModifiedPropertiesWithoutUndo();
+
+            // Màn chọn map + 4 bối cảnh + màn chơi tĩnh (CartRescueMaps.cs).
+            BuildMaps(new MapContext
+            {
+                Root = root.transform, World = world, Room = room, Camera = cam, CameraFit = camFit, Light = light,
+                Ui = ui, Cart = cart.Body, HangRider = hangRider, Rope = rope, GameManager = gameManager,
+            });
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             Debug.Log("[CartRescue] Scene built: " + ScenePath);
-        }
-
-        // ───────────────────────────── Môi trường ─────────────────────────────
-
-        private static void BuildEnvironment(Transform parent)
-        {
-            // Phòng kín kiểu sandbox như hình demo: tường xám sáng lưới ô vuông mờ, sàn xám đậm phẳng, mép sàn sáng hơn.
-            // Dùng shader Unlit cho màu phẳng, không bị ánh sáng làm loang.
-            float width = RoadEndX + 40f, centerX = (RoadEndX - 20f) * 0.5f;
-            Material ground = UnlitColorMaterial("Env_Ground", WallFloorColor);
-            Material lip = UnlitColorMaterial("Env_GroundLip", new Color(0.33f, 0.33f, 0.34f));
-            Material wall = GridMaterial("Env_Wall", width, 40f);
-
-            Cube(parent, "Ground", new Vector3(centerX, -20f, 3f), new Vector3(width, 40f, 12f), ground);
-            Cube(parent, "GroundLip", new Vector3(centerX, -0.06f, -2.9f), new Vector3(width, 0.12f, 0.2f), lip);
-            var wallGo = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            Object.DestroyImmediate(wallGo.GetComponent<Collider>());
-            wallGo.name = "Wall";
-            wallGo.transform.SetParent(parent, false);
-            wallGo.transform.localPosition = new Vector3(centerX, 18f, 6.5f);
-            wallGo.transform.localScale = new Vector3(width, 40f, 1f);
-            wallGo.GetComponent<MeshRenderer>().sharedMaterial = wall;
-
-            BuildBombPiles(parent);
-
-            // Đích: hai cờ.
-            Model(parent, "flag-golf_red", new Vector3(FinishX + 3.2f, 0f, 1.4f), 0f, 1.6f, groundAlign: true);
-            Model(parent, "flag-golf_red", new Vector3(FinishX + 3.2f, 0f, -2.2f), 0f, 1.6f, groundAlign: true);
-        }
-
-        // ───────────────────────────── Bom, lựu đạn, pháo hoa (trang trí như demo) ─────────────────────────────
-        // Game gốc không có mesh lựu đạn / bom hẹn giờ / pháo hoa → dựng bằng khối hộp kiểu voxel; bom tròn dùng cannonball.
-
-        private enum Prop { Grenade, TimeBomb, Rocket, RoundBomb }
-
-        private static void BuildBombPiles(Transform parent)
-        {
-            var root = new GameObject("BombPiles").transform;
-            root.SetParent(parent, false);
-            // (loại, x, y chồng, z, yaw) — z > 1.3 nằm sau xe, z < −1.3 nằm trước xe (chỉ đặt ở chỗ xe không che).
-            var items = new (Prop kind, float x, float y, float z, float yaw)[]
-            {
-                // Đống chính sát góc dưới trái, trước xe (giống demo) — trong khung cả màn dọc lẫn ngang lúc mở game.
-                (Prop.TimeBomb, -3.5f, 0f, -2.1f, 8f), (Prop.TimeBomb, -2.3f, 0f, -2.3f, -6f), (Prop.TimeBomb, -2.9f, 0.62f, -2.2f, 3f),
-                (Prop.Grenade, -4.4f, 0f, -1.9f, 20f), (Prop.Grenade, -1.3f, 0f, -2.4f, -25f), (Prop.Grenade, -1.9f, 0.62f, -2.3f, 40f),
-                (Prop.RoundBomb, -4.2f, 0f, 2f, 30f), (Prop.Grenade, -3.3f, 0f, 2.3f, 0f),
-                // Sau xe bên phải: pháo hoa dựng sát tường + vài quả.
-                (Prop.Rocket, 3.6f, 0f, 2.6f, 0f), (Prop.Rocket, 4.1f, 0f, 2.9f, 0f), (Prop.Rocket, 4.6f, 0f, 2.6f, 0f),
-                (Prop.TimeBomb, 3.9f, 0f, 1.9f, -10f), (Prop.Grenade, 4.9f, 0f, 1.8f, 15f),
-                // Dọc đường chạy.
-                (Prop.RoundBomb, 12f, 0f, 2.2f, 0f), (Prop.Grenade, 13f, 0f, 1.9f, 30f), (Prop.TimeBomb, 14.2f, 0f, -2.2f, 5f),
-                (Prop.Grenade, 20f, 0f, 2f, 0f), (Prop.Grenade, 20.7f, 0f, 2.4f, 60f), (Prop.TimeBomb, 24f, 0f, 2.1f, 5f),
-                (Prop.RoundBomb, 27f, 0f, 2.2f, 0f), (Prop.Rocket, 30f, 0f, 2.3f, 0f), (Prop.Rocket, 30.6f, 0f, 2.1f, 0f),
-                (Prop.TimeBomb, 33.5f, 0f, 2f, -5f), (Prop.TimeBomb, 34.2f, 0.62f, 2.1f, 8f), (Prop.Grenade, 35.2f, 0f, -2.2f, 30f),
-                (Prop.RoundBomb, 38f, 0f, 2.3f, 0f), (Prop.Grenade, 47f, 0f, 2f, 0f), (Prop.TimeBomb, 48.5f, 0f, -2.2f, 10f),
-            };
-            for (int i = 0; i < items.Length; i++)
-            {
-                var it = items[i];
-                Transform t = new GameObject(it.kind + "_" + i).transform;
-                t.SetParent(root, false);
-                const float propScale = 1.3f;
-                t.localPosition = new Vector3(it.x, it.y * propScale, it.z);
-                t.localRotation = Quaternion.Euler(0f, it.yaw, 0f);
-                t.localScale = Vector3.one * propScale;
-                switch (it.kind)
-                {
-                    case Prop.Grenade: BuildGrenade(t); break;
-                    case Prop.TimeBomb: BuildTimeBomb(t); break;
-                    case Prop.Rocket: BuildRocket(t, i % 2 == 0); break;
-                    case Prop.RoundBomb: BuildRoundBomb(t); break;
-                }
-            }
-        }
-
-        /// <summary>Lựu đạn: thân xanh rêu có rãnh, nắp xám + cần gạt + khoen. Cao ~0.62.</summary>
-        private static void BuildGrenade(Transform t)
-        {
-            Material body = ColorMaterial("Bomb_GrenadeGreen", new Color(0.36f, 0.5f, 0.2f));
-            Material groove = ColorMaterial("Bomb_GrenadeDark", new Color(0.22f, 0.32f, 0.12f));
-            Material metal = ColorMaterial("Bomb_Metal", new Color(0.62f, 0.63f, 0.65f));
-            Box(t, "Body", new Vector3(0f, 0.25f, 0f), new Vector3(0.42f, 0.46f, 0.42f), body);
-            Box(t, "Groove1", new Vector3(0f, 0.18f, 0f), new Vector3(0.44f, 0.04f, 0.44f), groove);
-            Box(t, "Groove2", new Vector3(0f, 0.32f, 0f), new Vector3(0.44f, 0.04f, 0.44f), groove);
-            Box(t, "GrooveV", new Vector3(0f, 0.25f, 0f), new Vector3(0.04f, 0.47f, 0.44f), groove);
-            Box(t, "Cap", new Vector3(0f, 0.51f, 0f), new Vector3(0.2f, 0.1f, 0.2f), metal);
-            Box(t, "Lever", new Vector3(0.14f, 0.42f, 0f), new Vector3(0.06f, 0.26f, 0.12f), metal, Quaternion.Euler(0f, 0f, -12f));
-            Box(t, "Ring", new Vector3(-0.13f, 0.56f, 0f), new Vector3(0.12f, 0.12f, 0.03f), metal);
-        }
-
-        /// <summary>Bom hẹn giờ: 3 thỏi thuốc nổ đỏ nằm ngang, băng keo đen, mặt đồng hồ trắng phía trước. Cao ~0.62.</summary>
-        private static void BuildTimeBomb(Transform t)
-        {
-            Material red = ColorMaterial("Bomb_DynamiteRed", new Color(0.78f, 0.12f, 0.1f));
-            Material tape = ColorMaterial("Bomb_Tape", new Color(0.12f, 0.12f, 0.13f));
-            Material face = ColorMaterial("Bomb_ClockFace", new Color(0.95f, 0.95f, 0.92f));
-            Material hand = ColorMaterial("Bomb_ClockHand", new Color(0.1f, 0.1f, 0.1f));
-            Material wire = ColorMaterial("Bomb_WireYellow", new Color(0.95f, 0.8f, 0.15f));
-            for (int i = 0; i < 3; i++)
-            {
-                float z = (i - 1) * 0.2f;
-                Box(t, "Stick" + i, new Vector3(0f, 0.11f + (i == 1 ? 0.17f : 0f), z + (i == 1 ? 0.0f : 0f)), new Vector3(0.9f, 0.19f, 0.19f), red);
-            }
-            Box(t, "TapeL", new Vector3(-0.28f, 0.2f, 0f), new Vector3(0.08f, 0.42f, 0.62f), tape);
-            Box(t, "TapeR", new Vector3(0.28f, 0.2f, 0f), new Vector3(0.08f, 0.42f, 0.62f), tape);
-            Box(t, "ClockBack", new Vector3(0f, 0.3f, -0.33f), new Vector3(0.36f, 0.36f, 0.06f), tape);
-            Box(t, "ClockFace", new Vector3(0f, 0.3f, -0.365f), new Vector3(0.28f, 0.28f, 0.02f), face);
-            Box(t, "HandH", new Vector3(0f, 0.34f, -0.38f), new Vector3(0.03f, 0.1f, 0.01f), hand);
-            Box(t, "HandM", new Vector3(0.04f, 0.3f, -0.38f), new Vector3(0.1f, 0.03f, 0.01f), hand);
-            Box(t, "Wire", new Vector3(0.2f, 0.47f, -0.15f), new Vector3(0.3f, 0.03f, 0.03f), wire, Quaternion.Euler(0f, 0f, 25f));
-        }
-
-        /// <summary>Pháo hoa: thân đỏ hoặc xanh có sọc trắng, chóp vàng, que gỗ. Cao ~1.3.</summary>
-        private static void BuildRocket(Transform t, bool red)
-        {
-            Material body = ColorMaterial(red ? "Bomb_RocketRed" : "Bomb_RocketBlue", red ? new Color(0.85f, 0.15f, 0.12f) : new Color(0.15f, 0.35f, 0.85f));
-            Material stripe = ColorMaterial("Bomb_RocketStripe", new Color(0.96f, 0.96f, 0.96f));
-            Material tip = ColorMaterial("Bomb_RocketTip", new Color(0.98f, 0.78f, 0.12f));
-            Material stick = ColorMaterial("Bomb_Stick", new Color(0.55f, 0.38f, 0.2f));
-            Box(t, "Stick", new Vector3(0f, 0.25f, 0f), new Vector3(0.06f, 0.5f, 0.06f), stick);
-            Box(t, "Body", new Vector3(0f, 0.78f, 0f), new Vector3(0.24f, 0.6f, 0.24f), body);
-            Box(t, "Stripe", new Vector3(0f, 0.86f, 0f), new Vector3(0.25f, 0.08f, 0.25f), stripe);
-            Box(t, "Tip1", new Vector3(0f, 1.13f, 0f), new Vector3(0.18f, 0.1f, 0.18f), tip);
-            Box(t, "Tip2", new Vector3(0f, 1.22f, 0f), new Vector3(0.1f, 0.08f, 0.1f), tip);
-        }
-
-        /// <summary>Bom tròn: cannonball của game + ngòi + tia lửa.</summary>
-        private static void BuildRoundBomb(Transform t)
-        {
-            GameObject ball = Model(t, "cannonball", Vector3.zero, 0f, 1f, groundAlign: false);
-            Bounds b = ball.GetComponent<MeshRenderer>().bounds;
-            float scale = 0.65f / Mathf.Max(0.01f, b.size.y);
-            ball.transform.localScale = Vector3.one * scale;
-            b = ball.GetComponent<MeshRenderer>().bounds;
-            ball.transform.position += new Vector3(t.position.x - b.center.x, t.position.y - b.min.y, t.position.z - b.center.z);
-            Material fuse = ColorMaterial("Bomb_Fuse", new Color(0.45f, 0.32f, 0.18f));
-            Material spark = ColorMaterial("Bomb_Spark", new Color(1f, 0.85f, 0.2f));
-            Box(t, "Neck", new Vector3(0f, 0.66f, 0f), new Vector3(0.16f, 0.06f, 0.16f), ColorMaterial("Bomb_Tape", new Color(0.12f, 0.12f, 0.13f)));
-            Box(t, "Fuse", new Vector3(0.05f, 0.76f, 0f), new Vector3(0.04f, 0.18f, 0.04f), fuse, Quaternion.Euler(0f, 0f, -20f));
-            Box(t, "Spark", new Vector3(0.09f, 0.87f, 0f), new Vector3(0.08f, 0.08f, 0.08f), spark, Quaternion.Euler(0f, 45f, 45f));
         }
 
         private static void Box(Transform parent, string name, Vector3 pos, Vector3 size, Material mat, Quaternion? rot = null)
@@ -424,7 +292,7 @@ namespace Playable.CartRescue.EditorTools
         {
             var heli = new GameObject("Drone").transform;
             heli.SetParent(parent, false);
-            heli.position = new Vector3(1.6f, 9.3f, 0.6f);
+            heli.position = new Vector3(-3.6f, 7.6f, 0.6f);   // bên trái xe như demo
             var body = new GameObject("Body").transform;
             body.SetParent(heli, false);
             body.localScale = Vector3.one * 1.1f;
@@ -519,7 +387,7 @@ namespace Playable.CartRescue.EditorTools
             return cam;
         }
 
-        private static void CreateLight(Transform parent)
+        private static Light CreateLight(Transform parent)
         {
             var go = new GameObject("Directional Light", typeof(Light));
             go.transform.SetParent(parent, false);
@@ -528,6 +396,7 @@ namespace Playable.CartRescue.EditorTools
             light.type = LightType.Directional;
             light.intensity = 0.9f;
             light.shadows = LightShadows.None;
+            return light;
         }
 
         private static void CreateAudioManager(Transform parent)
@@ -549,8 +418,12 @@ namespace Playable.CartRescue.EditorTools
 
         // ───────────────────────────── UI ─────────────────────────────
 
+        private static TMP_FontAsset _hintFont;
+        private static Material _hintMaterial;
+
         private struct UiRefs
         {
+            public RectTransform Canvas;
             public TutorialHand Hand;
             public WorldArrow Arrow;
             public Image WinOverlay;
@@ -662,6 +535,8 @@ namespace Playable.CartRescue.EditorTools
             haso.FindProperty("_landscape").vector2Value = new Vector2(0.76f, 0.8f);
             haso.ApplyModifiedPropertiesWithoutUndo();
             TMP_FontAsset hintFont = BuildHintFont(out Material hintMaterial);
+            _hintFont = hintFont;
+            _hintMaterial = hintMaterial;
             HintLine(hintRect, "DRAG THE ROPE", hintFont, hintMaterial, Color.white, 50f);
             HintLine(hintRect, "TO THE CART!", hintFont, hintMaterial, new Color(1f, 0.86f, 0.1f), -50f);
 
@@ -803,7 +678,7 @@ namespace Playable.CartRescue.EditorTools
             blockGo.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
             blockGo.SetActive(false);
 
-            return new UiRefs { BalanceHint = balanceRect, PlayNow = playNow, PlayNowShine = shineRect, WinOverlay = overlayImg, Pointer = pointer, Hint = hintRect, Arrow = arrow, Hand = hand, Start = startGo.GetComponent<Button>(), Win = winRect, Blocker = blockGo.GetComponent<Button>() };
+            return new UiRefs { Canvas = canvasRect, BalanceHint = balanceRect, PlayNow = playNow, PlayNowShine = shineRect, WinOverlay = overlayImg, Pointer = pointer, Hint = hintRect, Arrow = arrow, Hand = hand, Start = startGo.GetComponent<Button>(), Win = winRect, Blocker = blockGo.GetComponent<Button>() };
         }
 
         /// <param name="maxSize">Giới hạn kích thước texture khi build (0 = giữ nguyên) — ảnh UI gốc rất lớn, playable cần nhẹ.</param>
@@ -822,7 +697,7 @@ namespace Playable.CartRescue.EditorTools
         }
 
         /// <summary>Một dòng chữ hướng dẫn TMP (FFFFORWA Bold, viền đen dày + bóng đổ từ material).</summary>
-        private static void HintLine(RectTransform parent, string text, TMP_FontAsset font, Material material, Color color, float y, float width = 1000f)
+        private static TextMeshProUGUI HintLine(RectTransform parent, string text, TMP_FontAsset font, Material material, Color color, float y, float width = 1000f)
         {
             // Tạo ở trạng thái tắt rồi mới thêm TMP: tránh TMP tìm font mặc định (LiberationSans) trước khi gán font.
             var go = new GameObject(System.Text.RegularExpressions.Regex.Replace(text, "<[^>]+>", ""), typeof(RectTransform));
@@ -844,6 +719,7 @@ namespace Playable.CartRescue.EditorTools
             t.overflowMode = TextOverflowModes.Overflow;
             t.raycastTarget = false;
             go.SetActive(true);
+            return t;
         }
 
         /// <summary>
@@ -939,7 +815,6 @@ namespace Playable.CartRescue.EditorTools
 
         private static readonly Color WallFloorColor = new Color(0.24f, 0.24f, 0.25f);
         private static readonly Color WallColor = new Color(0.76f, 0.76f, 0.76f);
-        private static readonly Color WallLineColor = new Color(0.72f, 0.72f, 0.72f);
 
         private static Material UnlitColorMaterial(string name, Color color)
         {
@@ -952,40 +827,6 @@ namespace Playable.CartRescue.EditorTools
             }
             mat.shader = Shader.Find("Unlit/Color");
             mat.color = color;
-            EditorUtility.SetDirty(mat);
-            return mat;
-        }
-
-        /// <summary>Tường: texture ô vuông 1 đơn vị world, viền mờ — sinh ra file PNG trong Generated/.</summary>
-        private static Material GridMaterial(string name, float width, float height)
-        {
-            const int size = 64, line = 2;
-            string texPath = Gen + "Textures/Env_Grid.png";
-            CartRescueArt.EnsureFolder(Gen + "Textures");
-            var tex = new Texture2D(size, size, TextureFormat.RGB24, false);
-            for (int y = 0; y < size; y++)
-            for (int x = 0; x < size; x++)
-                tex.SetPixel(x, y, x < line || y < line ? WallLineColor : WallColor);
-            System.IO.File.WriteAllBytes(texPath, tex.EncodeToPNG());
-            Object.DestroyImmediate(tex);
-            AssetDatabase.ImportAsset(texPath);
-            var imp = (TextureImporter)AssetImporter.GetAtPath(texPath);
-            imp.wrapMode = TextureWrapMode.Repeat;
-            imp.mipmapEnabled = true;
-            imp.filterMode = FilterMode.Bilinear;
-            imp.SaveAndReimport();
-
-            string path = Gen + "Materials/" + name + ".mat";
-            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
-            if (mat == null)
-            {
-                mat = new Material(Shader.Find("Unlit/Texture"));
-                AssetDatabase.CreateAsset(mat, path);
-            }
-            mat.shader = Shader.Find("Unlit/Texture");
-            mat.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(texPath);
-            const float tile = 1.5f; // cạnh ô vuông (world)
-            mat.mainTextureScale = new Vector2(width / tile, height / tile);
             EditorUtility.SetDirty(mat);
             return mat;
         }
