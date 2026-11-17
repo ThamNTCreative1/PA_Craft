@@ -27,13 +27,15 @@ namespace Playable
         [SerializeField] private WinPanel _winPanel;
 
         private int _quantityEvent;
+        private bool _ended;
         public int EndTime => _endTime;
+        public bool IsEnded => _ended;
 
         private void Awake() { Instance = this; }
 
         private void Start()
         {
-            _btnBlock.onClick.AddListener(EndGame);
+            _btnBlock.onClick.AddListener(OnBlockClicked);
             // _btnBlock.gameObject.SetActive(false);
             if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);
             if (_backgroundMusic) AudioManager.Instance.PlayMusic(_backgroundMusic);
@@ -42,22 +44,54 @@ namespace Playable
 
         private void OnDestroy()
         {
-            if (_btnBlock != null) _btnBlock.onClick.RemoveListener(EndGame);
+            if (_btnBlock != null) _btnBlock.onClick.RemoveListener(OnBlockClicked);
             if (Instance == this) Instance = null;
         }
 
         public void EndGame()
         {
+            if (_ended)
+            {
+                // Đã kết thúc: mọi lần gọi lại (bấm bất kỳ đâu, nút Win/Fail...) đều mở store
+                Luna.Unity.Playable.InstallFullGame();
+                return;
+            }
+
+            _ended = true;
             Debug.Log("End Game");
-            _btnBlock.gameObject.SetActive(true);
+            StopAllCoroutines();
+            if (GameController.Instance != null) GameController.Instance.ShowEndScreen();
+            ShowBlockOverlay();
             Luna.Unity.LifeCycle.GameEnded();
             Luna.Unity.Playable.InstallFullGame();
+        }
+
+        /// <summary>Lớp trong suốt phủ toàn màn hình: nhấn vào đâu cũng ra store.</summary>
+        private void ShowBlockOverlay()
+        {
+            if (_btnBlock == null) return;
+            // Bật cả các cha đang tắt (Button Block nằm trong MinimapPanel)
+            Transform t = _btnBlock.transform;
+            while (t != null)
+            {
+                if (!t.gameObject.activeSelf) t.gameObject.SetActive(true);
+                t = t.parent;
+            }
+            _btnBlock.transform.SetAsLastSibling();
+            Canvas canvas = _btnBlock.GetComponentInParent<Canvas>();
+            if (canvas != null) canvas.rootCanvas.sortingOrder = 100;
+        }
+
+        private void OnBlockClicked()
+        {
+            if (_ended) Luna.Unity.Playable.InstallFullGame();
+            else EndGame();
         }
 
         protected void CountEvent()
         {
             _quantityEvent++;
-            if (_quantityEvent >= _totalEvent)
+            if (_totalEvent > 0 && _quantityEvent >= _totalEvent)
             {
                 EndGame();
             }
@@ -65,6 +99,7 @@ namespace Playable
 
         public void CountdownEndGame()
         {
+            if (_endTime <= 0) return;
             StartCoroutine(IECountdownEndGame());
         }
 

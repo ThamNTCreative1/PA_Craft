@@ -94,10 +94,22 @@ namespace Playable
         private IEnumerator IEShowMap()
         {
             if (_timeToShowMap > 0f) yield return new WaitForSeconds(_timeToShowMap);
+            ShowEndScreen();
+        }
+
+        private bool _endScreenShown;
+
+        /// <summary>Ẩn UI gameplay và hiện màn kết thúc (minimap + lớp bấm ra store).</summary>
+        public void ShowEndScreen()
+        {
+            if (_endScreenShown) return;
+            _endScreenShown = true;
+            StopAllCoroutines();
             if (_gamePanel != null) _gamePanel.SetActive(false);
-            _minimapPanel.SetActive(true);
-            _textMinimap.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.Linear)
-                .SetLoops(-1, LoopType.Yoyo);
+            if (_minimapPanel != null) _minimapPanel.SetActive(true);
+            if (_textMinimap != null)
+                _textMinimap.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.Linear)
+                    .SetLoops(-1, LoopType.Yoyo);
         }
 
         private void Update()
