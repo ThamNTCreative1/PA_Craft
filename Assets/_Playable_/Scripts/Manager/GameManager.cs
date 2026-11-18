@@ -35,6 +35,7 @@ namespace Playable
 
         private void Start()
         {
+            Luna.Unity.Analytics.LogEvent("game_started", 1);
             _btnBlock.onClick.AddListener(OnBlockClicked);
             // _btnBlock.gameObject.SetActive(false);
             if (_backgroundTexture) _background.sprite = CreateSprite(_backgroundTexture);

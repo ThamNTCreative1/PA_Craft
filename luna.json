@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 42155,
-    "creativeName": "CCPW_V02_AnhPP_HuyNQ",
+    "creativeName": "C1_2611_HuyNQ_CCPW_V06_AnhPP",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -8317,6 +8317,14 @@
             },
             {
                 "name": "UltimateJoystick.TensionType",
+                "excluded": false
+            },
+            {
+                "name": "Game.Events.Noel.NoelSkin",
+                "excluded": false
+            },
+            {
+                "name": "Game.Events.Noel.NoelSkinData",
                 "excluded": false
             }
         ],
@@ -16635,7 +16643,7 @@
                     },
                     {
                         "name": "SetAsLastSibling",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSiblingIndex",
@@ -17525,7 +17533,7 @@
                     },
                     {
                         "name": "sharedMaterials#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "localToWorldMatrix#get",
@@ -21503,7 +21511,7 @@
                     },
                     {
                         "name": "name#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "vertices#get",
@@ -21575,7 +21583,7 @@
                     },
                     {
                         "name": "subMeshCount#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "subMeshCount#set",
@@ -22137,11 +22145,11 @@
                     },
                     {
                         "name": "main#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "emission#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "colorBySpeed#get",
@@ -22213,7 +22221,7 @@
                     },
                     {
                         "name": "isPlaying#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "isPaused#get",
@@ -24071,7 +24079,7 @@
                     },
                     {
                         "name": "rootCanvas#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "referencePixelsPerUnit#get",
@@ -25033,7 +25041,7 @@
                     },
                     {
                         "name": "DelayedSetDirty",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -34685,7 +34693,7 @@
                     },
                     {
                         "name": "sharedMesh#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "rootBone#get",
@@ -37747,7 +37755,7 @@
                     },
                     {
                         "name": "CreateSprite",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ShowWinPanel",
@@ -37767,6 +37775,18 @@
                     },
                     {
                         "name": "CountdownEndGame",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsEnded#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ShowBlockOverlay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnBlockClicked",
                         "excluded": false
                     }
                 ]
@@ -37825,6 +37845,10 @@
                     },
                     {
                         "name": "ApplyBrightness",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowEndScreen",
                         "excluded": false
                     }
                 ]
@@ -38647,7 +38671,7 @@
                     },
                     {
                         "name": "OnRectTransformDimensionsChange",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "HandleSelfFittingAlongAxis",
@@ -39335,6 +39359,348 @@
                     },
                     {
                         "name": "StepRay",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Game.Events.Noel.NoelSkinSelector",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "PickMesh",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CacheRenderers",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Game.Events.Noel.NoelSnowfall",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Follow",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Game.Events.Noel.SnowGridChunk",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AdvanceClock",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FindAt",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddQuad",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SizeX#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SizeZ#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CellCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CullDistanceScale#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HasPending#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Renderer#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RuntimeMesh#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "HasCellHeights#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MaxBaseHeight#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "WorldBounds#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Configure",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Configure$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnValidate",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EnsureState",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EnsureRefillState",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetLevel",
+                        "excluded": true
+                    },
+                    {
+                        "name": "HasCell",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CellBaseY",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CellInHeightWindow",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryGetCell",
+                        "excluded": true
+                    },
+                    {
+                        "name": "IsSnowAt",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ClearSegment",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ClearSegment$1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ClearCell",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ClearCellInternal",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefillAll",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Tick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MarkDirty",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Rebuild",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BuildTops",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HeightKey",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetWall",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BuildWallsX",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BuildWallsZ",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DestroyMesh",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Game.Events.Noel.SnowGridManager",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Enqueue",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Unqueue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ProcessQueue",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateCulling",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Game.Events.Noel.SnowQuality",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Level#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TrailsEnabled#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CullDistance#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RebuildsPerFrame#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SnowfallLow#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MaskResolution#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RefillTick#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UploadEveryFrames#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Game.Events.Noel.SnowTrailPainter",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.UIAlignY",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "GetCenterY",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
                         "excluded": false
                     }
                 ]

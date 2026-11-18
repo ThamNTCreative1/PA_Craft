@@ -3,10 +3,9 @@ using UnityEngine;
 
 namespace Game.Events.Noel
 {
-    /// <summary>Nhân vật chọn được trên Luna Playground (dropdown).</summary>
+    /// <summary>NhÃ¢n váº­t chá»n Ä‘Æ°á»£c trÃªn Luna Playground (dropdown).</summary>
     public enum NoelSkin
     {
-        Default = 0,
         ChristmasElf = 1,
         PufferJacket = 2,
         ReindeerOnesie = 3,
@@ -15,7 +14,7 @@ namespace Game.Events.Noel
         ChristmasSweater = 6,
     }
 
-    /// <summary>Bộ mesh + material của một skin Noel (6 bộ phận, cùng rig với Character.fbx).</summary>
+    /// <summary>Bá»™ mesh + material cá»§a má»™t skin Noel (6 bá»™ pháº­n, cÃ¹ng rig vá»›i Character.fbx).</summary>
     [System.Serializable]
     public class NoelSkinData
     {
@@ -30,24 +29,22 @@ namespace Game.Events.Noel
     }
 
     /// <summary>
-    /// Thay nhân vật của người chơi theo lựa chọn trên Luna Playground.
-    /// Đổi sharedMesh + material của 6 SkinnedMeshRenderer (C2_Body, C2_Head, C2_Left/Right Arm, C2_Left/Right Leg),
-    /// giữ nguyên bộ xương và Animator nên mọi animation vẫn chạy.
+    /// Thay nhÃ¢n váº­t cá»§a ngÆ°á»i chÆ¡i theo lá»±a chá»n trÃªn Luna Playground.
+    /// Äá»•i sharedMesh + material cá»§a 6 SkinnedMeshRenderer (C2_Body, C2_Head, C2_Left/Right Arm, C2_Left/Right Leg),
+    /// giá»¯ nguyÃªn bá»™ xÆ°Æ¡ng vÃ  Animator nÃªn má»i animation váº«n cháº¡y.
     /// </summary>
     [DefaultExecutionOrder(-500)]
     public class NoelSkinSelector : MonoBehaviour
     {
         [LunaPlaygroundField("Character Skin")]
-        [SerializeField] private NoelSkin _skin = NoelSkin.Default;
+        [SerializeField] private NoelSkin _skin = NoelSkin.ChristmasElf;
         [SerializeField] private PlayerController _player;
         [SerializeField] private NoelSkinData[] _skins;
 
         private NoelSkin _appliedSkin = (NoelSkin)(-1);
         private SkinnedMeshRenderer[] _renderers;
-        private Mesh[] _defaultMeshes;
-        private Material[][] _defaultMaterials;
 
-        private void Start()
+        private void Awake()
         {
             Apply();
         }
@@ -57,9 +54,8 @@ namespace Game.Events.Noel
             if (_appliedSkin != _skin) Apply();
         }
 
-        private void Apply()
+        public void Apply()
         {
-            _appliedSkin = _skin;
             if (!CacheRenderers()) return;
 
             NoelSkinData data = null;
@@ -68,19 +64,35 @@ namespace Game.Events.Noel
                 if (_skins[i] != null && _skins[i].skin == _skin) { data = _skins[i]; break; }
             }
 
+            // Older scenes may still serialize the removed default value (0).
+            if (data == null && _skins != null && _skins.Length > 0)
+                data = _skins[0];
+            if (data == null || data.material == null) return;
+            // Validate the entire replacement before changing any renderer.
+            for (int i = 0; i < _renderers.Length; i++)
+            {
+                Mesh candidate = PickMesh(_renderers[i].name, data);
+                if (candidate == null) return;
+#if !UNITY_LUNA
+                if (candidate.bindposes.Length != _renderers[i].bones.Length) return;
+#endif
+            }
+            _appliedSkin = _skin;
+
             for (int i = 0; i < _renderers.Length; i++)
             {
                 SkinnedMeshRenderer r = _renderers[i];
                 Mesh mesh = data != null ? PickMesh(r.name, data) : null;
-                if (mesh == null || data.material == null)
-                {
-                    // Default (hoặc skin thiếu dữ liệu): trả về nhân vật gốc
-                    r.sharedMesh = _defaultMeshes[i];
-                    r.sharedMaterials = _defaultMaterials[i];
-                    continue;
-                }
+                if (mesh == null) continue;
+                // Release cached skinning buffers before a different vertex layout.
+                r.sharedMesh = null;
                 r.sharedMesh = mesh;
-                Material[] mats = new Material[_defaultMaterials[i].Length];
+#if !UNITY_LUNA
+                // Playworks does not expose SkinnedMeshRenderer.localBounds.
+                // The scene serializes these bounds for export.
+                r.localBounds = new Bounds(Vector3.zero, Vector3.one * 6f);
+#endif
+                Material[] mats = new Material[Mathf.Max(1, mesh.subMeshCount)];
                 for (int m = 0; m < mats.Length; m++) mats[m] = data.material;
                 r.sharedMaterials = mats;
             }
@@ -89,22 +101,9 @@ namespace Game.Events.Noel
         private bool CacheRenderers()
         {
             if (_renderers != null) return true;
-            if (_player == null)
-            {
-#pragma warning disable CS0618 // Luna hỗ trợ FindObjectOfType
-                _player = FindObjectOfType<PlayerController>();
-#pragma warning restore CS0618
-            }
             if (_player == null) return false;
 
             _renderers = _player.GetComponentsInChildren<SkinnedMeshRenderer>(true);
-            _defaultMeshes = new Mesh[_renderers.Length];
-            _defaultMaterials = new Material[_renderers.Length][];
-            for (int i = 0; i < _renderers.Length; i++)
-            {
-                _defaultMeshes[i] = _renderers[i].sharedMesh;
-                _defaultMaterials[i] = _renderers[i].sharedMaterials;
-            }
             return true;
         }
 
@@ -120,3 +119,4 @@ namespace Game.Events.Noel
         }
     }
 }
+

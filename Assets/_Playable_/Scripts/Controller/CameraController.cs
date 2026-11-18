@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Playable
 {
@@ -53,6 +53,7 @@ namespace Playable
         private Vector3 _lastAnchorPosition;
 #endif
         private MotorbikeController _vehicle;
+        private float _lastVehicleYaw;
         private readonly RaycastHit[] _hits = new RaycastHit[64];
         public Transform YawPivot => _yawPivot != null ? _yawPivot : transform;
         public ViewMode CurrentViewMode => _viewMode;
@@ -111,11 +112,13 @@ namespace Playable
             _followOverride = vehicle != null ? vehicle.CameraTarget : null;
             if (vehicle != null)
             {
-                _yaw = 0f;
+                _yaw = vehicle.transform.eulerAngles.y;
+                _lastVehicleYaw = _yaw;
                 _pitch = Mathf.Clamp(_bikeInitialPitch, _pitchMin, _pitchMax);
             }
 
             if (_target != null) _target.StopFollowingCameraYaw();
+            if (vehicle != null) UpdateCamera(true);
         }
 
         public void FollowPlayer(PlayerController player)
@@ -207,6 +210,12 @@ namespace Playable
                 ? anchor
                 : Vector3.SmoothDamp(_anchorPosition, anchor, ref _anchorVelocity,
                     1f / Mathf.Max(1f, _followSmooth), Mathf.Infinity, Time.deltaTime);
+            if (_vehicle != null)
+            {
+                float vehicleYaw = _vehicle.transform.eulerAngles.y;
+                _yaw += Mathf.DeltaAngle(_lastVehicleYaw, vehicleYaw);
+                _lastVehicleYaw = vehicleYaw;
+            }
             Quaternion yawRotation = Quaternion.Euler(0, _yaw, 0);
             Quaternion rotation = Quaternion.Euler(_pitch, _yaw, 0);
             if (_yawPivot != null) _yawPivot.SetPositionAndRotation(_anchorPosition, yawRotation);
