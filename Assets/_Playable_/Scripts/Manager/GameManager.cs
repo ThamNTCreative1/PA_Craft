@@ -18,7 +18,7 @@ namespace Playable
         private AudioClip _backgroundMusic;
 
         [SerializeField] private Texture2D _backgroundTexture;
-
+ 
         [SerializeField] private Button _btnBlock;
         [SerializeField] private Image _background;
 

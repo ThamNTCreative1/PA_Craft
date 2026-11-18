@@ -8,6 +8,7 @@ namespace Playable
         [SerializeField] private GameObject _content;
         [SerializeField] private PlayerController _player;
         [SerializeField] private CameraController _camera;
+        [SerializeField] private Transform _spawnPoint;
         [Header("Entry Orientation")]
         [SerializeField] private bool _lookAtTarget;
         [SerializeField] private Transform _lookTarget;
@@ -29,7 +30,8 @@ namespace Playable
         {
             if (!CanEnter) return;
             _content.SetActive(true);
-            Vector3 position = _player.transform.position;
+            // Optional spawn point moves the player to this mission's area; null keeps the current position.
+            Vector3 position = _spawnPoint != null ? _spawnPoint.position : _player.transform.position;
             float yaw = _playerYaw;
             if (_lookAtTarget)
             {
