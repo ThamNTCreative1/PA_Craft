@@ -31,6 +31,7 @@ namespace Playable
         private bool _isApplovin;
 
         private int _quantityEvent;
+        private bool _ended;
         public int EndTime => _endTime;
 
         private void Awake()
@@ -55,6 +56,10 @@ namespace Playable
 
         public void EndGame()
         {
+            // Timer and the picker can both end the game; only the first call counts.
+            if (_ended) return;
+            _ended = true;
+            StopAllCoroutines();
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
             Luna.Unity.LifeCycle.GameEnded();

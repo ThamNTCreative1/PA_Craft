@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 42155,
-    "creativeName": "C1_2611_HuyNQ_CCPW_V07_AnhPP",
+    "applicationID": 29023,
+    "creativeName": "C1_2611_HuyNQ_UAC_V90_ThamNT",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -81,7 +81,7 @@
             "externalJSLibraries": [],
             "scriptingDefines": [],
             "msbuildVersion": "18.9",
-            "monoVersion": "N/A",
+            "monoVersion": "9.0.3",
             "dotnetVersion": ""
         },
         "assets": {
@@ -24077,7 +24077,7 @@
                     },
                     {
                         "name": "interactable#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ignoreParentGroups#set",
@@ -38498,16 +38498,6 @@
                 ]
             },
             {
-                "className": "Playable.AuraUI",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Start",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.PlayerAction",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -41540,64 +41530,6 @@
                 ]
             },
             {
-                "className": "Playable.UIAlignY",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "GetCenterY",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.UICoverScaler",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Apply",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.UIFitScaler",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Apply",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.FishingMissionController",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -41615,6 +41547,306 @@
                     },
                     {
                         "name": "SetPaused",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChoiceCard",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Bind",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetInteractable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnClick",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ChoiceCardsView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Show",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hide",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetVisible",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetInteractable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnLeft",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnRight",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Raise",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.DropPresenter",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Drop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Land",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PickerOption",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Id#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Icon#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Display#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "VoiceSfx#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PickerSequence",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "IsFinished#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Current#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryChoose",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Advance",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PickerStep",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Title#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndsGame#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Get",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PingPongHandHint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Stop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Tap",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TipPosition",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.XmasPickerFlow",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "HideDisplay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ShowCurrent",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnChosen",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnLanded",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowNextAfterDelay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndGame",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.OrientationCameraPose",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyIfChanged",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.OrientationCameraPose.Pose",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Apply",
                         "excluded": false
                     }
                 ]

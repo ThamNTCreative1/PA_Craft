@@ -1,5 +1,5 @@
 # Current work item
 
-agent-os/specs/2026-11-18-1600-noel-missions
+agent-os/specs/2026-11-19-1500-xmas-vehicle-pet-picker
 
-Status: IMPLEMENTED (2026-11-18, by Claude at user request). Editor tests 13/13 pass, play-mode checked; Luna build + size budget not yet measured; user review of locations/generated art pending.
+Status: IMPLEMENTED (2026-11-19, by Claude at user request). EditMode 16/16 pass, play-mode flow checked; Luna build + size budget not yet measured; user review of SFX / car colour / pet icons pending.
