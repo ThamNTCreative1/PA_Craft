@@ -7,8 +7,8 @@ namespace Playable
         [SerializeField] private FishingController _fishing;
         [SerializeField] private FishingHUD _hud;
 
+        // Uses the shared start tutorials (joystick move + swipe camera) like the other missions.
         public override bool IsAvailable => _fishing != null && _hud != null;
-        public override bool UsesDrivingTutorial => false;
 
         protected override void OnEntered()
         {

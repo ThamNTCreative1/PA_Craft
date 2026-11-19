@@ -32,9 +32,10 @@ namespace Game.Events.Noel
     /// Update chỉ so sánh 1 enum để bắt thay đổi từ Playground lúc chạy.
     /// </summary>
     [DefaultExecutionOrder(-500)]
+    [LunaPlaygroundSection("Character", 2)]
     public class NoelSkinSelector : MonoBehaviour
     {
-        [LunaPlaygroundField("Character Skin")]
+        [LunaPlaygroundField("Character Skin", 1, "Character")]
         [SerializeField] private NoelSkin _skin = NoelSkin.SantaClaus;
         [SerializeField] private PlayerController _player;
         [SerializeField] private NoelSkinData[] _skins;

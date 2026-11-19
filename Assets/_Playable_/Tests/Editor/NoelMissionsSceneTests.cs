@@ -115,6 +115,33 @@ public class NoelMissionsSceneTests
     }
 
     [Test]
+    public void CarMission_VehicleReferencesAreWired()
+    {
+        var action = new SerializedObject(Root("Player").GetComponent<PlayerAction>());
+        var cars = action.FindProperty("_cars");
+        Assert.AreEqual(1, cars.arraySize, "PlayerAction._cars");
+        Assert.IsNotNull(cars.GetArrayElementAtIndex(0).objectReferenceValue, "PlayerAction._cars[0]");
+        Assert.IsNotNull(action.FindProperty("_carArrow").objectReferenceValue, "PlayerAction._carArrow");
+
+        var game = new SerializedObject(Root("GameController").GetComponent<GameController>());
+        Assert.IsNotNull(game.FindProperty("_carRide").FindPropertyRelative("_panel").objectReferenceValue, "_carRide._panel");
+        Assert.IsNotNull(game.FindProperty("_carRide").FindPropertyRelative("_firstRideHint").objectReferenceValue, "_carRide._firstRideHint");
+    }
+
+    [Test]
+    public void MotorbikeRemovedFromScene()
+    {
+        foreach (var root in _scene.GetRootGameObjects())
+            foreach (var t in root.GetComponentsInChildren<Transform>(true))
+            {
+                string n = t.name.ToLowerInvariant();
+                Assert.IsFalse(n.Contains("moto") || n.Contains("bike"), "motorbike object left: " + t.name);
+            }
+        Assert.IsNull(Object.FindFirstObjectByType<MotorbikeController>(FindObjectsInactive.Include));
+        Assert.AreEqual(0, new SerializedObject(Root("Player").GetComponent<PlayerAction>()).FindProperty("_motorbikes").arraySize);
+    }
+
+    [Test]
     public void SnowfallFollowsPlayer()
     {
         var snow = Root("[Noel] Snowfall").GetComponent<NoelSnowfall>();

@@ -4,8 +4,17 @@ using UnityEngine.UI;
 
 namespace Playable
 {
+    [LunaPlaygroundSection("Mission Order", 3)]
     public class MissionsJournalController : MonoBehaviour
     {
+        // Display position of each mission on the popup (1 = top). Equal/invalid values keep the default order.
+        [LunaPlaygroundField("Fire Paintballs Order", 1, "Mission Order")]
+        [SerializeField] private int _paintballOrder = 1;
+        [LunaPlaygroundField("Go Fishing Order", 2, "Mission Order")]
+        [SerializeField] private int _fishingOrder = 2;
+        [LunaPlaygroundField("Drive Car Order", 3, "Mission Order")]
+        [SerializeField] private int _carOrder = 3;
+        [Tooltip("Serialized as [Paintball, Fishing, Car]; their current positions are the display slots, top to bottom.")]
         [SerializeField] private MissionRowView[] _rows;
         [SerializeField] private JournalHandSequencer _handSequencer;
         [SerializeField] private PlayerAction _playerAction;
@@ -39,7 +48,6 @@ namespace Playable
                 return;
             }
 
-            _goTargets = new RectTransform[_rows.Length];
             for (int i = 0; i < _rows.Length; i++)
             {
                 if (_rows[i] == null || _rows[i].GoRect == null)
@@ -48,9 +56,9 @@ namespace Playable
                     enabled = false;
                     return;
                 }
-
-                _goTargets[i] = _rows[i].GoRect;
             }
+
+            ApplyMissionOrder();
 
             for (int i = 0; i < _rows.Length; i++) _rows[i].GoPressed += OnGoPressed;
             if (_title != null) _titleScale = _title.transform.localScale;
@@ -90,6 +98,44 @@ namespace Playable
             _gamePanel.SetActive(false);
             Canvas.ForceUpdateCanvases();
             _handSequencer.Begin(_goTargets);
+        }
+
+        /// <summary>
+        /// Places the rows in the slots (authored row positions sorted top → bottom) by their order numbers
+        /// (1 = top) and orders the hand targets the same way. Ties keep the default Paintball, Fishing, Car order.
+        /// </summary>
+        private void ApplyMissionOrder()
+        {
+            var rects = new RectTransform[_rows.Length];
+            var slots = new Vector2[_rows.Length];
+            for (int i = 0; i < _rows.Length; i++)
+            {
+                rects[i] = (RectTransform)_rows[i].transform;
+                slots[i] = rects[i].anchoredPosition;
+            }
+            System.Array.Sort(slots, (a, b) => b.y.CompareTo(a.y));
+
+            int[] keys = { _paintballOrder, _fishingOrder, _carOrder };
+            int[] order = { 0, 1, 2 };
+            // Stable insertion sort by order number (ties keep the default index order).
+            for (int i = 1; i < order.Length; i++)
+            {
+                int current = order[i];
+                int j = i - 1;
+                while (j >= 0 && keys[order[j]] > keys[current])
+                {
+                    order[j + 1] = order[j];
+                    j--;
+                }
+                order[j + 1] = current;
+            }
+            _goTargets = new RectTransform[_rows.Length];
+            for (int slot = 0; slot < order.Length; slot++)
+            {
+                int row = order[slot];
+                rects[row].anchoredPosition = slots[slot];
+                _goTargets[slot] = _rows[row].GoRect;
+            }
         }
 
         public void Hide()

@@ -9,7 +9,7 @@ namespace Playable
         public static GameController Instance;
 
         [Header("Game Brightness")]
-        [LunaPlaygroundField("Game Brightness")]
+        [LunaPlaygroundField("Game Brightness", 3, "Game Settings")]
         [SerializeField, Range(0f, 1f),
          Tooltip("Unlit brightness: 0 = original colors, 0.6 = current look, 1 = brightest.")]
         private float _gameBrightness = 0.6f;

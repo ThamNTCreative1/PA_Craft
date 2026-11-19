@@ -29,7 +29,13 @@ namespace Playable
             }
 
             gameObject.SetActive(true);
-            transform.position = targets[0].position;
+            // Local positions (hand parent space) stay valid when the popup or canvas is rescaled after Begin
+            // (UIFitScaler, orientation change); world positions captured here would drift.
+            Transform space = transform.parent;
+            Vector3[] points = new Vector3[targets.Length];
+            for (int i = 0; i < targets.Length; i++)
+                points[i] = space != null ? space.InverseTransformPoint(targets[i].position) : targets[i].position;
+            transform.localPosition = points[0];
             transform.localScale = Vector3.one;
             _sequence = DOTween.Sequence();
             for (int i = 0; i < targets.Length; i++)
@@ -38,7 +44,7 @@ namespace Playable
                 _sequence.Append(transform.DOScale(Vector3.one, _pulseDuration).SetEase(Ease.InQuad));
                 float remainingHold = Mathf.Max(0f, _holdDuration - 2f * _pulseDuration);
                 if (remainingHold > 0f) _sequence.AppendInterval(remainingHold);
-                _sequence.Append(transform.DOMove(targets[(i + 1) % targets.Length].position,
+                _sequence.Append(transform.DOLocalMove(points[(i + 1) % targets.Length],
                     Mathf.Max(0.01f, _moveDuration)).SetEase(Ease.InOutSine));
             }
             _sequence.SetLoops(-1).SetUpdate(true);

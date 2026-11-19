@@ -34,6 +34,8 @@ namespace Playable
         public FishingState State { get; private set; }
         public float Charge01 { get; private set; }
         public float Progress01 { get; private set; }
+        public float StateTime => _timer;
+        public float CastDuration => _rules.castDuration;
         public float Tension01 => _rules.timeLimit > 0f ? Mathf.Clamp01(_elapsed / _rules.timeLimit) : 0f;
 
         private bool _paused;

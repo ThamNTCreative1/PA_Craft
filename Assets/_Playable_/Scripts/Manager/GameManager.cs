@@ -4,17 +4,19 @@ using UnityEngine.UI;
 
 namespace Playable
 {
+    // Luna Playground layout: 1 Game Settings, 2 Character (NoelSkinSelector), 3 Mission Order (MissionsJournalController).
+    [LunaPlaygroundSection("Game Settings", 1)]
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance;
 
-        [Header("Luna Field")] [LunaPlaygroundField("Total Event For CTA")] [SerializeField]
+        [Header("Luna Field")] [LunaPlaygroundField("Total Event For CTA", 2, "Game Settings")] [SerializeField]
         private int _totalEvent;
 
-        [LunaPlaygroundField("End Time")] [SerializeField]
+        [LunaPlaygroundField("End Time", 1, "Game Settings")] [SerializeField]
         private int _endTime = 30;
 
-        [LunaPlaygroundAsset("Background Music")] [SerializeField]
+        [LunaPlaygroundAsset("Background Music", 4, "Game Settings")] [SerializeField]
         private AudioClip _backgroundMusic;
 
         [SerializeField] private Texture2D _backgroundTexture;
@@ -25,7 +27,7 @@ namespace Playable
         [Header("UI Field")] [SerializeField] private FailPanel _failPanel;
         [SerializeField] private WinPanel _winPanel;
 
-        [LunaPlaygroundField("Applovin")] [SerializeField]
+        [LunaPlaygroundField("Applovin", 5, "Game Settings")] [SerializeField]
         private bool _isApplovin;
 
         private int _quantityEvent;

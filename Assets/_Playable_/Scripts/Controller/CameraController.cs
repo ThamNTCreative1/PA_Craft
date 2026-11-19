@@ -141,7 +141,8 @@ namespace Playable
             _followOverride = vehicle != null ? vehicle.CameraTarget : null;
             if (vehicle != null)
             {
-                _yaw = 0f;
+                // Start behind the vehicle whatever its heading (was a fixed world yaw of 0).
+                _yaw = vehicle.transform.eulerAngles.y;
                 _pitch = Mathf.Clamp(_bikeInitialPitch, _pitchMin, _pitchMax);
             }
 
