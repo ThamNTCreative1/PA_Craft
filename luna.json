@@ -7956,10 +7956,6 @@
                 "excluded": true
             },
             {
-                "name": "DG.Tweening.Plugins.ColorPlugin",
-                "excluded": true
-            },
-            {
                 "name": "DG.Tweening.Plugins.DoublePlugin",
                 "excluded": true
             },
@@ -27593,15 +27589,15 @@
                 "instanceMethods": [
                     {
                         "name": "getDefaultValue",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ctor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Reset",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "getHashCode",
@@ -27613,7 +27609,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -31383,7 +31379,7 @@
                     },
                     {
                         "name": "ToAlpha",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Punch",
@@ -32451,7 +32447,7 @@
                     },
                     {
                         "name": "SetOptions$4",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetOptions$6",
@@ -34979,7 +34975,7 @@
                     },
                     {
                         "name": "DOFade$2",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DOFade$3",
@@ -40294,24 +40290,6 @@
                 ]
             },
             {
-                "className": "Playable.ScaleHandHint",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.CarController",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -40934,202 +40912,6 @@
                     {
                         "name": "CacheRenderers",
                         "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Game.Events.Noel.NoelSnowfall",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Start",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Follow",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Game.Events.Noel.SnowGridChunk",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "AdvanceClock",
-                        "excluded": true
-                    },
-                    {
-                        "name": "FindAt",
-                        "excluded": true
-                    },
-                    {
-                        "name": "AddQuad",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SizeX#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SizeZ#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "CellCount#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "CullDistanceScale#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "HasPending#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Renderer#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "RuntimeMesh#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "HasCellHeights#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "MaxBaseHeight#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "WorldBounds#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Configure",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Configure$1",
-                        "excluded": true
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "OnValidate",
-                        "excluded": true
-                    },
-                    {
-                        "name": "EnsureState",
-                        "excluded": false
-                    },
-                    {
-                        "name": "EnsureRefillState",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetLevel",
-                        "excluded": true
-                    },
-                    {
-                        "name": "HasCell",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CellBaseY",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CellInHeightWindow",
-                        "excluded": true
-                    },
-                    {
-                        "name": "TryGetCell",
-                        "excluded": true
-                    },
-                    {
-                        "name": "IsSnowAt",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ClearSegment",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ClearSegment$1",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ClearCell",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ClearCellInternal",
-                        "excluded": true
-                    },
-                    {
-                        "name": "RefillAll",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Tick",
-                        "excluded": true
-                    },
-                    {
-                        "name": "MarkDirty",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Rebuild",
-                        "excluded": false
-                    },
-                    {
-                        "name": "BuildTops",
-                        "excluded": false
-                    },
-                    {
-                        "name": "HeightKey",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GetWall",
-                        "excluded": false
-                    },
-                    {
-                        "name": "BuildWallsX",
-                        "excluded": false
-                    },
-                    {
-                        "name": "BuildWallsZ",
-                        "excluded": false
-                    },
-                    {
-                        "name": "DestroyMesh",
-                        "excluded": true
                     }
                 ]
             },
@@ -41808,7 +41590,45 @@
                 ]
             },
             {
-                "className": "Playable.OrientationCameraPose",
+                "className": "DG.Tweening.Plugins.ColorPlugin",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Reset",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetFrom$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetFrom",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ConvertToStartValue",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetRelativeEndValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetChangeValue",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetSpeedBasedDuration",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EvaluateAndApply",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.EndCardView",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
@@ -41816,7 +41636,51 @@
                         "excluded": false
                     },
                     {
-                        "name": "Awake",
+                        "name": "Show",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.HandTapHint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Pulse",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetRing",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.OrientationLayout",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
                         "excluded": false
                     },
                     {
@@ -41830,7 +41694,7 @@
                 ]
             },
             {
-                "className": "Playable.OrientationCameraPose.Pose",
+                "className": "Playable.OrientationLayout.Entry",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
@@ -41838,12 +41702,48 @@
                         "excluded": false
                     },
                     {
-                        "name": "ctor",
+                        "name": "Apply",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TapToBuildFlow",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Start",
                         "excluded": false
                     },
                     {
-                        "name": "$ctor1",
+                        "name": "OnDestroy",
                         "excluded": true
+                    },
+                    {
+                        "name": "OnMaterialClicked",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnded",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.UICoverScaler",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
                     },
                     {
                         "name": "Apply",
@@ -42117,6 +42017,136 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/UI/MissionsJournal/Artboard 1.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/logo.png"
+                    },
+                    {
+                        "maxWidth": 1024,
+                        "maxHeight": 575,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/endcard_bg.png"
+                    },
+                    {
+                        "maxWidth": 854,
+                        "maxHeight": 854,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/house_panel.png"
+                    },
+                    {
+                        "maxWidth": 688,
+                        "maxHeight": 178,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/btn_download.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/mat_more.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "quantQuality",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/tap_ring.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/top_tools.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/mat_grass.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/mat_stone.png"
+                    },
+                    {
+                        "maxWidth": 641,
+                        "maxHeight": 118,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/tap_to_build.png"
+                    },
+                    {
+                        "maxWidth": 824,
+                        "maxHeight": 61,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/top_currency.png"
+                    },
+                    {
+                        "maxWidth": 200,
+                        "maxHeight": 200,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/mat_dirt.png"
+                    },
+                    {
+                        "maxWidth": 1024,
+                        "maxHeight": 576,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/bg_cubes.png"
                     }
                 ]
             },

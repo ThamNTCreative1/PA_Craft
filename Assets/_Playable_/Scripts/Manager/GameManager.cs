@@ -32,6 +32,9 @@ namespace Playable
 
         private int _quantityEvent;
         private bool _ended;
+
+        // Raised once when the game ends (click or timer), before the store opens.
+        public event System.Action Ended;
         public int EndTime => _endTime;
 
         private void Awake()
@@ -62,6 +65,7 @@ namespace Playable
             StopAllCoroutines();
             Debug.Log("End Game");
             _btnBlock.gameObject.SetActive(true);
+            if (Ended != null) Ended();
             Luna.Unity.LifeCycle.GameEnded();
             if (!_isApplovin) ShowCta();
         }
