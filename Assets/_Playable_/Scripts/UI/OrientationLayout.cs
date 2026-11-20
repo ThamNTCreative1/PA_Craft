@@ -15,11 +15,21 @@ namespace Playable
             [SerializeField] private Vector2 _landscapeMin;
             [SerializeField] private Vector2 _landscapeMax;
 
-            public void Apply(bool landscape)
+            public void Apply(bool landscape, RectTransform gameplayRoot, float topInset)
             {
                 if (_target == null) return;
                 _target.anchorMin = landscape ? _landscapeMin : _portraitMin;
                 _target.anchorMax = landscape ? _landscapeMax : _portraitMax;
+                // Reserve space above gameplay without moving the end card or stacking offsets.
+                if (gameplayRoot != null && _target.IsChildOf(gameplayRoot))
+                {
+                    Vector2 min = _target.anchorMin;
+                    Vector2 max = _target.anchorMax;
+                    min.y *= 1f - topInset;
+                    max.y *= 1f - topInset;
+                    _target.anchorMin = min;
+                    _target.anchorMax = max;
+                }
                 _target.offsetMin = Vector2.zero;
                 _target.offsetMax = Vector2.zero;
             }
@@ -29,6 +39,16 @@ namespace Playable
 
         private int _appliedWidth = -1;
         private int _appliedHeight = -1;
+        private RectTransform _gameplayRoot;
+        private float _gameplayTopInset;
+
+        public void SetGameplayTopInset(RectTransform gameplayRoot, float topInset)
+        {
+            _gameplayRoot = gameplayRoot;
+            _gameplayTopInset = Mathf.Clamp01(topInset);
+            _appliedWidth = -1;
+            ApplyIfChanged();
+        }
 
         private void OnEnable()
         {
@@ -47,7 +67,7 @@ namespace Playable
             _appliedWidth = Screen.width;
             _appliedHeight = Screen.height;
             bool landscape = Screen.width > Screen.height;
-            foreach (var entry in _entries) entry.Apply(landscape);
+            foreach (var entry in _entries) entry.Apply(landscape, _gameplayRoot, _gameplayTopInset);
         }
     }
 }

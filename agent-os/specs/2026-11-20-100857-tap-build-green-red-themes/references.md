@@ -1,0 +1,14 @@
+﻿# References
+- AGENTS.md: mandatory Codex research -> Claude plan -> user approval -> Codex implementation.
+- agent-os/workflows/codex-claude-codex.md: isolated research artifacts and handoff.
+- .agents/skills/luna-production-governance/SKILL.md and .agents/skills/analyze-luna-project/SKILL.md: governance, selected research workflow.
+- agent-os/product/{mission,roadmap,tech-stack}.md: product context, discrepancy recorded in research.
+- agent-os/standards/index.yml; ai-agent/*.md; unity/assets.md; luna/runtime-compatibility.md; luna/scene-budget-4_5mb.md: applicable scope and asset/runtime/budget constraints.
+- ProjectSettings/EditorBuildSettings.asset: enabled Gameplay scene.
+- Assets/_Playable_/Scenes/Gameplay.unity: UI object names, sprite references, scene wiring.
+- Assets/_Playable_/Scripts/UI/TapToBuildFlow.cs: Start, OnMaterialClicked, OnEnded, OnDestroy.
+- Assets/_Playable_/Scripts/UI/OrientationLayout.cs: ApplyIfChanged and Entry.Apply, orientation-dependent UI layout.
+- Assets/_Playable_/Tests/Editor/TapToBuildSceneTests.cs: existing static scene wiring acceptance checks.
+- Assets/_Playable_/Noel/Scripts/NoelSkinSelector.cs: local Luna enum dropdown attribute precedent only.
+- Assets/_Playable_/UI/TapToBuild/: existing default UI sprite assets.
+- User ZIP and attached Green/Red screenshots: authoritative asset source and visual target; see research inventory.

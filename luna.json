@@ -81,7 +81,7 @@
             "externalJSLibraries": [],
             "scriptingDefines": [],
             "msbuildVersion": "18.9",
-            "monoVersion": "9.0.3",
+            "monoVersion": "N/A",
             "dotnetVersion": ""
         },
         "assets": {
@@ -8237,6 +8237,10 @@
             },
             {
                 "name": "Playable.FishingState",
+                "excluded": false
+            },
+            {
+                "name": "Playable.TapToBuildTheme",
                 "excluded": false
             }
         ],
@@ -41690,6 +41694,10 @@
                     {
                         "name": "ApplyIfChanged",
                         "excluded": false
+                    },
+                    {
+                        "name": "SetGameplayTopInset",
+                        "excluded": false
                     }
                 ]
             },
@@ -41731,6 +41739,46 @@
             },
             {
                 "className": "Playable.UICoverScaler",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.ScaleHandHint",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TapToBuildThemeSelector",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
@@ -42147,6 +42195,66 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/UI/TapToBuild/bg_cubes.png"
+                    },
+                    {
+                        "maxWidth": 1046,
+                        "maxHeight": 524,
+                        "format": "png32",
+                        "compression": "quantQuality",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/logo_xmas.png"
+                    },
+                    {
+                        "maxWidth": 639,
+                        "maxHeight": 663,
+                        "format": "png32",
+                        "compression": "quantQuality",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/house_artwork.png"
+                    },
+                    {
+                        "maxWidth": 2048,
+                        "maxHeight": 1152,
+                        "format": "png32",
+                        "compression": "quantQuality",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/bg14.jpg"
+                    },
+                    {
+                        "maxWidth": 2048,
+                        "maxHeight": 1152,
+                        "format": "png32",
+                        "compression": "quantQuality",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/bg11.jpg"
+                    },
+                    {
+                        "maxWidth": 2048,
+                        "maxHeight": 1152,
+                        "format": "png32",
+                        "compression": "quantSize",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/bg12.jpg"
+                    },
+                    {
+                        "maxWidth": 2048,
+                        "maxHeight": 1152,
+                        "format": "png32",
+                        "compression": "quantQuality",
+                        "quality": 65,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/UI/TapToBuild/bg13.jpg"
                     }
                 ]
             },

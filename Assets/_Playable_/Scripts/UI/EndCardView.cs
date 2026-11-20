@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Playable
 {
-    // Store end card: background, logo pops in and floats, download button pulses.
+    // Store end card: background and fixed-size logo; download button pulses.
     // Taps are caught by GameManager's Button Block (opens the store).
     public class EndCardView : MonoBehaviour
     {
@@ -19,10 +19,6 @@ namespace Playable
             gameObject.SetActive(true);
             _group.alpha = 0f;
             _group.DOFade(1f, _fadeTime);
-
-            _logo.localScale = Vector3.zero;
-            _logo.DOScale(1f, 0.5f).SetDelay(0.15f).SetEase(Ease.OutBack)
-                .OnComplete(() => _logo.DOScale(1.04f, 1.1f).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo));
 
             _button.localScale = Vector3.zero;
             _button.DOScale(1f, 0.4f).SetDelay(0.45f).SetEase(Ease.OutBack)

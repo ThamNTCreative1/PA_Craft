@@ -1,5 +1,5 @@
 # Current work item
 
-agent-os/specs/2026-11-19-1640-tap-to-build-xmas
-
-Status: IMPLEMENTED (2026-11-19, by Claude at user request). Replaces the vehicle/pet picker in Gameplay.unity. EditMode 17/17 pass, portrait + landscape checked in play mode; Luna build + size budget not yet measured.
+Path: agent-os/specs/2026-11-20-100857-tap-build-green-red-themes
+Request: Add Default/Green/Red Luna theme dropdown using supplied V89 assets.
+Status: IMPLEMENTED - UNITY VERIFIED; LUNA BUILD UNVERIFIED
