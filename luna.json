@@ -21153,7 +21153,7 @@
                     },
                     {
                         "name": "SetColor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetMatrix$1",
@@ -41848,6 +41848,28 @@
                     {
                         "name": "Apply",
                         "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.TwinkleLights",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
                     }
                 ]
             }
