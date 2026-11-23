@@ -37,7 +37,7 @@ namespace Playable.PetRescue
                 for (int i = 0; i < pets.Length; i++)
                 {
                     int index = _voiceIndex++ % pets.Length;
-                    if (!pets[index].IsFollowing) continue;
+                    if (!pets[index].gameObject.activeInHierarchy) continue;
                     _voices.PlayOneShot(_petCalls[index],.3f); break;
                 }
             }
@@ -55,13 +55,14 @@ namespace Playable.PetRescue
         {
             if (_started && !_finished) _effects.PlayOneShot(_jump,.6f);
         }
-        public void PlayLand()
-        {
-            if (_started && !_finished) _effects.PlayOneShot(_land,.5f);
-        }
-        public void PlayRescue()
+        public void PlayCollect()
         {
             if (_started && !_finished) _effects.PlayOneShot(_rescue,.65f);
+        }
+        /// Knockback thud after a TNT blast.
+        public void PlayHit()
+        {
+            if (_started && !_finished) _effects.PlayOneShot(_land,.8f);
         }
         public void Finish(bool won)
         {

@@ -1,102 +1,202 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
 namespace Playable.PetRescue
 {
+    /// Tutorial visuals only: joystick hint (ring + knob + hand on the fixed joystick) with "SWIPE TO MOVE" right above it,
+    /// a hand tapping the Jump button with "TAP TO JUMP" above it,
+    /// nearest-pet pointer and the one-shot TNT/Jump warning.
     public sealed class RescueTutorialView : MonoBehaviour
     {
-        [SerializeField] private GameObject _group;
-        [SerializeField] private TMP_Text _prompt;
-        [SerializeField] private RectTransform _cue;
-        [SerializeField] private RectTransform _leftArrow, _rightArrow;
-        [SerializeField] private GameObject _goalHint;
-        private Vector2 _origin;
-        private float _handAspect;
+        public const string DragText = "SWIPE TO MOVE", JumpText = "TAP TO JUMP";
+        public const float JumpLabelWidth = 400;
+        public const float TextGap = 6, TextWidth = 460, TextHeight = 80, EdgeMargin = 16;
+        [SerializeField] private RectTransform _group, _ring, _knob, _hand;
+        [SerializeField] private TMP_Text _title;
+        [SerializeField] private RectTransform _petPointer, _tntWarning;
+        [SerializeField] private RectTransform _canvasRect;
+        [SerializeField] private RectTransform _stickTarget, _jumpTarget;
+        [SerializeField] private RectTransform _jumpHint, _jumpHand;
+        [SerializeField] private TMP_Text _jumpLabel;
+        [SerializeField] private Camera _camera;
+        private const float HandOrbit = .33f, PointerLift = 1.6f, TntLift = 1.4f, EdgeInset = .1f;
+        private bool _ready, _drag, _jumpTap;
+        private float _leftInset, _rightInset, _ui = 1;
         private Tween _titlePulse;
-        private bool _jumpMode, _originReady;
-        private TMP_Text _hintText;
-        private string _goalText;
-        private Vector2 _arrowOrigin;
-        private const float JumpTravel = 70;
-        private const string JumpText = "SWIPE UP TO JUMP!";
-        public bool JumpVisible { get { return _jumpMode; } }
-        public void ShowSwipe()
+
+        private void Prepare()
         {
-            CaptureOrigin();
-            var image = _cue.GetComponent<Image>();
-            _handAspect = image.sprite.rect.width / image.sprite.rect.height;
-            Present(false);
-            _prompt.gameObject.SetActive(true); _prompt.text = "LEAD THE HERD";
-            // Preview scenes lay out the UI without creating runtime-only tween state.
-            if (Application.isPlaying)
-                _titlePulse = _prompt.rectTransform.DOScale(1.06f,.55f).SetEase(Ease.InOutSine).SetLoops(-1,LoopType.Yoyo).SetUpdate(true);
-            PositionArrows();
+            if (_ready) return;
+            if (_group == null || _ring == null || _knob == null || _hand == null || _title == null ||
+                _petPointer == null || _tntWarning == null || _canvasRect == null || _camera == null || _stickTarget == null ||
+                _jumpTarget == null || _jumpHint == null || _jumpHand == null || _jumpLabel == null)
+                throw new System.InvalidOperationException("Pet Rescue tutorial references are incomplete.");
+            _ready = true;
         }
-        /// Crater hint: the hand flicks upward under an up arrow; the small hint line below the hand asks for a jump.
-        /// The headline is left untouched.
-        public void ShowJump() { CaptureOrigin(); Present(true); }
-        public void HideJump() { if (_jumpMode) Hide(); }
-        public void OnSteered() { if (!_jumpMode) Hide(); }
+
+        /// The "SWIPE TO MOVE" block sits right above the fixed joystick (bottom edge = joystick top + a small gap),
+        /// centered on it but kept inside the safe screen edge. Call after the controls layout with its insets (canvas units).
+        public void ApplyScreenLayout(int width, int height, float leftInset = 0, float rightInset = 0)
+        {
+            _leftInset = leftInset; _rightInset = rightInset; _ui = RescueControlsView.UiScale(width, height);
+            if (_group == null || _stickTarget == null) return;
+            if (_group.anchorMin != Vector2.zero) { _group.anchorMin = Vector2.zero; _group.anchorMax = Vector2.zero; }
+            if (_group.pivot != new Vector2(.5f, 0)) _group.pivot = new Vector2(.5f, 0);
+            Vector2 stick = _stickTarget.anchoredPosition;
+            var position = new Vector2(Mathf.Max(stick.x, _leftInset + TextWidth * _ui * .5f + EdgeMargin), stick.y + _stickTarget.sizeDelta.y * .5f + TextGap);
+            if (_group.anchoredPosition != position) _group.anchoredPosition = position;
+            if (_group.sizeDelta != new Vector2(TextWidth, TextHeight)) _group.sizeDelta = new Vector2(TextWidth, TextHeight);
+            Vector3 groupScale = new Vector3(_ui, _ui, 1);
+            if (_group.localScale != groupScale) _group.localScale = groupScale;
+            LayoutJumpLabel();
+        }
+
+        /// "TAP TO JUMP" sits right above the Jump button, centered on it but kept inside the right screen edge.
+        /// The label and the button share the bottom-right anchor, so their anchored positions are comparable.
+        private void LayoutJumpLabel()
+        {
+            if (_jumpLabel == null || _jumpTarget == null) return;
+            var label = _jumpLabel.rectTransform;
+            Vector2 jump = _jumpTarget.anchoredPosition;
+            var position = new Vector2(Mathf.Min(jump.x, -(_rightInset + JumpLabelWidth * _ui * .5f + EdgeMargin)), jump.y + _jumpTarget.sizeDelta.y * .5f + TextGap);
+            if (label.anchorMin != Vector2.right) { label.anchorMin = Vector2.right; label.anchorMax = Vector2.right; }
+            if (label.pivot != new Vector2(.5f, 0)) label.pivot = new Vector2(.5f, 0);
+            if (label.anchoredPosition != position) label.anchoredPosition = position;
+            if (label.sizeDelta != new Vector2(JumpLabelWidth, TextHeight)) label.sizeDelta = new Vector2(JumpLabelWidth, TextHeight);
+            Vector3 labelScale = new Vector3(_ui, _ui, 1);
+            if (label.localScale != labelScale) label.localScale = labelScale;
+        }
+
+        /// TAP TO JUMP step: hand tapping the Jump button + label above it.
+        public void SetJumpTap(bool visible)
+        {
+            Prepare();
+            _jumpTap = visible;
+            if (_jumpHint.gameObject.activeSelf != visible) _jumpHint.gameObject.SetActive(visible);
+            if (_jumpLabel.text != JumpText) _jumpLabel.text = JumpText;
+            if (visible) { LayoutJumpLabel(); Tick(0); }
+        }
+
+        /// Joystick hint; the "SWIPE TO MOVE" title shows on the first step only (the idle re-prompt is hand-only).
+        public void SetHint(bool drag, bool withTitle)
+        {
+            Prepare();
+            _drag = drag;
+            if (_group.gameObject.activeSelf != drag) _group.gameObject.SetActive(drag);
+            if (_title.text != DragText) _title.text = DragText;
+            bool title = drag && withTitle;
+            if (_title.gameObject.activeSelf != title)
+            {
+                _title.gameObject.SetActive(title);
+                StopPulse();
+                // Preview scenes lay out the UI without creating runtime-only tween state.
+                if (title && Application.isPlaying)
+                    _titlePulse = _title.rectTransform.DOScale(1.06f, .55f).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo).SetUpdate(true);
+            }
+            if (drag) Tick(0);
+        }
+
+        public void SetPetPointer(bool visible, Vector3 world)
+        {
+            Prepare();
+            if (_petPointer.gameObject.activeSelf != visible) _petPointer.gameObject.SetActive(visible);
+            if (!visible) return;
+            Vector2 local; bool onScreen = ToCanvas(world + Vector3.up * PointerLift, out local);
+            Rect safe = Inset(_canvasRect.rect, EdgeInset);
+            float bob = Mathf.Abs(Mathf.Sin(Time.unscaledTime * 5)) * 18;
+            if (onScreen && safe.Contains(local))
+            {
+                _petPointer.localScale = new Vector3(_ui, _ui, 1);
+                _petPointer.anchoredPosition = local + Vector2.up * bob;
+                _petPointer.localRotation = Quaternion.identity;   // sprite points down at the pet
+                return;
+            }
+            // Off-screen: pin to the safe edge and point toward the pet.
+            Vector2 direction = (local - safe.center); if (!onScreen) direction = -direction;
+            if (direction.sqrMagnitude < .01f) direction = Vector2.up;
+            _petPointer.localScale = new Vector3(_ui, _ui, 1);
+            _petPointer.anchoredPosition = ClampToRectEdge(safe, direction);
+            _petPointer.localRotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 90);
+        }
+
+        public void SetTntWarning(bool visible, Vector3 world)
+        {
+            Prepare();
+            if (_tntWarning.gameObject.activeSelf != visible) _tntWarning.gameObject.SetActive(visible);
+            if (!visible) return;
+            Vector2 local;
+            if (!ToCanvas(world + Vector3.up * TntLift, out local)) local = Vector2.zero;
+            // Keep the whole label on screen: the pivot is bottom-center, so clamp by half width and full height.
+            Rect safe = Inset(_canvasRect.rect, .03f); Vector2 size = _tntWarning.rect.size;
+            local.x = Mathf.Clamp(local.x, safe.xMin + size.x * .5f, safe.xMax - size.x * .5f);
+            local.y = Mathf.Clamp(local.y, safe.yMin, safe.yMax - size.y - 260);
+            _tntWarning.anchoredPosition = local;
+            float pulse = 1 + Mathf.Abs(Mathf.Sin(Time.unscaledTime * 8)) * .15f;
+            _tntWarning.localScale = new Vector3(pulse * _ui, pulse * _ui, 1);
+        }
+
         public void Hide()
         {
-            StopPulse(); RestoreSwipeLayout(); _jumpMode = false;
-            _group.SetActive(false); _prompt.gameObject.SetActive(false);
+            Prepare(); StopPulse(); _drag = false;
+            _group.gameObject.SetActive(false); _petPointer.gameObject.SetActive(false); _tntWarning.gameObject.SetActive(false);
+            _title.gameObject.SetActive(false);
+            _jumpTap = false; _jumpHint.gameObject.SetActive(false);
         }
-        private void Present(bool jump)
+
+        public void Tick(float dt)
         {
-            StopPulse(); RestoreSwipeLayout(); _jumpMode = jump;
-            _group.SetActive(true);
-            _leftArrow.gameObject.SetActive(!jump); _rightArrow.gameObject.SetActive(true);
-            if (!jump) return;
-            if (_hintText != null) _hintText.text = JumpText;
-            // The right ">>" arrow turned to point up, placed above the hand's flick range.
-            _arrowOrigin = _rightArrow.anchoredPosition;
-            float handHeight = _cue.rect.height;
-            _rightArrow.localRotation = Quaternion.Euler(0, 0, 90);
-            _rightArrow.anchoredPosition = _origin + Vector2.up * (handHeight * .5f + JumpTravel + 40);
+            if (!_ready) return;
+            float t = Time.unscaledTime;
+            if (_jumpTap)
+            {
+                // Fingertip on the button center; a quick press-and-lift loop (dips and shrinks on the tap).
+                float tap = Mathf.Repeat(t * 1.6f, 1), press = tap < .25f ? Mathf.Sin(tap / .25f * Mathf.PI) : 0;
+                _jumpHand.position = _jumpTarget.position + new Vector3(0, -press * 18 * _canvasRect.lossyScale.y, 0);
+                float scale = (1 - press * .12f) * _ui;
+                _jumpHand.localScale = new Vector3(scale, scale, 1);
+            }
+            if (!_group.gameObject.activeSelf) return;
+            if (_drag)
+            {
+                // Ring matches the fixed joystick; the knob and the fingertip circle inside it like a thumb steering.
+                _ring.position = _stickTarget.position;
+                float size = _stickTarget.rect.width * _stickTarget.lossyScale.x;
+                _ring.sizeDelta = Vector2.one * size / Mathf.Max(.0001f, _ring.lossyScale.x);
+                _knob.sizeDelta = _ring.sizeDelta * .45f;
+                Vector3 orbit = new Vector3(Mathf.Cos(t * 2.6f), Mathf.Sin(t * 2.6f) * .8f, 0) * (size * HandOrbit);
+                _knob.position = _ring.position + orbit;
+                _hand.position = _knob.position;
+            }
         }
-        private void RestoreSwipeLayout()
+
+        private bool ToCanvas(Vector3 world, out Vector2 local)
         {
-            if (_hintText == null && _goalHint != null) { _hintText = _goalHint.GetComponent<TMP_Text>(); if (_hintText != null) _goalText = _hintText.text; }
-            if (!_jumpMode) return;
-            if (_hintText != null) _hintText.text = _goalText;
-            _rightArrow.localRotation = Quaternion.identity; _rightArrow.anchoredPosition = _arrowOrigin;
-            if (_originReady) { _cue.anchoredPosition = _origin; _cue.localRotation = Quaternion.identity; }
+            Vector3 screen = _camera.WorldToScreenPoint(world);
+            bool front = screen.z > 0;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, screen, null, out local);
+            if (!front) return false;
+            return true;
         }
-        private void CaptureOrigin()
+
+        public static Rect Inset(Rect rect, float fraction)
         {
-            if (_originReady) return;
-            _origin = _cue.anchoredPosition; _originReady = true;
+            float dx = rect.width * fraction, dy = rect.height * fraction;
+            return new Rect(rect.xMin + dx, rect.yMin + dy, rect.width - dx * 2, rect.height - dy * 2);
         }
+
+        public static Vector2 ClampToRectEdge(Rect rect, Vector2 direction)
+        {
+            Vector2 half = rect.size * .5f;
+            float scale = Mathf.Min(half.x / Mathf.Max(.0001f, Mathf.Abs(direction.x)), half.y / Mathf.Max(.0001f, Mathf.Abs(direction.y)));
+            return rect.center + direction * scale;
+        }
+
         private void OnDisable() { StopPulse(); }
         private void StopPulse()
         {
             if (_titlePulse != null) { _titlePulse.Kill(); _titlePulse = null; }
-            if (_prompt != null) _prompt.rectTransform.localScale = Vector3.one;
-        }
-        private void PositionArrows()
-        {
-            float width = Mathf.Min(_cue.rect.width, _cue.rect.height * _handAspect);
-            _leftArrow.anchoredPosition = _origin + new Vector2(-(width*.5f+60+12+_leftArrow.rect.width*.5f),0);
-            _rightArrow.anchoredPosition = _origin + new Vector2(width*.5f+60+12+_rightArrow.rect.width*.5f,0);
-        }
-        public void Tick(float dt)
-        {
-            if (!_group.activeSelf) return;
-            if (_jumpMode)
-            {
-                // Repeated upward flick: rise fast, then reset to the start.
-                float t = Mathf.Repeat(Time.unscaledTime * 1.4f, 1);
-                _cue.anchoredPosition = _origin + Vector2.up * Mathf.SmoothStep(-20, JumpTravel, Mathf.Min(1, t * 1.6f));
-                _cue.localRotation = Quaternion.identity;
-                return;
-            }
-            float swipe = Mathf.Sin(Time.unscaledTime * 2.5f);
-            _cue.anchoredPosition = _origin + Vector2.right * swipe * 60;
-            _cue.localRotation = Quaternion.Euler(0,0,-swipe * 6);
-            PositionArrows();
+            if (_title != null) _title.rectTransform.localScale = Vector3.one;
         }
     }
 }

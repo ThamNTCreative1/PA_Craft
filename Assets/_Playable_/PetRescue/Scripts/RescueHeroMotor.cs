@@ -2,93 +2,113 @@ using UnityEngine;
 
 namespace Playable.PetRescue
 {
+    /// Free XZ movement on the flat field (the flow passes a world-space stick) with a jump arc.
     public sealed class RescueHeroMotor : MonoBehaviour
     {
         [LunaPlaygroundField("Player Speed", 2, "Game Settings")]
-        [SerializeField] private float _speed = 3.5f;
-        [LunaPlaygroundField("Swipe Sensitivity", 3, "Game Settings")]
-        [SerializeField] private float _swipeSensitivity = 4.5f;
-        [SerializeField] private float _xLimit = 2.5f, _stopZ = 73;
-        private const float MaxStep = .02f;
-        [SerializeField] private float _gravity = 22, _jumpSpeed = 9.5f, _radius = .3f;
+        [SerializeField] private float _speed = 4.5f;
+        [SerializeField] private float _radius = .3f, _deadZone = .12f, _turnSharpness = 14;
+        [SerializeField] private float _knockbackDistance = 2.5f, _knockbackTime = .25f, _stunTime = .8f;
+        [SerializeField] private float _jumpSpeed = 7, _gravity = 22;
         [SerializeField] private Animator _animator;
         private Transform _visual;
-        private bool _stopped, _running, _grounded = true, _jumping, _movingOnGround;
-        private float _vy, _airSpeed;
-        /// Standing on a lowered crater tile: the hero waits for a swipe-up.
-        public bool InPit { get { return InPitAt(transform.position.y); } }
-        public bool Airborne { get { return !_grounded; } }
-        public bool Landed { get; private set; }
-        /// Actually running on the ground (not stuck, blocked or airborne).
-        public bool RunningOnGround { get { return _movingOnGround; } }
+        private Quaternion _visualRest = Quaternion.identity;
+        private bool _stopped, _running;
+        private float _stun, _knockElapsed;
+        private Vector3 _knockDirection;
+        private float _vy;
+
+        public bool Stunned { get { return _stun > 0; } }
+        /// Actually moved this frame under player control (drives footsteps and tutorial).
+        public bool Moving { get; private set; }
+        public float Radius { get { return _radius; } }
+        public float StunTime { get { return _stunTime; } }
+        public float KnockbackDistance { get { return _knockbackDistance; } }
+        public bool Airborne { get { return transform.position.y > .0001f || _vy > 0; } }
+        /// Feet height above the ground.
+        public float Height { get { return transform.position.y; } }
         public float JumpSpeed { get { return _jumpSpeed; } }
-        public float Gravity { get { return _gravity; } }
+
+        public bool TryJump()
+        {
+            if (_stopped || _stun > 0 || Airborne) return false;
+            _vy = _jumpSpeed; SetRunning(false);
+            return true;
+        }
+
+        private void Vertical(float dt)
+        {
+            if (!Airborne) return;
+            _vy -= _gravity * dt;
+            Vector3 p = transform.position; p.y = Mathf.Max(0, p.y + _vy * dt);
+            if (p.y <= 0) _vy = 0;
+            transform.position = p;
+        }
+
         public void Initialize(Transform visual)
         {
             _visual = visual;
+            if (_visual != null) _visualRest = _visual.localRotation;
             if (_animator == null) throw new System.InvalidOperationException("Hero Animator is required.");
             _animator.applyRootMotion = false; _animator.speed = 1;
         }
-        public bool TryJump(RescueCourse course)
+
+        public void Move(float dt, Vector2 stick, RescueArena arena)
         {
-            if (_stopped || !InPit) return false;
-            Vector3 p = transform.position;
-            float targetZ = p.z;
-            while (targetZ < _stopZ && (course.HeightAt(p.x, targetZ) < -.01f || course.HeightAt(p.x, targetZ + .5f) < -.01f)) targetZ += .25f;
-            targetZ = Mathf.Min(_stopZ, targetZ + .5f);
-            float riseToRim = (_jumpSpeed - Mathf.Sqrt(_jumpSpeed * _jumpSpeed - 2 * _gravity * (-RescueCourse.StepHeight - p.y))) / _gravity;
-            float landOnRoad = (_jumpSpeed + Mathf.Sqrt(_jumpSpeed * _jumpSpeed + 2 * _gravity * p.y)) / _gravity;
-            _airSpeed = Mathf.Max(_speed, (targetZ - p.z) / Mathf.Max(.1f, landOnRoad - riseToRim));
-            _vy = _jumpSpeed; _grounded = false; _jumping = true;
-            return true;
-        }
-        public void Advance(float dt, float normalizedDelta, RescueCourse course)
-        {
-            Landed = false;
+            Moving = false;
             if (_stopped) return;
-            Vector3 p = transform.position, before = p;
-            bool stuck = InPit;
-            // Fixed sub-steps keep the jump arc and rim checks identical at low frame rates.
-            int steps = Mathf.Max(1, Mathf.CeilToInt(dt / MaxStep));
-            float step = dt / steps, stepDelta = normalizedDelta / steps;
-            for (int i = 0; i < steps; i++) Step(ref p, step, stepDelta, course);
-            transform.position = p;
-            Vector2 moved = new Vector2(p.x - before.x, p.z - before.z);
-            _movingOnGround = _grounded && moved.sqrMagnitude > .0000001f;
-            // The run cycle never stops during play: against a wall or in a pit the hero runs in place
-            // (footsteps only play while actually moving).
-            SetRunning(true);
-            if (_visual != null) _visual.localRotation = Quaternion.Euler(0, stuck ? 0 : Mathf.Clamp(normalizedDelta * 200, -15, 15), 0);
+            Vertical(dt);
+            if (_stun > 0) { TickStun(dt, arena); return; }
+            float magnitude = stick.magnitude;
+            if (magnitude <= _deadZone) { SetRunning(false); return; }
+            float drive = Mathf.Clamp01((magnitude - _deadZone) / (1 - _deadZone) * 1.6f);
+            Vector3 direction = new Vector3(stick.x / magnitude, 0, stick.y / magnitude);
+            Vector3 before = transform.position;
+            Vector3 after = arena.Slide(before, direction * (_speed * drive * dt), _radius);
+            transform.position = after;
+            Vector3 moved = after - before; moved.y = 0;
+            Moving = moved.sqrMagnitude > .0000001f;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 1 - Mathf.Exp(-_turnSharpness * dt));
+            // No jump clip: the idle pose reads as a jump while airborne.
+            SetRunning(!Airborne);
         }
-        private void Step(ref Vector3 p, float dt, float normalizedDelta, RescueCourse course)
+
+        /// Blast push away from `origin` (ease-out over the knockback time) followed by a stun that ignores input.
+        public void Knockback(Vector3 origin)
         {
-            // Ground that dropped away under the feet starts the fall before any horizontal move.
-            if (_grounded && course.HeightAt(p.x, p.z) < p.y - .001f) { _grounded = false; _vy = 0; }
-            // A falling (not jumping) hero measures steps from the ground below, so a crater that opens
-            // under the feet cannot be skipped by running onto its far rim mid-fall.
-            float feet = _grounded || _jumping ? p.y : Mathf.Min(p.y, course.HeightAt(p.x, p.z));
-            // In a pit the hero keeps running straight along the floor (no steering) until the crater wall stops him.
-            if (!InPitAt(p.y))
-            {
-                float x = Mathf.Clamp(p.x + normalizedDelta * _swipeSensitivity, -_xLimit, _xLimit);
-                if (!course.IsBlocked(x, p.z, feet, _radius)) p.x = x;
-            }
-            float z = Mathf.Min(_stopZ, p.z + (_jumping ? _airSpeed : _speed) * dt);
-            if (!course.IsBlocked(p.x, z, feet, _radius)) p.z = z;
-            float ground = course.HeightAt(p.x, p.z);
-            if (_grounded && ground < p.y - .001f) { _grounded = false; _vy = 0; }
-            if (_grounded) { p.y = ground; return; }
-            _vy -= _gravity * dt; p.y += _vy * dt;
-            // Rising past a slightly higher terrace only lifts the feet; landing happens on the way down.
-            if (p.y <= ground && _vy > 0) p.y = ground;
-            else if (p.y <= ground) { p.y = ground; _vy = 0; _grounded = true; _jumping = false; Landed = true; }
+            if (_stopped) return;
+            Vector3 away = transform.position - origin; away.y = 0;
+            _knockDirection = away.sqrMagnitude > .0001f ? away.normalized : -transform.forward;
+            _knockElapsed = 0; _stun = _stunTime;
+            SetRunning(false);
         }
-        private bool InPitAt(float y) { return _grounded && y < -RescueCourse.StepHeight; }
+
+        private void TickStun(float dt, RescueArena arena)
+        {
+            if (_knockElapsed < _knockbackTime)
+            {
+                float s0 = _knockElapsed / _knockbackTime;
+                _knockElapsed = Mathf.Min(_knockbackTime, _knockElapsed + dt);
+                float s1 = _knockElapsed / _knockbackTime;
+                float distance = _knockbackDistance * (EaseOut(s1) - EaseOut(s0));
+                transform.position = arena.Slide(transform.position, _knockDirection * distance, _radius);
+            }
+            _stun = Mathf.Max(0, _stun - dt);
+            if (_visual == null) return;
+            float wobble = _stun > 0 ? Mathf.Sin(_stun * 40) * 12 * (_stun / _stunTime) : 0;
+            _visual.localRotation = _visualRest * Quaternion.Euler(0, 0, wobble);
+        }
+
+        private static float EaseOut(float s) { return 1 - (1 - s) * (1 - s); }
+
         public void Stop()
         {
-            _stopped = true;
-            if (_animator != null) { _animator.SetBool("Running", false); _animator.speed = 0; }
+            _stopped = true; Moving = false; _vy = 0;
+            Vector3 p = transform.position; p.y = 0; transform.position = p;
+            if (_visual != null) _visual.localRotation = _visualRest;
+            if (_animator != null) _animator.SetBool("Running", false);
         }
+
         private void SetRunning(bool value)
         {
             if (_running == value) return;

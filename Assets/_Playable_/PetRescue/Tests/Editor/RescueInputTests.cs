@@ -5,69 +5,116 @@ namespace Playable.PetRescue.Tests
 {
     public class RescueInputTests
     {
+        private static readonly Vector2 Center = new Vector2(200, 300);
+        private const float Radius = 100;
+        private static readonly Rect Jump = new Rect(900, 200, 160, 160);
         private GameObject _object;
         private RescuePointerInput _input;
-        [SetUp] public void Open() { _object=new GameObject("Input fixture");_input=_object.AddComponent<RescuePointerInput>();_input.Initialize(null,null); }
+        [SetUp] public void Open() { _object = new GameObject("Input fixture"); _input = _object.AddComponent<RescuePointerInput>(); _input.SetZones(Center, Radius, Jump); }
         [TearDown] public void Close() { Object.DestroyImmediate(_object); }
-        [Test] public void MouseDragUsesScreenFractionAndStopsAfterRelease()
+
+        private void Frame(params System.Action[] contacts) { _input.BeginFrame(); foreach (var c in contacts) c(); }
+
+        [Test] public void TouchStartingOnTheJoystickDrivesTheStickFromItsFixedCenter()
         {
-            bool pressed,up;float delta;
-            _input.ProcessContact(-1,new Vector2(100,100),false,false,500,1000,out pressed,out delta,out up);Assert.IsTrue(pressed);Assert.AreEqual(0,delta);
-            _input.ProcessContact(-1,new Vector2(150,100),false,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(pressed);Assert.AreEqual(.1f,delta,.0001f);
-            _input.ProcessContact(-1,new Vector2(150,100),false,true,500,1000,out pressed,out delta,out up);Assert.AreEqual(0,delta);
-            _input.ProcessContact(-1,new Vector2(400,100),false,false,500,1000,out pressed,out delta,out up);Assert.IsTrue(pressed);Assert.AreEqual(0,delta,"New press must not teleport");
+            Frame(() => _input.Contact(0, Center + new Vector2(50, 0), false));
+            Assert.IsTrue(_input.Pressed); Assert.IsTrue(_input.StickHeld); Assert.AreEqual(.5f, _input.Stick.x, .001f);
+            Frame(() => _input.Contact(0, Center + new Vector2(0, 400), false));
+            Assert.AreEqual(1, _input.Stick.magnitude, .001f); Assert.AreEqual(1, _input.Stick.y, .001f, "Clamped, center never moves");
+            Assert.IsFalse(_input.Pressed, "Press reported once");
+            Frame(() => _input.Contact(0, Center, true));
+            Assert.IsFalse(_input.StickHeld); Assert.AreEqual(Vector2.zero, _input.Stick);
         }
-        [Test] public void ActiveTouchCanStartAfterMissedBeginAndMoveBothWays()
+
+        [Test] public void JoystickCanBeGrabbedSlightlyOutsideItsRingButNotFarAway()
         {
-            bool pressed,up;float delta;
-            _input.ProcessContact(7,new Vector2(100,100),true,false,500,1000,out pressed,out delta,out up);Assert.IsTrue(pressed);
-            _input.ProcessContact(7,new Vector2(200,100),true,false,500,1000,out pressed,out delta,out up);Assert.AreEqual(.2f,delta,.0001f);
-            _input.ProcessContact(7,new Vector2(150,100),true,false,500,1000,out pressed,out delta,out up);Assert.AreEqual(-.1f,delta,.0001f);
+            Frame(() => _input.Contact(0, Center + new Vector2(Radius * (RescuePointerInput.GrabScale - .05f), 0), false));
+            Assert.IsTrue(_input.StickHeld);
+            Frame(() => _input.Contact(0, Vector2.zero, true));
+            for (int i = 0; i <= RescuePointerInput.HandoffFrames; i++) Frame();   // a genuinely new touch, not a handoff
+            Frame(() => _input.Contact(1, Center + new Vector2(Radius * 3, 0), false));
+            Assert.IsFalse(_input.StickHeld); Assert.IsTrue(_input.LookHeld, "Far touch rotates the camera instead");
         }
-        [Test] public void SimulatedMouseTouchHandoffsPreserveContinuousMovement()
+
+        [Test] public void TouchElsewhereRotatesTheCameraByHorizontalDelta()
         {
-            bool pressed,up;float delta;
-            _input.ProcessContact(-1,new Vector2(100,100),false,false,500,1000,out pressed,out delta,out up);
-            _input.ProcessContact(0,new Vector2(125,100),true,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(pressed);Assert.AreEqual(.05f,delta,.0001f);
-            _input.ProcessContact(-1,new Vector2(150,100),false,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(pressed);Assert.AreEqual(.05f,delta,.0001f);
+            Frame(() => _input.Contact(3, new Vector2(600, 900), false));
+            Assert.AreEqual(0, _input.LookDelta); Assert.IsTrue(_input.LookHeld);
+            Frame(() => _input.Contact(3, new Vector2(660, 950), false));
+            Assert.AreEqual(60, _input.LookDelta, .001f); Assert.AreEqual(Vector2.zero, _input.Stick, "Camera finger never moves the hero");
+            Frame(() => _input.Contact(3, new Vector2(640, 950), false));
+            Assert.AreEqual(-20, _input.LookDelta, .001f);
+            Frame(); Assert.AreEqual(0, _input.LookDelta, "Delta is per frame");
         }
-        [Test] public void SecondaryFingerCannotStealOrReleasePrimaryDrag()
+
+        [Test] public void JumpFiresOncePerTapAndItsFingerDoesNothingElse()
         {
-            bool pressed,up;float delta;
-            _input.ProcessContact(1,new Vector2(100,100),true,false,500,1000,out pressed,out delta,out up);
-            _input.ProcessContact(2,new Vector2(400,100),true,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(pressed);Assert.AreEqual(0,delta);
-            _input.ProcessContact(2,new Vector2(400,100),true,true,500,1000,out pressed,out delta,out up);
-            _input.ProcessContact(1,new Vector2(150,100),true,false,500,1000,out pressed,out delta,out up);Assert.AreEqual(.1f,delta,.0001f);
+            Frame(() => _input.Contact(5, Jump.center, false));
+            Assert.IsTrue(_input.JumpPressed);
+            Frame(() => _input.Contact(5, Jump.center + new Vector2(-400, 0), false));
+            Assert.IsFalse(_input.JumpPressed); Assert.AreEqual(0, _input.LookDelta); Assert.IsFalse(_input.StickHeld);
+            Frame(() => _input.Contact(5, Jump.center, true));
+            Frame(() => _input.Contact(6, Jump.center, false)); Assert.IsTrue(_input.JumpPressed, "Next tap jumps again");
         }
-        [Test] public void CancelAndOrientationChangeDoNotRetainOldPointerDelta()
+
+        [Test] public void TwoFingersMoveAndLookAtTheSameTime()
         {
-            bool pressed,up;float delta;
-            _input.ProcessContact(1,new Vector2(100,100),true,false,500,1000,out pressed,out delta,out up);_input.Cancel();
-            _input.ProcessContact(1,new Vector2(800,100),true,false,1000,1000,out pressed,out delta,out up);Assert.IsTrue(pressed);Assert.AreEqual(0,delta);
-            _input.ProcessContact(1,new Vector2(900,100),true,false,1000,1000,out pressed,out delta,out up);Assert.AreEqual(.1f,delta,.0001f);
+            Frame(() => _input.Contact(0, Center, false), () => _input.Contact(1, new Vector2(700, 900), false));
+            Frame(() => _input.Contact(0, Center + new Vector2(0, 80), false), () => _input.Contact(1, new Vector2(740, 900), false));
+            Assert.AreEqual(.8f, _input.Stick.y, .001f); Assert.AreEqual(40, _input.LookDelta, .001f);
+            Frame(() => _input.Contact(2, Center + new Vector2(30, 0), false));
+            Assert.AreEqual(.8f, _input.Stick.y, .001f, "A third finger cannot steal the stick");
         }
-        [Test] public void UpwardStrokeFiresSwipeUpOnceAndRearmsAfterMovingDown()
+
+        [Test] public void DraggingFarKeepsTheStickThroughATouchToMouseHandoff()
         {
-            bool pressed,up;float delta;
-            _input.ProcessContact(1,new Vector2(300,200),true,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(up);
-            _input.ProcessContact(1,new Vector2(300,240),true,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(up,"4% is below the threshold");
-            _input.ProcessContact(1,new Vector2(305,270),true,false,500,1000,out pressed,out delta,out up);Assert.IsTrue(up);
-            _input.ProcessContact(1,new Vector2(305,330),true,false,500,1000,out pressed,out delta,out up);Assert.IsTrue(up,"Continued upward stroke counts again only after a full new 6%");
-            _input.ProcessContact(1,new Vector2(305,350),true,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(up);
-            _input.ProcessContact(1,new Vector2(305,250),true,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(up);
-            _input.ProcessContact(1,new Vector2(305,320),true,false,500,1000,out pressed,out delta,out up);Assert.IsTrue(up,"Moving down re-arms from the lowest point");
+            // Finger starts on the joystick and drags far away; the runtime then drops the touch and reports its
+            // simulated mouse at the same spot. The joystick must keep steering instead of resetting.
+            Frame(() => _input.Contact(0, Center, false));
+            Frame(() => _input.Contact(0, Center + new Vector2(600, 0), false));
+            Frame(() => _input.Contact(0, Center + new Vector2(600, 0), true));          // spurious Ended
+            Assert.AreEqual(Vector2.zero, _input.Stick);
+            Frame(() => _input.Contact(-1, Center + new Vector2(620, 10), false));        // simulated mouse
+            Assert.IsTrue(_input.StickHeld, "Role handed over"); Assert.IsFalse(_input.LookHeld, "Not turned into a camera swipe");
+            Assert.IsFalse(_input.Pressed, "Handoff is not a new press");
+            Assert.AreEqual(1, _input.Stick.x, .01f);
+            Frame(() => _input.Contact(-1, Center + new Vector2(0, 500), false));
+            Assert.AreEqual(1, _input.Stick.y, .01f, "Keeps steering after the handoff");
         }
-        [Test] public void MostlySidewaysDragNeverFiresSwipeUp()
+
+        [Test] public void MouseOwnedStickHandsBackToARealTouch()
         {
-            bool pressed,up;float delta;
-            _input.ProcessContact(1,new Vector2(100,200),true,false,500,1000,out pressed,out delta,out up);
-            for(int i=1;i<=10;i++){_input.ProcessContact(1,new Vector2(100+i*30,200+i*8),true,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(up,"step "+i);}
+            Frame(() => _input.Contact(-1, Center, false));
+            Frame(() => _input.Contact(-1, Center + new Vector2(400, 0), false));
+            // Real touches arrive: the mouse role counts as gone and the touch at the same spot takes it.
+            Frame(() => _input.Contact(-1, Center + new Vector2(400, 0), true), () => _input.Contact(4, Center + new Vector2(410, 0), false));
+            Assert.IsTrue(_input.StickHeld); Assert.IsFalse(_input.LookHeld); Assert.AreEqual(1, _input.Stick.x, .01f);
+            Frame(() => _input.Contact(4, Center, true)); Assert.IsFalse(_input.StickHeld, "Real release still releases");
         }
-        [Test] public void SecondaryFingerCannotSwipeUp()
+
+        [Test] public void CameraSwipeAlsoSurvivesAHandoff()
         {
-            bool pressed,up;float delta;
-            _input.ProcessContact(1,new Vector2(100,100),true,false,500,1000,out pressed,out delta,out up);
-            _input.ProcessContact(2,new Vector2(100,400),true,false,500,1000,out pressed,out delta,out up);Assert.IsFalse(up);
+            Frame(() => _input.Contact(2, new Vector2(700, 900), false));
+            Frame(() => _input.Contact(2, new Vector2(740, 900), true));
+            Frame(() => _input.Contact(-1, new Vector2(745, 900), false));
+            Assert.IsTrue(_input.LookHeld); Assert.IsFalse(_input.StickHeld);
+            Frame(() => _input.Contact(-1, new Vector2(785, 900), false)); Assert.AreEqual(40, _input.LookDelta, .001f);
+        }
+
+        [Test] public void ALaterOrDistantTouchStartsFreshAfterARealRelease()
+        {
+            Frame(() => _input.Contact(0, Center + new Vector2(50, 0), false));
+            Frame(() => _input.Contact(0, Center + new Vector2(50, 0), true));
+            for (int i = 0; i <= RescuePointerInput.HandoffFrames; i++) Frame();
+            Frame(() => _input.Contact(1, new Vector2(800, 1200), false));
+            Assert.IsTrue(_input.LookHeld, "Too late for a handoff: a far touch rotates the camera"); Assert.IsFalse(_input.StickHeld);
+        }
+
+        [Test] public void CancelReleasesEveryRole()
+        {
+            Frame(() => _input.Contact(0, Center, false), () => _input.Contact(1, new Vector2(700, 900), false));
+            _input.Cancel();
+            Assert.IsFalse(_input.StickHeld); Assert.IsFalse(_input.LookHeld); Assert.AreEqual(Vector2.zero, _input.Stick);
         }
     }
 }
