@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 29023,
-    "creativeName": "C1_2611_HuyNQ_UAC_V90_ThamNT",
+    "creativeName": "C1_2611_HuyNQ_UAC_V87_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -81,7 +81,7 @@
             "externalJSLibraries": [],
             "scriptingDefines": [],
             "msbuildVersion": "18.9",
-            "monoVersion": "N/A",
+            "monoVersion": "9.0.3",
             "dotnetVersion": ""
         },
         "assets": {
@@ -134,9 +134,11 @@
             ]
         },
         "scenes": [
+            "Assets/_Playable_/Scenes/PetRescue.unity"
+        ],
+        "disabledScenes": [
             "Assets/_Playable_/Scenes/Gameplay.unity"
         ],
-        "disabledScenes": [],
         "startupScene": 0,
         "packages": {
             "default": {
@@ -7809,11 +7811,11 @@
             },
             {
                 "name": "TMPro.TagUnitType",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "TMPro.TagValueType",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "TMPro.TextContainerAnchors",
@@ -8176,71 +8178,11 @@
                 "excluded": true
             },
             {
-                "name": "TankAndHealerStudioAssets.BasicInputDisplay",
-                "excluded": true
-            },
-            {
-                "name": "TankAndHealerStudioAssets.JoystickPrefabDisplay",
-                "excluded": true
-            },
-            {
-                "name": "TankAndHealerStudioAssets.PositionOverrideExample",
-                "excluded": true
-            },
-            {
-                "name": "TankAndHealerStudioAssets.RelativeCameraRotationExample",
-                "excluded": true
-            },
-            {
-                "name": "TankAndHealerStudioAssets.TapCountExample",
-                "excluded": true
-            },
-            {
-                "name": "Playable.CameraController.ViewMode",
+                "name": "Playable.PetRescue.RescueRules.PetState",
                 "excluded": false
             },
             {
-                "name": "TankAndHealerStudioAssets.RelativeCameraRotationExample.MovementCalculations",
-                "excluded": true
-            },
-            {
-                "name": "UltimateJoystick.Anchor",
-                "excluded": false
-            },
-            {
-                "name": "UltimateJoystick.Axis",
-                "excluded": false
-            },
-            {
-                "name": "UltimateJoystick.InputHandling",
-                "excluded": false
-            },
-            {
-                "name": "UltimateJoystick.TensionType",
-                "excluded": false
-            },
-            {
-                "name": "Playable.IDrivableVehicle",
-                "excluded": false
-            },
-            {
-                "name": "Playable.PaintballNpcController.NpcState",
-                "excluded": false
-            },
-            {
-                "name": "Game.Events.Noel.NoelSkin",
-                "excluded": false
-            },
-            {
-                "name": "Game.Events.Noel.NoelSkinData",
-                "excluded": false
-            },
-            {
-                "name": "Playable.FishingState",
-                "excluded": false
-            },
-            {
-                "name": "Playable.TapToBuildTheme",
+                "name": "Playable.PetRescue.RescueRules.Phase",
                 "excluded": false
             }
         ],
@@ -14901,7 +14843,7 @@
                     },
                     {
                         "name": "LinearToGammaSpace",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "MoveTowardsAngle",
@@ -16559,7 +16501,7 @@
                     },
                     {
                         "name": "SetAsLastSibling",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSiblingIndex",
@@ -17445,7 +17387,7 @@
                     },
                     {
                         "name": "sharedMaterials#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sharedMaterials#set",
@@ -17607,7 +17549,7 @@
                     },
                     {
                         "name": "offsetMin#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "offsetMin#set",
@@ -17615,7 +17557,7 @@
                     },
                     {
                         "name": "offsetMax#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "offsetMax#set",
@@ -20459,7 +20401,7 @@
                     },
                     {
                         "name": "RectangleContainsScreenPoint",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PixelAdjustPoint",
@@ -22157,7 +22099,7 @@
                     },
                     {
                         "name": "particleCount#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "duration#get",
@@ -25967,7 +25909,7 @@
                     },
                     {
                         "name": "GetMarkupTagHashCode$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetStyleHashCode",
@@ -26219,7 +26161,7 @@
                     },
                     {
                         "name": "ValidateHtmlTag",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -30605,7 +30547,7 @@
                     },
                     {
                         "name": "ToUpperASCIIFast",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetHashCode",
@@ -37500,32 +37442,6 @@
                 ]
             },
             {
-                "className": "Playable.AudioManager",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "PlayMusic",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StopMusic",
-                        "excluded": false
-                    },
-                    {
-                        "name": "PlaySound",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StopSound",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "DG.Tweening.DOVirtual",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -37598,170 +37514,6 @@
                 ]
             },
             {
-                "className": "FailPanel",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Show",
-                        "excluded": false
-                    },
-                    {
-                        "name": "PlayButtonPulse",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.WinPanel",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Show",
-                        "excluded": false
-                    },
-                    {
-                        "name": "PlayButtonPulse",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.GameManager",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Start",
-                        "excluded": false
-                    },
-                    {
-                        "name": "EndGame",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CountEvent",
-                        "excluded": true
-                    },
-                    {
-                        "name": "IECountdownEndGame",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CreateSprite",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ShowWinPanel",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ShowFailPanel",
-                        "excluded": false
-                    },
-                    {
-                        "name": "EndTime#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "CountdownEndGame",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ShowCta",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.GameController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Start",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDrivingStarted",
-                        "excluded": false
-                    },
-                    {
-                        "name": "DismissStartTutorial",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetRiding",
-                        "excluded": false
-                    },
-                    {
-                        "name": "HandleStartTutorialPress",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ApplyBrightness",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetDrivingCar",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ShowStartTutorial",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "DG.Tweening.CustomPlugins.PureQuaternionPlugin",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -37800,566 +37552,6 @@
                     {
                         "name": "EvaluateAndApply",
                         "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.CameraController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "YawPivot#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CurrentViewMode#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Start",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SetTarget",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetTouchController",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ToggleView",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SetViewMode",
-                        "excluded": true
-                    },
-                    {
-                        "name": "LookAtPoint",
-                        "excluded": true
-                    },
-                    {
-                        "name": "AddLookInput",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SnapToTarget",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetFollowTarget",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FollowVehicle",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FollowPlayer",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ClearFollowTarget",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FollowPlayer$1",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OutputCamera#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Target#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Yaw#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GetAnchor",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateCamera",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Pitch#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaintballZoom",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaintballAim",
-                        "excluded": false
-                    },
-                    {
-                        "name": "AddFeedback",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ClearFeedback",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetEntryAngles",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PlayerController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "IsGrounded#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "IsWorking#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsWorking#set",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Start",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FixedUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnJumpButtonPressed",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetMoveJoystick",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SetCameraController",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SetCameraYaw",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StopFollowingCameraYaw",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ProbeGround",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Teleport",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Velocity#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "MoveJoystick#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "CameraController#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ReadMoveInput",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReadDriveInput",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetDrivingControls",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryStep",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CapsuleAt",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CanStandAt",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Teleport$1",
-                        "excluded": false
-                    },
-                    {
-                        "name": "BeginRide",
-                        "excluded": false
-                    },
-                    {
-                        "name": "EndRide",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ConfigureWalkingPhysics",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReadSteerInput",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetOnFootAnimator",
-                        "excluded": false
-                    },
-                    {
-                        "name": "BeginDrive",
-                        "excluded": false
-                    },
-                    {
-                        "name": "EndDrive",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetAimYaw",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StopAiming",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.TouchController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnRectTransformDimensionsChange",
-                        "excluded": true
-                    },
-                    {
-                        "name": "RefreshLayout",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerDown",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDrag",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerUp",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CacheRectTransform",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "UltimateJoystick",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FormatDebug",
-                        "excluded": true
-                    },
-                    {
-                        "name": "JoystickConfirmed",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ReturnComponent",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetHorizontalAxis",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetVerticalAxis",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetHorizontalAxisRaw",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetVerticalAxisRaw",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetDistance",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GetInputActive",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetAngle",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Disable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Enable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "InputInRange",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetJoystickState",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetUltimateJoystick",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetTapCount",
-                        "excluded": true
-                    },
-                    {
-                        "name": "DisableJoystick",
-                        "excluded": true
-                    },
-                    {
-                        "name": "EnableJoystick",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Interactable#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Interactable#set",
-                        "excluded": true
-                    },
-                    {
-                        "name": "JoystickBase#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Joystick#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "BaseColor#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "BaseColor#set",
-                        "excluded": true
-                    },
-                    {
-                        "name": "HighlightColor#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "HighlightColor#set",
-                        "excluded": true
-                    },
-                    {
-                        "name": "TensionColorNone#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "TensionColorNone#set",
-                        "excluded": true
-                    },
-                    {
-                        "name": "TensionColorFull#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "TensionColorFull#set",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Start",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnTransformParentChanged",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnApplicationFocus",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerDown",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnInputDown",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDrag",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnInputDrag",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerUp",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnInputUp",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ProcessInput",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateJoystickCenter",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TensionAccentDisplay",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TensionAccentReset",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdatePositionValues",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ResetJoystick",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdatePositioning$1",
-                        "excluded": true
-                    },
-                    {
-                        "name": "UpdatePositioning",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StartOverridePositioning",
-                        "excluded": true
-                    },
-                    {
-                        "name": "StopOverridePositioning",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SetOverridePosition",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SetOverrideSize",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ResetOverridePositioning",
-                        "excluded": true
-                    },
-                    {
-                        "name": "UpdatePositioningOverride",
-                        "excluded": true
-                    },
-                    {
-                        "name": "UpdateHighlightColor",
-                        "excluded": true
-                    },
-                    {
-                        "name": "UpdateTensionColors",
-                        "excluded": true
                     }
                 ]
             },
@@ -38498,96 +37690,6 @@
                 ]
             },
             {
-                "className": "Playable.PlayerAction",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "PlayerController#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsInCar#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsUsingTreadmill#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "BeginTap",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FindNearestMotorbike",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UseMotorbike",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryTapBike",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsOverControls",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReadTap",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryMountFromTutorial",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryTutorialTapArea",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsTutorialBikeVisible",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsOnMotorbike#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "FindNearest",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryTutorialTapArea$1",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryTapVehicle",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "UnityEngine.UI.ContentSizeFitter",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -38650,44 +37752,6 @@
                 ]
             },
             {
-                "className": "Playable.Arrow",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SetTarget",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StartMovement",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "UnityEngine.ContactPoint",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -38717,66 +37781,6 @@
                     },
                     {
                         "name": "ctor",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.ResponsiveCanvasScaler",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnValidate",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ApplyScaleSettings",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GetMatchValue",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.SafeAreaRectTransform",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ApplySafeArea",
                         "excluded": false
                     }
                 ]
@@ -39168,236 +38172,6 @@
                     {
                         "name": "ModifyMesh$1",
                         "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.DriveHoldButton",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "IsHeld#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerDown",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerUp",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerExit",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Release",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnApplicationFocus",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnApplicationPause",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.MotorbikeController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "CameraTarget#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Speed#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "MaxSpeed#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsDriven#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Rider#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GroundAt",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FixedUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryMount",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RequestDismount",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryDismount",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReleaseRider",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "TryStep",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StepRay",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateEngineSound",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StartEngineSound",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.JournalHandSequencer",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Begin",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Stop",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "KillSequence",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.MissionRowView",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "GoRect#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnGoPressed",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Mission#get",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.MissionsJournalController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Start",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Show",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Hide",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnGoPressed",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StopTitleTween",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ApplyMissionOrder",
-                        "excluded": false
                     }
                 ]
             },
@@ -39920,512 +38694,6 @@
                 ]
             },
             {
-                "className": "Playable.MissionController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "IsAvailable#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UsesDrivingTutorial#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CanEnter#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEntered",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnExited",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Enter",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Exit",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.GameController.RideUIState",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetActive",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Tick",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.MissionManager",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TrySelect",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PaintballFireButton",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "IsHeld#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnInitializePotentialDrag",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerDown",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDrag",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerUp",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnCancel",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Release",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "OnApplicationFocus",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnApplicationPause",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PaintballMovementTutorial",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Begin",
-                        "excluded": false
-                    },
-                    {
-                        "name": "End",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Refresh",
-                        "excluded": false
-                    },
-                    {
-                        "name": "WasScreenPressed",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PaintballNpcController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ResetNpc",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReceiveHit",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FixedUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "HasClearStrike",
-                        "excluded": false
-                    },
-                    {
-                        "name": "EnterIdle",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PaintballNpcMotor",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Home#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RouteCount#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RoutePoint",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Initialize",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ResetToHome",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Stop",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Face",
-                        "excluded": false
-                    },
-                    {
-                        "name": "MoveTowards",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PaintballProjectile",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "ClearParticles",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RestartParticles",
-                        "excluded": false
-                    },
-                    {
-                        "name": "PauseParticles",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsBusy#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Speed#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Launch",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ResetProjectile",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FixedUpdate",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PlayerPaintballController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Player#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsReloading#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Ammo#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "IsReady#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Equip",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Unequip",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryFire",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPaintballAnimationEvent",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FireProjectile",
-                        "excluded": false
-                    },
-                    {
-                        "name": "BeginReload",
-                        "excluded": true
-                    },
-                    {
-                        "name": "UpdateAmmo",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReceiveHit",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "AdvanceAnimationWatchdog",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GetAimRay",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateCrosshairScale",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.CarController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "CameraTarget#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Speed#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "MaxSpeed#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsDriven#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Rider#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateEngineSound",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StartEngineSound",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReadDriveInput",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ConfigureWheels",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FixedUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "AssistWheels",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FindLedge",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CurbRay",
-                        "excluded": false
-                    },
-                    {
-                        "name": "HasLiftClearance",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ClearAssistance",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryMount",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RequestDismount",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryDismount",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReleaseRider",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReleaseInput",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PaintballMissionController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "IsAvailable#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEntered",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnExited",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "UnityEngine.DefaultExecutionOrder",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -40480,84 +38748,6 @@
                     {
                         "name": "ctor",
                         "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.CarDriveTutorial",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Begin",
-                        "excluded": false
-                    },
-                    {
-                        "name": "End",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Complete",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Refresh",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdatePosition",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.CarMissionController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "OnEntered",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnExited",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.MotorbikeMissionController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "OnEntered",
-                        "excluded": true
-                    },
-                    {
-                        "name": "OnExited",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": true
                     }
                 ]
             },
@@ -40890,710 +39080,6 @@
                 ]
             },
             {
-                "className": "Game.Events.Noel.NoelSkinSelector",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "PickMesh",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Apply",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CacheRenderers",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.FishingController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "StateTime#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CastDuration#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Tension01#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Begin",
-                        "excluded": false
-                    },
-                    {
-                        "name": "End",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Press",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Release",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StartCast",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateCasting",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateWaiting",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsNibbling",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateFighting",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StartCatch",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateCatching",
-                        "excluded": false
-                    },
-                    {
-                        "name": "MovedAway",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ResetToReady",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ResetRod",
-                        "excluded": false
-                    },
-                    {
-                        "name": "HideFish",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Play",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetState",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.FishingHoldButton",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "OnPointerDown",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPointerUp",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ReleaseIfPressed",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.FishingHUD",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "SetActive",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDisable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Show",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnPressed",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnReleased",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "UpdateRing",
-                        "excluded": false
-                    },
-                    {
-                        "name": "FollowBobber",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnStateChanged",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OpenTutorial",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CloseTutorial",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ShowCatchPopup",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ShowMessage",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ApplyVisual",
-                        "excluded": false
-                    },
-                    {
-                        "name": "HintFor",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.FishingHUD.ActionVisual",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "getDefaultValue",
-                        "excluded": true
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ctor",
-                        "excluded": false
-                    },
-                    {
-                        "name": "getHashCode",
-                        "excluded": true
-                    },
-                    {
-                        "name": "equals",
-                        "excluded": true
-                    },
-                    {
-                        "name": "$clone",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.FishingLineView",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "RodTip#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Bobber#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetVisible",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetBobberVisible",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetBobberPosition",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Redraw",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.FishingPoseAnimator",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Aim",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RestoreUndrivenBones",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TargetPose",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Apply",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.FishingPoseAnimator.Pose",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Lerp",
-                        "excluded": false
-                    },
-                    {
-                        "name": "getDefaultValue",
-                        "excluded": true
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "$ctor1",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ctor",
-                        "excluded": false
-                    },
-                    {
-                        "name": "getHashCode",
-                        "excluded": true
-                    },
-                    {
-                        "name": "equals",
-                        "excluded": true
-                    },
-                    {
-                        "name": "$clone",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.FishingRules",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "PickIndex",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ChargeStep",
-                        "excluded": false
-                    },
-                    {
-                        "name": "CastDistance",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RollWait",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RollNibbles",
-                        "excluded": false
-                    },
-                    {
-                        "name": "RollSurgeDelay",
-                        "excluded": false
-                    },
-                    {
-                        "name": "StepFight",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ApplySurge",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsCaught",
-                        "excluded": false
-                    },
-                    {
-                        "name": "IsEscaped",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.FishingMissionController",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "IsAvailable#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEntered",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnExited",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetPaused",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.ChoiceCard",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Bind",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetInteractable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnClick",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.ChoiceCardsView",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Show",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Hide",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetVisible",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SetInteractable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnLeft",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnRight",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Raise",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.DropPresenter",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Drop",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Play",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Land",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PickerOption",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Id#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Icon#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Display#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "VoiceSfx#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ctor",
-                        "excluded": false
-                    },
-                    {
-                        "name": "$ctor1",
-                        "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PickerSequence",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "IsFinished#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Current#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ctor",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TryChoose",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Advance",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PickerStep",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Title#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "EndsGame#get",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ctor",
-                        "excluded": false
-                    },
-                    {
-                        "name": "$ctor1",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Get",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.PingPongHandHint",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Play",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Stop",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Tap",
-                        "excluded": false
-                    },
-                    {
-                        "name": "TipPosition",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.XmasPickerFlow",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "HideDisplay",
-                        "excluded": false
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Start",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnDestroy",
-                        "excluded": true
-                    },
-                    {
-                        "name": "ShowCurrent",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnChosen",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnLanded",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ShowNextAfterDelay",
-                        "excluded": false
-                    },
-                    {
-                        "name": "EndGame",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "DG.Tweening.Plugins.ColorPlugin",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -41632,11 +39118,109 @@
                 ]
             },
             {
-                "className": "Playable.EndCardView",
+                "className": "Playable.PetRescue.LunaController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "NotifyWin",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NotifyLose",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifyEndGame",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EndOnce",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OpenStoreFromGesture",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OpenStore",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OpenStoreAtEndTime",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueAudioView",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
                         "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "BeginRun",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayExplosion",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayRescue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Finish",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PlayJump",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PlayLand",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueCameraFollow",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tick",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueEndcardView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Initialize",
                         "excluded": false
                     },
                     {
@@ -41644,13 +39228,33 @@
                         "excluded": false
                     },
                     {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnRectTransformDimensionsChange",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Resize",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPointerClick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnInstall",
+                        "excluded": false
+                    },
+                    {
                         "name": "OnDestroy",
                         "excluded": true
                     }
                 ]
             },
             {
-                "className": "Playable.HandTapHint",
+                "className": "Playable.PetRescue.RescueGameFlow",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
@@ -41658,25 +39262,53 @@
                         "excluded": false
                     },
                     {
-                        "name": "OnEnable",
+                        "name": "Awake",
                         "excluded": false
                     },
                     {
-                        "name": "OnDisable",
+                        "name": "Start",
                         "excluded": false
                     },
                     {
-                        "name": "Pulse",
+                        "name": "Update",
                         "excluded": false
                     },
                     {
-                        "name": "SetRing",
+                        "name": "Advance",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Detonate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopGameplay",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleWin",
+                        "excluded": true
+                    },
+                    {
+                        "name": "HandleLose",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleEndGame",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AdvanceEndTime",
                         "excluded": false
                     }
                 ]
             },
             {
-                "className": "Playable.OrientationLayout",
+                "className": "Playable.PetRescue.RescueHeroMotor",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
@@ -41684,7 +39316,61 @@
                         "excluded": false
                     },
                     {
-                        "name": "OnEnable",
+                        "name": "Initialize",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Advance",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Stop",
+                        "excluded": false
+                    },
+                    {
+                        "name": "InPit#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Airborne#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "RunningOnGround#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "JumpSpeed#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Gravity#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "TryJump",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Step",
+                        "excluded": false
+                    },
+                    {
+                        "name": "InPitAt",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetRunning",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueHudView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
                         "excluded": false
                     },
                     {
@@ -41692,17 +39378,17 @@
                         "excluded": false
                     },
                     {
-                        "name": "ApplyIfChanged",
+                        "name": "ApplyScreenLayout",
                         "excluded": false
                     },
                     {
-                        "name": "SetGameplayTopInset",
+                        "name": "Refresh",
                         "excluded": false
                     }
                 ]
             },
             {
-                "className": "Playable.OrientationLayout.Entry",
+                "className": "Playable.PetRescue.RescuePetFollower",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
@@ -41710,75 +39396,135 @@
                         "excluded": false
                     },
                     {
-                        "name": "Apply",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.TapToBuildFlow",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "Start",
+                        "name": "Initialize",
                         "excluded": false
                     },
                     {
-                        "name": "OnDestroy",
+                        "name": "Advance",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MarkLost",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MarkRescued",
                         "excluded": true
                     },
                     {
-                        "name": "OnMaterialClicked",
+                        "name": "Stop",
                         "excluded": false
                     },
                     {
-                        "name": "OnEnded",
+                        "name": "SetRunning",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Jump",
                         "excluded": false
                     }
                 ]
             },
             {
-                "className": "Playable.UICoverScaler",
+                "className": "Playable.PetRescue.RescuePointerInput",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
-                        "name": "init",
+                        "name": "Initialize",
                         "excluded": false
                     },
                     {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Apply",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
-                "className": "Playable.ScaleHandHint",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
+                        "name": "Cancel",
                         "excluded": false
                     },
                     {
                         "name": "OnDisable",
                         "excluded": true
+                    },
+                    {
+                        "name": "OnApplicationFocus",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Sample",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Allowed",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ProcessContact",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Anchor",
+                        "excluded": false
                     }
                 ]
             },
             {
-                "className": "Playable.TapToBuildThemeSelector",
+                "className": "Playable.PetRescue.RescueRules",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Remaining#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetPetState",
+                        "excluded": true
+                    },
+                    {
+                        "name": "LosePet",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RescuePet",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Validate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueServices",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Luna#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Register",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Unregister",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueTntHazard",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
@@ -41786,15 +39532,159 @@
                         "excluded": false
                     },
                     {
-                        "name": "OnEnable",
+                        "name": "HitFraction",
                         "excluded": false
                     },
                     {
-                        "name": "Update",
+                        "name": "TryHit",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ContainsBlast",
                         "excluded": false
                     },
                     {
-                        "name": "Apply",
+                        "name": "Explode",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TickEffect",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CraterPending#get",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueTutorialView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowSwipe",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnSteered",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Hide",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": true
+                    },
+                    {
+                        "name": "StopPulse",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PositionArrows",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tick",
+                        "excluded": false
+                    },
+                    {
+                        "name": "JumpVisible#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ShowJump",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HideJump",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Present",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RestoreSwipeLayout",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CaptureOrigin",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueCourse",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TileIndex",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Tile",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HeightAt",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HitsWall",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsBlocked",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueCrater",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "TileCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Open",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.PetRescue.RescueWallObstacle",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Top#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "HalfExtents#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Overlaps",
                         "excluded": false
                     }
                 ]
@@ -42255,6 +40145,256 @@
                         "script": "",
                         "ext": "",
                         "name": "Assets/_Playable_/UI/TapToBuild/bg13.jpg"
+                    },
+                    {
+                        "maxWidth": 128,
+                        "maxHeight": 128,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Sheep.png"
+                    },
+                    {
+                        "maxWidth": 128,
+                        "maxHeight": 128,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Fox.png"
+                    },
+                    {
+                        "maxWidth": 128,
+                        "maxHeight": 128,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Pig.png"
+                    },
+                    {
+                        "maxWidth": 64,
+                        "maxHeight": 64,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/GameAsset/Model/Character/Player/Base_Character.png"
+                    },
+                    {
+                        "maxWidth": 128,
+                        "maxHeight": 128,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Duck.png"
+                    },
+                    {
+                        "maxWidth": 128,
+                        "maxHeight": 128,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Dog.png"
+                    },
+                    {
+                        "maxWidth": 128,
+                        "maxHeight": 128,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Rabbit.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/stone.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/grass_block_top.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/stone_bricks.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/tnt_side.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/mossy_stone_bricks.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/dirt.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/oak_log_top.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/oak_leaves.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/tnt_bottom.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/tnt_top.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/oak_planks.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/oak_log.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/VFX/Textures/glow.png"
+                    },
+                    {
+                        "maxWidth": 1024,
+                        "maxHeight": 1024,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/VFX/Textures/atlas_big_modular.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/VFX/Textures/skull_glow.png"
+                    },
+                    {
+                        "maxWidth": 512,
+                        "maxHeight": 512,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/VFX/Textures/fire_pixel_red.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/jungle_grass_block_side.png"
+                    },
+                    {
+                        "maxWidth": 16,
+                        "maxHeight": 16,
+                        "format": "png32",
+                        "compression": "none",
+                        "quality": 100,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_Playable_/PetRescue/Textures/Blocks/jungle_door_top.png"
                     }
                 ]
             },

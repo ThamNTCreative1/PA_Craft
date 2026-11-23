@@ -1,5 +1,5 @@
-# Current work item
+﻿# Current work item
 
-Path: agent-os/specs/2026-11-20-100857-tap-build-green-red-themes
-Request: Add Default/Green/Red Luna theme dropdown using supplied V89 assets.
-Status: IMPLEMENTED - UNITY VERIFIED; LUNA BUILD UNVERIFIED
+Spec: agent-os/specs/2026-11-23-1130-pet-rescue-feedback-round2
+Request: Feedback round 2 - landscape text overlap, TNT crater + swipe-up jump, more wall obstacles like demo video, higher/closer camera with bigger trailing pets.
+Status: IMPLEMENTED - AWAITING USER REVIEW

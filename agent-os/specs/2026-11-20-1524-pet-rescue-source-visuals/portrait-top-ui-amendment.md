@@ -1,0 +1,5 @@
+# Portrait top UI safe area amendment
+Authorization: direct user request to lower top UI in portrait to avoid notch overlap. Same existing feature/view/builder/scene scope; original-material compatibility proposal stays pending.
+Files/classes: existing RescueHudView.cs owns serialized Top UI RectTransform and Canvas references; existing Editor/RescueSceneBuilder.cs creates this root; PetRescue.unity groups count, countdown and title beneath it. No new class/interface/package/asset or gameplay rule.
+Behavior: portrait reserves unsafe top inset (Screen.height - Screen.safeArea.yMax) plus 3.5 percent screen height. Root upper offset converts pixels through Canvas.scaleFactor. Landscape restores zero offset. LateUpdate applies current orientation/safe area without accumulating offsets. Bottom tutorial and hand/arrows remain outside top root.
+Verification: compile/Console; synthetic portrait 540x960 no notch gives 33.6px top-root inset, notch44 gives77.6px. Repeated application stable; landscape960x540 restores zero. Three top children verified. Existing focused HUD/tutorial test run. Physical notched-device and Luna browser validation not performed.
