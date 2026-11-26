@@ -14,6 +14,9 @@ namespace Playable
         [LunaPlaygroundField("End Time")] [SerializeField]
         private int _endTime = 30;
 
+        [LunaPlaygroundField("AppLovin Mode")] [SerializeField]
+        private bool _appLovinMode;
+
         [LunaPlaygroundAsset("Background Music")] [SerializeField]
         private AudioClip _backgroundMusic;
 
@@ -30,6 +33,7 @@ namespace Playable
         private bool _ended;
         public int EndTime => _endTime;
         public bool IsEnded => _ended;
+        public bool AppLovinMode => _appLovinMode;
 
         private void Awake() { Instance = this; }
 
@@ -64,7 +68,8 @@ namespace Playable
             if (GameController.Instance != null) GameController.Instance.ShowEndScreen();
             ShowBlockOverlay();
             Luna.Unity.LifeCycle.GameEnded();
-            Luna.Unity.Playable.InstallFullGame();
+            // AppLovin: chỉ end game, người chơi phải nhấn màn hình mới ra store
+            if (!_appLovinMode) Luna.Unity.Playable.InstallFullGame();
         }
 
         /// <summary>Lớp trong suốt phủ toàn màn hình: nhấn vào đâu cũng ra store.</summary>
@@ -85,8 +90,10 @@ namespace Playable
 
         private void OnBlockClicked()
         {
-            if (_ended) Luna.Unity.Playable.InstallFullGame();
-            else EndGame();
+            bool wasEnded = _ended;
+            if (!wasEnded) EndGame();
+            // AppLovin: EndGame không tự ra store, nên lần nhấn này phải mở store
+            if (wasEnded || _appLovinMode) Luna.Unity.Playable.InstallFullGame();
         }
 
         protected void CountEvent()

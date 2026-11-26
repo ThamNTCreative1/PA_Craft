@@ -94,7 +94,9 @@ namespace Playable
         private IEnumerator IEShowMap()
         {
             if (_timeToShowMap > 0f) yield return new WaitForSeconds(_timeToShowMap);
-            ShowEndScreen();
+            // AppLovin: hiện minimap = end game (không tự ra store, chờ người chơi nhấn)
+            if (GameManager.Instance != null && GameManager.Instance.AppLovinMode) GameManager.Instance.EndGame();
+            else ShowEndScreen();
         }
 
         private bool _endScreenShown;
