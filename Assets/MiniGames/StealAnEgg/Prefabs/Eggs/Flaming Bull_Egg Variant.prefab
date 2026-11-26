@@ -1,0 +1,190 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7034388228050685001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 447543857672487364}
+  - component: {fileID: 7578287771006202171}
+  - component: {fileID: 3272142966629416185}
+  m_Layer: 0
+  m_Name: Flaming Bull_Egg(Clone)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &447543857672487364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7034388228050685001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8585679474147110578}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7578287771006202171
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7034388228050685001}
+  m_Mesh: {fileID: -6583713313110446528, guid: 5432c79feba7bb04cb06ecadd775cd60, type: 3}
+--- !u!23 &3272142966629416185
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7034388228050685001}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: fb92b29ac9988c0469f25866d2819c83, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1001 &454404034545247810
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 672763148931028146, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1283692049549393629, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_Name
+      value: Flaming Bull_Egg Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 1283692049549393629, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745281014433176367, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: id
+      value: 7bb59007-5e27-4318-a094-c875334d6eb9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745281014433176367, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: eggName
+      value: Flaming Bull_Egg
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745281014433176367, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: sizeData
+      value: 
+      objectReference: {fileID: 11400000, guid: b65cb11b5098f9443bb0b7e705c18a64, type: 2}
+    - target: {fileID: 7745281014433176367, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: _renderer
+      value: 
+      objectReference: {fileID: 3272142966629416185}
+    - target: {fileID: 7745281014433176367, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: thumbnail
+      value: 
+      objectReference: {fileID: 21300000, guid: 0ee54a8063b1c4940baee541ed0cb252, type: 3}
+    - target: {fileID: 7745281014433176367, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: incubateTimeBase
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745281014433176367, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      propertyPath: monsters.Array.data[0].obj
+      value: 
+      objectReference: {fileID: 6372331999077479171, guid: 37e39dbccfcb51e46a42e469599be794, type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 7203104067611962590, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 8171829842186356976, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 447543857672487364}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+--- !u!4 &8585679474147110578 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8171829842186356976, guid: 5af56c41c70e6474cb665df9712b2628, type: 3}
+  m_PrefabInstance: {fileID: 454404034545247810}
+  m_PrefabAsset: {fileID: 0}

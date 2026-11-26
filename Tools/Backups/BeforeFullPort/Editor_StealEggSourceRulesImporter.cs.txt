@@ -1,0 +1,105 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+
+public static class StealEggSourceRulesImporter
+{
+    const string Source="F:/GAME/StealEgg/steal-an-egg-main/";
+    const string Root="Assets/MiniGames/StealAnEgg/";
+    static readonly Dictionary<string,string> paths=new Dictionary<string,string>();
+    static readonly Dictionary<string,string> texts=new Dictionary<string,string>();
+    static float Number(string value){return float.Parse(value,CultureInfo.InvariantCulture);}
+    static string Text(string path){if(!texts.ContainsKey(path))texts[path]=File.ReadAllText(Source+path);return texts[path];}
+    static string Resolve(string guid){string path;if(!paths.TryGetValue(guid,out path))throw new Exception("Missing source GUID "+guid);return path;}
+    static string Parent(string path)
+    {
+        Match m=Regex.Match(Text(path),@"m_SourcePrefab:.*?guid: ([a-f0-9]{32})");
+        return m.Success?Resolve(m.Groups[1].Value):null;
+    }
+    static string Value(string path,string field,string fallback=null,int depth=0)
+    {
+        if(path==null || depth>8)return fallback;
+        string key=Regex.Escape(field),yaml=Text(path);
+        Match m=Regex.Match(yaml,@"propertyPath: "+key+@"\r?\n\s+value: ([^\r\n]*)");
+        if(m.Success)return m.Groups[1].Value;
+        m=Regex.Match(yaml,@"(?m)^\s+"+key+@": ([^\r\n]+)");
+        return m.Success?m.Groups[1].Value:Value(Parent(path),field,fallback,depth+1);
+    }
+    static string Reference(string path,string field,int depth=0)
+    {
+        if(path==null || depth>8)return null;
+        string key=Regex.Escape(field),yaml=Text(path);
+        Match m=Regex.Match(yaml,@"propertyPath: "+key+@"\r?\n[^\r\n]*\r?\n\s+objectReference:.*?guid: ([a-f0-9]{32})");
+        if(!m.Success)m=Regex.Match(yaml,@"(?m)^\s+"+key+@":.*?guid: ([a-f0-9]{32})");
+        return m.Success?Resolve(m.Groups[1].Value):Reference(Parent(path),field,depth+1);
+    }
+    [MenuItem("Steal Egg/Apply original gameplay rules")]
+    public static void ApplyToScene()
+    {
+        if(EditorApplication.isPlaying)throw new Exception("Stop Play mode first.");
+        Apply(UnityEngine.Object.FindFirstObjectByType<LunaController>());
+        EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+    }
+    public static void Apply(LunaController game)
+    {
+        if(!game)throw new Exception("Playable controller missing.");
+        paths.Clear();texts.Clear();
+        foreach(string file in Directory.GetFiles(Source+"Assets","*.meta",SearchOption.AllDirectories))
+        {
+            Match m=Regex.Match(File.ReadAllText(file),@"(?m)^guid: ([a-f0-9]{32})");
+            if(m.Success)paths[m.Groups[1].Value]=file.Substring(Source.Length).Replace('\\','/').Replace(".meta","");
+        }
+        string config=Text(Root+"Data/SAE_GameConfigSO.asset");
+        game.baseMoveSpeed=Number(Regex.Match(config,@"moveSpeedBase:\s+remoteKey:[^\r\n]+\s+defaultValue: ([\d.]+)").Groups[1].Value);
+        game.speedPowerMultiplier=Number(Regex.Match(config,@"powerMoveSpeedMultiplier:\s+remoteKey:[^\r\n]+\s+defaultValue: ([\d.]+)").Groups[1].Value);
+        game.moveSpeed=game.baseMoveSpeed;game.cameraDistance=9;game.cameraPitch=30;game.gameCamera.fieldOfView=45;
+        game.trainingPowerPerTick=Number(Value(Root+"Prefabs/SAE_Treadmil.prefab","trainValueBase"));
+        game.incubationSeconds=3;game.startingMoney=100;
+        game.moneyIcon=AssetDatabase.LoadAssetAtPath<Sprite>(Reference(Root+"Data/Items/[SAE_ItemConsume] Money.asset","thumbnail"));
+        game.speedIcon=AssetDatabase.LoadAssetAtPath<Sprite>(Reference(Root+"Data/Items/[SAE_Item] Speed Power.asset","thumbnail"));
+        string[] zones={"Forest","Lake","Desert","Jungle","Snow","Volcano","AbyssOcean","Prehistoric","Cosmic","CherryBlossom","Titan Temple"};
+        for(int i=0;i<game.zones.Length;i++)
+        {
+            LunaController.Zone zone=game.zones[i];
+            zone.guardianSpeed=game.baseMoveSpeed+Number(Value(Root+"Data/Zones/[ZoneDataSO] "+zones[i]+".asset","protectMonsterSpeed"));
+            zone.attackDistance=Number(Value(Root+"Prefabs/ProtectEggMonster.prefab","attackDistance"));
+            string guardianPath=Root+"Prefabs/ProtectMonster/"+zone.guardian.name+(zone.guardian.name.EndsWith("Variant")?"":" Variant")+".prefab";
+            if(File.Exists(Source+guardianPath))zone.attackDistance=Number(Value(guardianPath,"attackDistance"));
+            string database=Text(Root+"Data/ZoneEgg/[EggZoneDatabase] "+(i==9?"CheeyBlossom":zones[i])+".asset");
+            var rules=new List<PlayableEggRules>();
+            foreach(Match entry in Regex.Matches(database,@"egg:.*?guid: ([a-f0-9]{32}).*?\r?\n\s+rate: ([\d.]+)"))
+            {
+                string path=Resolve(entry.Groups[1].Value);var rule=new PlayableEggRules();
+                rule.name=Value(path,"eggName");rule.spawnWeight=Number(entry.Groups[2].Value);
+                rule.incubationTime=Number(Value(path,"incubateTimeBase"));
+                string size=Reference(path,"sizeData");
+                MatchCollection ranges=Regex.Matches(Text(size),@"sizeRange: \{x: ([\d.]+), y: ([\d.]+)\}\s+rate: ([\d.]+)");
+                rule.sizeRanges=ranges.Cast<Match>().Select(m=>new Vector2(Number(m.Groups[1].Value),Number(m.Groups[2].Value))).ToArray();
+                rule.sizeWeights=ranges.Cast<Match>().Select(m=>Number(m.Groups[3].Value)).ToArray();
+                var pets=new List<GameObject>();var rates=new List<float>();var incomes=new List<float>();
+                int count=(int)Number(Value(path,"monsters.Array.size","1"));
+                for(int p=0;p<count;p++)
+                {
+                    string petPath=Reference(path,"monsters.Array.data["+p+"].obj");
+                    if(petPath==null)throw new Exception("Pet reference missing: "+path);
+                    GameObject pet=AssetDatabase.LoadAssetAtPath<GameObject>(petPath);
+                    if(!pet)throw new Exception("Pet not imported: "+petPath);
+                    pets.Add(pet);rates.Add(Number(Value(path,"monsters.Array.data["+p+"].rate","1")));
+                    incomes.Add(Number(Value(petPath,"baseStats.income",Value(petPath,"income","1"))));
+                }
+                rule.pets=pets.ToArray();rule.petWeights=rates.ToArray();rule.petIncome=incomes.ToArray();rules.Add(rule);
+            }
+            if(rules.Count!=zone.eggPrefabs.Length)throw new Exception("Egg order/count mismatch: "+zone.name);
+            zone.eggRules=rules.ToArray();
+        }
+        StealEggRagdollSetup.Configure(game);
+        EditorUtility.SetDirty(game);
+        Debug.Log("Original rules applied: "+game.zones.Length+" zone speeds, weighted eggs, size tables, hatch times, pet rewards, speed power, training and camera.");
+    }
+}

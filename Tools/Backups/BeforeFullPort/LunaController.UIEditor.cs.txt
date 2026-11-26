@@ -1,0 +1,165 @@
+#if UNITY_EDITOR
+using System;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+// Authoring only: UI objects are saved in the scene before export.
+public partial class LunaController
+{
+    public void BakeUI()
+    {
+        if(safeUI)throw new InvalidOperationException("UI already exists in this scene.");
+        if(!FindObjectOfType<EventSystem>())new GameObject("EventSystem",typeof(EventSystem),typeof(StandaloneInputModule));
+        GameObject go=new GameObject("Playable UI",typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
+        Canvas canvas=go.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=100;
+        CanvasScaler scaler=go.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(720,1280);scaler.matchWidthOrHeight=.5f;
+        safeUI=Rect("Safe area",go.transform,Vector2.zero,Vector2.one);
+        RectTransform cameraInput=Box("Camera drag",safeUI,Vector2.zero,Vector2.one,Color.clear);
+        cameraInput.gameObject.AddComponent<PlayableCameraDrag>().game=this;
+        RectTransform banner=Box("Tutorial",safeUI,new Vector2(.03f,.83f),new Vector2(.97f,.96f),navy);
+        instruction=Label("Instruction",banner,"",29,new Vector2(.03f,.43f),new Vector2(.97f,.92f));
+        subtitle=Label("Details",banner,"",18,new Vector2(.04f,.05f),new Vector2(.96f,.43f));
+        RectTransform money=Box("Coins",safeUI,new Vector2(.03f,.765f),new Vector2(.32f,.82f),new Color(.1f,.45f,.15f,.95f));
+        moneyText=Label("Coins",money,"$ 0",30,Vector2.zero,Vector2.one);
+        stageText=Label("Progress",safeUI,"",21,new Vector2(.36f,.765f),new Vector2(.97f,.82f));
+        ButtonText("Zones",safeUI,"MAP",new Vector2(.03f,.67f),new Vector2(.20f,.735f),()=>OpenPanel("MAP"));
+        ButtonText("Pets",safeUI,"PETS",new Vector2(.03f,.59f),new Vector2(.20f,.655f),()=>OpenPanel("PETS"));
+        ButtonText("Speed",safeUI,"SPEED +",new Vector2(.78f,.67f),new Vector2(.97f,.735f),UpgradeSpeed);
+        ButtonText("Shop",safeUI,"SHOP",new Vector2(.80f,.59f),new Vector2(.97f,.655f),()=>OpenPanel("SHOP"));
+        toast=Label("Notification",safeUI,"",23,new Vector2(.04f,.48f),new Vector2(.96f,.57f));
+        hatchText=Label("Incubation",safeUI,"",25,new Vector2(.1f,.40f),new Vector2(.9f,.46f));
+        RectTransform pad=Box("Joystick",safeUI,new Vector2(.06f,.08f),new Vector2(.32f,.23f),new Color(1,1,1,.2f));
+        RectTransform knob=Box("Knob",pad,new Vector2(.3f,.3f),new Vector2(.7f,.7f),new Color(1,1,1,.65f));
+        pad.GetComponent<Image>().sprite=circleSprite;pad.GetComponent<Image>().type=Image.Type.Simple;pad.GetComponent<Image>().preserveAspect=true;
+        knob.GetComponent<Image>().sprite=circleSprite;knob.GetComponent<Image>().type=Image.Type.Simple;knob.GetComponent<Image>().preserveAspect=true;
+        joystick=pad.gameObject.AddComponent<PlayableJoystick>();joystick.knob=knob;
+        hintHand=Label("Drag hint",pad,"DRAG",19,Vector2.zero,Vector2.one).rectTransform;
+        actionButton=ButtonText("Action",safeUI,"STEAL",new Vector2(.64f,.11f),new Vector2(.96f,.22f),Interact);actionText=actionButton.GetComponentInChildren<Text>();actionButton.GetComponent<Image>().color=new Color(.20f,.75f,.19f);
+        dropButton=ButtonText("Drop",safeUI,"DROP",new Vector2(.73f,.25f),new Vector2(.95f,.30f),DropEgg);
+        Label("Controls",safeUI,"DRAG TO MOVE  |  WASD / E ON DESKTOP",15,new Vector2(.03f,.02f),new Vector2(.97f,.055f));
+        panel=Box("Menu",safeUI,new Vector2(.04f,.20f),new Vector2(.96f,.80f),navy).gameObject;
+        panelTitle=Label("Title",panel.transform,"",30,new Vector2(.05f,.87f),new Vector2(.8f,.98f));panelBody=Label("Body",panel.transform,"",22,new Vector2(.07f,.58f),new Vector2(.93f,.85f));
+        ButtonText("Close",panel.transform,"X",new Vector2(.85f,.89f),new Vector2(.97f,.98f),()=>panel.SetActive(false));
+        for(int i=0;i<zones.Length;i++){int index=i;int row=i/2,col=i%2;ButtonText("Zone_"+i,panel.transform,(i+1)+"  "+zones[i].name,new Vector2(.05f+col*.47f,.75f-row*.12f),new Vector2(.48f+col*.47f,.85f-row*.12f),()=>TravelToZone(index));}
+        ButtonText("MenuInstall",panel.transform,"PLAY THE FULL GAME",new Vector2(.1f,.08f),new Vector2(.9f,.20f),Install);panel.SetActive(false);
+        endCard=Box("End card",safeUI,Vector2.zero,Vector2.one,new Color(.025f,.05f,.12f,.96f)).gameObject;
+        Label("Victory",endCard.transform,"EGG-CELLENT!",49,new Vector2(.05f,.64f),new Vector2(.95f,.78f));
+        Label("Pitch",endCard.transform,"Build your collection.\nOutrun every guardian!",27,new Vector2(.1f,.46f),new Vector2(.9f,.62f));
+        ButtonText("Install",endCard.transform,"PLAY NOW",new Vector2(.16f,.28f),new Vector2(.84f,.40f),Install).GetComponent<Image>().color=new Color(.18f,.76f,.18f);
+        ButtonText("Continue",endCard.transform,"KEEP EXPLORING",new Vector2(.22f,.17f),new Vector2(.78f,.24f),()=>endCard.SetActive(false));endCard.SetActive(false);
+        ApplySourceArt();
+        EnsureJumpUI();
+        ConfigureIncubationLabel();
+        EnsureBagUI();
+        RebuildReferenceUI();
+    }
+    public void EnsureBagUI()
+    {
+        if(!bagButton)bagButton=ButtonText("Bag",safeUI,"BAG (0)",new Vector2(.78f,.33f),new Vector2(.96f,.39f),ToggleBagEgg);
+        bagButtonText=bagButton.GetComponentInChildren<Text>();
+        bagButton.transform.SetAsLastSibling();panel.transform.SetAsLastSibling();endCard.transform.SetAsLastSibling();
+        UnityEditor.EditorUtility.SetDirty(this);
+    }
+    public void ConfigureIncubationLabel()
+    {
+        RectTransform rect=hatchText.rectTransform;
+        rect.anchorMin=rect.anchorMax=new Vector2(.5f,.5f);
+        rect.pivot=new Vector2(.5f,0);
+        rect.sizeDelta=new Vector2(320,60);
+        rect.anchoredPosition=Vector2.zero;
+        hatchText.text="";
+        hatchText.raycastTarget=false;
+        hatchText.gameObject.SetActive(false);
+        rect.SetAsLastSibling();
+        panel.transform.SetAsLastSibling();endCard.transform.SetAsLastSibling();
+        UnityEditor.EditorUtility.SetDirty(hatchText);
+        UnityEditor.EditorUtility.SetDirty(rect);
+    }
+    public void EnsureJumpUI()
+    {
+        if(!safeUI)throw new InvalidOperationException("Bake the scene UI first.");
+        if(!jumpButton)
+            jumpButton=ButtonText("Jump",safeUI,"JUMP",new Vector2(.78f,.04f),new Vector2(.96f,.12f),Jump);
+        jumpButton.transform.SetAsLastSibling();
+        panel.transform.SetAsLastSibling();endCard.transform.SetAsLastSibling();
+        UnityEditor.EditorUtility.SetDirty(this);
+    }
+    private void ApplySourceArt()
+    {
+        if(!sourceHud)return;
+        GameObject art=Instantiate(sourceHud,safeUI,false);art.name="Original game HUD";art.SetActive(true);
+        Place((RectTransform)art.transform,Vector2.zero,Vector2.one);
+        Transform[] all=art.GetComponentsInChildren<Transform>(true);
+        foreach(Image img in art.GetComponentsInChildren<Image>(true))img.raycastTarget=false;
+        foreach(Transform t in all)
+        {
+            if(t.name=="EquipPetPopup" || t.name=="IncubatingEggPopup" || t.name=="UIBoost" || t.name=="TimeOfDay Frame" || t.name=="ZoneEnterHighlight" || t.name=="Right" || t.name=="Button_Attack" || t.name=="Button_Setting")t.gameObject.SetActive(false);
+            if(t.name=="[Container] FuntionButtons")originalFunctions=(RectTransform)t;
+            if(t.name=="MoneyFrame")originalMoney=BindCounter(t,moneyIcon);
+            if(t.name=="SpeedPowerFrame")originalSpeed=BindCounter(t,speedIcon);
+            if(t.parent && t.parent.name=="Left")
+            {
+                // Keep the original hierarchy and placement; attach standalone callbacks.
+                if(t.name=="Button_Index")BindButton(t,()=>OpenPanel("PETS"));
+                else if(t.name=="Button_IAPShop")BindButton(t,()=>OpenPanel("SHOP"));
+                else if(t.name=="Button_ShopTrail")BindButton(t,UpgradeSpeed);
+                else if(t.name=="[Toggle] Speed Mode")BindButton(t,()=>{slowMode=!slowMode;Notify(slowMode?"SLOW MODE":"FAST MODE");});
+            }
+        }
+        foreach(Transform t in all)
+        {
+            if(t.parent==originalFunctions)
+            {
+                string key=t.name=="[Button] Steal"?"STEAL":t.name=="[Button] Incubate"?"INCUBATE":t.name=="[Button] Hatch"?"HATCH!":t.name=="[Button] Equip Monster"?"EQUIP PET":t.name=="[Button] Use Treadmil"?"TRAIN":"";
+                t.gameObject.SetActive(false);
+                if(key!=""){originalActions[key]=t.gameObject;BindButton(t,Interact);}
+                if(t.name=="[Button] DropStealingEgg")
+                {
+                    dropButton.gameObject.SetActive(false);dropButton=BindButton(t,DropEgg);
+                }
+            }
+        }
+        foreach(string name in new[]{"Coins","Progress","Zones","Pets","Speed","Shop"}){Transform old=safeUI.Find(name);if(old)old.gameObject.SetActive(false);}
+        // The tutorial and joystick remain above the original HUD; end card is ad-specific.
+        safeUI.Find("Tutorial").gameObject.SetActive(false);
+        safeUI.Find("Controls").gameObject.SetActive(false);
+        safeUI.Find("Joystick").SetAsLastSibling();
+        panel.transform.SetAsLastSibling();endCard.transform.SetAsLastSibling();
+    }
+    private Button BindButton(Transform target,UnityEngine.Events.UnityAction action)
+    {
+        Button b=target.GetComponent<Button>();if(!b)b=target.gameObject.AddComponent<Button>();
+        Graphic graphic=target.GetComponent<Graphic>();if(graphic){graphic.raycastTarget=true;b.targetGraphic=graphic;}
+        b.onClick=new Button.ButtonClickedEvent();b.onClick.AddListener(action);return b;
+    }
+    private TMPro.TMP_Text BindCounter(Transform target,Sprite icon)
+    {
+        foreach(Image img in target.GetComponentsInChildren<Image>(true))if(img.name=="Image"){img.sprite=icon;img.enabled=icon!=null;}
+        return target.GetComponentInChildren<TMPro.TMP_Text>(true);
+    }
+    private void CopyControlArt(Transform[] all,string sourceName,string targetName,UnityEngine.Events.UnityAction action)
+    {
+        foreach(Transform t in all)if(t.name==sourceName)
+        {
+            RectTransform target=(RectTransform)safeUI.Find(targetName);
+            t.SetParent(safeUI,false);Place((RectTransform)t,target.anchorMin,target.anchorMax);t.gameObject.SetActive(true);
+            Button b=t.GetComponent<Button>();if(!b)b=t.gameObject.AddComponent<Button>();b.onClick=new Button.ButtonClickedEvent();b.onClick.AddListener(action);
+            if(targetName=="Speed")foreach(TMPro.TMP_Text label in t.GetComponentsInChildren<TMPro.TMP_Text>(true))label.text="Speed +";
+            target.gameObject.SetActive(false);return;
+        }
+    }
+    private void Place(RectTransform rt,Vector2 min,Vector2 max){rt.anchorMin=min;rt.anchorMax=max;rt.offsetMin=Vector2.zero;rt.offsetMax=Vector2.zero;rt.localScale=Vector3.one;}
+    private RectTransform Rect(string name,Transform parent,Vector2 min,Vector2 max)
+    {RectTransform rt=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();rt.SetParent(parent,false);rt.anchorMin=min;rt.anchorMax=max;rt.offsetMin=Vector2.zero;rt.offsetMax=Vector2.zero;return rt;}
+    private RectTransform Box(string name,Transform parent,Vector2 min,Vector2 max,Color color)
+    {RectTransform rt=Rect(name,parent,min,max);Image image=rt.gameObject.AddComponent<Image>();image.color=color;image.sprite=roundedSprite;image.type=Image.Type.Sliced;return rt;}
+    private Text Label(string name,Transform parent,string value,int size,Vector2 min,Vector2 max)
+    {
+        RectTransform rt=Rect(name,parent,min,max);Text t=rt.gameObject.AddComponent<Text>();t.font=uiFont;t.text=value;t.fontSize=size;t.color=Color.white;t.alignment=TextAnchor.MiddleCenter;t.raycastTarget=false;t.resizeTextForBestFit=true;t.resizeTextMinSize=11;t.resizeTextMaxSize=size;
+        Outline o=rt.gameObject.AddComponent<Outline>();o.effectColor=new Color(0,0,0,.7f);o.effectDistance=new Vector2(1,-1);return t;
+    }
+    private Button ButtonText(string name,Transform parent,string value,Vector2 min,Vector2 max,UnityEngine.Events.UnityAction click)
+    {RectTransform rt=Box(name,parent,min,max,new Color(.12f,.39f,.76f,.98f));Button b=rt.gameObject.AddComponent<Button>();b.onClick.AddListener(click);Label("Label",rt,value,24,new Vector2(.04f,.05f),new Vector2(.96f,.95f));return b;}
+}
+#endif

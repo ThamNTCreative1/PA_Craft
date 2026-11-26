@@ -1,0 +1,108 @@
+using System;
+using System.IO;
+using System.Text.RegularExpressions;
+using TMPro;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.UI;
+
+public static class StealEggFontSetup
+{
+    [MenuItem("Steal Egg/Use 01 RESOURCES fonts")]
+    public static void Apply()
+    {
+        if (EditorApplication.isPlaying) throw new InvalidOperationException("Exit Play Mode first.");
+        var font = AssetDatabase.LoadAssetAtPath<Font>("Assets/01 RESOURCES/FFFFORWA.TTF");
+        var sdf = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/01 RESOURCES/FFFFORWA SDF.asset");
+        if (!font || !sdf) throw new InvalidOperationException("Missing 01 RESOURCES font assets.");
+        int count = 0;
+        foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { "Assets" }))
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if (!path.EndsWith(".prefab") || !HasText(path)) continue;
+            // Imported source prefabs can contain missing framework scripts.
+            // Replace only serialized font fields so those components remain intact.
+            string original = File.ReadAllText(path);
+            string updated = Regex.Replace(original, @"(?ms)^--- !u!.*?(?=^--- !u!|\z)", match =>
+            {
+                string block = match.Value;
+                if (block.Contains("m_fontAsset:"))
+                {
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(sdf.material, out string materialGuid, out long materialId);
+                    block = Regex.Replace(block, @"m_fontAsset: \{[^\r\n}]*\}", "m_fontAsset: {fileID: 11400000, guid: " + AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(sdf)) + ", type: 2}");
+                    block = Regex.Replace(block, @"m_sharedMaterial: \{[^\r\n}]*\}", "m_sharedMaterial: {fileID: " + materialId + ", guid: " + materialGuid + ", type: 2}");
+                }
+                block = Regex.Replace(block, @"m_Font: \{[^\r\n}]*\}", "m_Font: {fileID: 12800000, guid: " + AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(font)) + ", type: 3}");
+                return block;
+            });
+            if (updated == original) continue;
+            string backup = "Tools/Backups/BeforeFontChange/" + path;
+            Directory.CreateDirectory(Path.GetDirectoryName(backup));
+            if (!File.Exists(backup)) File.Copy(path, backup);
+            File.WriteAllText(path, updated);
+            count++;
+        }
+        AssetDatabase.Refresh();
+        foreach (string guid in AssetDatabase.FindAssets("t:Scene", new[] { "Assets" }))
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if (!HasText(path)) continue;
+            var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByPath(path);
+            bool opened = !scene.IsValid() || !scene.isLoaded;
+            if (opened) scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+            int changed = 0;
+            foreach (var root in scene.GetRootGameObjects()) changed += ApplyToRoot(root, font, sdf);
+            if (changed > 0) { EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene); }
+            count += changed;
+            if (opened) EditorSceneManager.CloseScene(scene, true);
+        }
+        var settings = AssetDatabase.LoadAssetAtPath<TMP_Settings>("Assets/TextMesh Pro/Resources/TMP Settings.asset");
+        if (settings)
+        {
+            var serialized = new SerializedObject(settings);
+            serialized.FindProperty("m_defaultFontAsset").objectReferenceValue = sdf;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(settings);
+        }
+        AssetDatabase.SaveAssets();
+        Debug.Log("FFFFORWA applied: " + count + " text/controller references updated.");
+    }
+
+    static bool HasText(string path)
+    {
+        string text = File.ReadAllText(path);
+        return text.Contains("m_fontAsset:") || text.Contains("m_Font:") || text.Contains("uiFont:");
+    }
+
+    static int ApplyToRoot(GameObject root, Font font, TMP_FontAsset sdf)
+    {
+        int count = 0;
+        foreach (var text in root.GetComponentsInChildren<TMP_Text>(true))
+        {
+            if (text.font == sdf && text.fontSharedMaterial == sdf.material) continue;
+            text.font = sdf;
+            text.fontSharedMaterial = sdf.material;
+            EditorUtility.SetDirty(text);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(text);
+            count++;
+        }
+        foreach (var text in root.GetComponentsInChildren<Text>(true))
+        {
+            if (text.font == font) continue;
+            text.font = font;
+            EditorUtility.SetDirty(text);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(text);
+            count++;
+        }
+        foreach (var game in root.GetComponentsInChildren<StealEggGame>(true))
+        {
+            if (game.uiFont == font) continue;
+            game.uiFont = font;
+            EditorUtility.SetDirty(game);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(game);
+            count++;
+        }
+        return count;
+    }
+}
