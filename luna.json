@@ -2,7 +2,7 @@
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
     "applicationID": 29023,
-    "creativeName": "C1_2611_HuyNQ_UAC_V83_ThuLH",
+    "creativeName": "C1_2611_HuyNQ_UAC_V91_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -7851,10 +7851,6 @@
                 "excluded": true
             },
             {
-                "name": "DG.Tweening.Core.Easing.Bounce",
-                "excluded": true
-            },
-            {
                 "name": "DG.Tweening.Core.Easing.Flash",
                 "excluded": true
             },
@@ -8240,6 +8236,14 @@
             },
             {
                 "name": "Playable.ChooseMonster.ChooseMonsterController.State",
+                "excluded": false
+            },
+            {
+                "name": "EpicToonFX.ETFXRotation.spaceEnum",
+                "excluded": false
+            },
+            {
+                "name": "Playable.CutRope.CutRopeController.State",
                 "excluded": false
             }
         ],
@@ -24076,7 +24080,7 @@
                     },
                     {
                         "name": "interactable#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ignoreParentGroups#set",
@@ -31542,7 +31546,7 @@
                     },
                     {
                         "name": "IsTweening",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "TotalActiveTweens",
@@ -43179,36 +43183,6 @@
                 ]
             },
             {
-                "className": "Playable.ChooseMonster.ChooseHudLayout",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Place",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Size",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnEnable",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LateUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Refresh",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "Playable.ChooseMonster.ChooseMonsterController",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -43650,6 +43624,278 @@
                     },
                     {
                         "name": "$clone",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CutRope.CutRopeCamera",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Camera#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Shake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Fit",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CutRope.CutRopeController",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Spawn",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDownload",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnGameEnded",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Swing",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HandleInput",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsOverDownload",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ScreenOf",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CutAt",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Fall",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HitCharacter",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SpawnStun",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Land",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowEndCard",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateShadow",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CutRope.CutRopeHud",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Place",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DownloadButton#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetTitle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateHand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowEndCard",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ContentScale",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Refresh",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CutRope.RopeView",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Cross",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SegmentsIntersect",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DistanceToSegment",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsCut#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LinkCount#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReleaseBottom",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Cut",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Render",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HitBySwipe",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HitByTap",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PointAt",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Project",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "DG.Tweening.Core.Easing.Bounce",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "EaseIn",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EaseOut",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EaseInOut",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "EpicToonFX.ETFXRotation",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
                         "excluded": false
                     }
                 ]
