@@ -1,8 +1,8 @@
 {
     "version": "7.2.0",
     "projectId": "e0c7d7b99f381904ba55b26de53e9500",
-    "applicationID": 29023,
-    "creativeName": "C1_2611_HuyNQ_UAC_V91_ThuLH",
+    "applicationID": 43685,
+    "creativeName": "C1_2611_HuyNQ_OBP_V13_ThuLH",
     "pgServer": "EU",
     "window": {
         "‐⁘": true
@@ -7919,10 +7919,6 @@
                 "excluded": true
             },
             {
-                "name": "DG.Tweening.Plugins.ColorPlugin",
-                "excluded": true
-            },
-            {
                 "name": "DG.Tweening.Plugins.DoublePlugin",
                 "excluded": true
             },
@@ -8239,11 +8235,11 @@
                 "excluded": false
             },
             {
-                "name": "EpicToonFX.ETFXRotation.spaceEnum",
+                "name": "Playable.CutRope.CutRopeController.State",
                 "excluded": false
             },
             {
-                "name": "Playable.CutRope.CutRopeController.State",
+                "name": "Playable.CannonLaunch.CannonController.State",
                 "excluded": false
             }
         ],
@@ -25222,7 +25218,7 @@
                     },
                     {
                         "name": "color#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "color#set",
@@ -25234,7 +25230,7 @@
                     },
                     {
                         "name": "alpha#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "enableVertexGradient#get",
@@ -27596,15 +27592,15 @@
                 "instanceMethods": [
                     {
                         "name": "getDefaultValue",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ctor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Reset",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "getHashCode",
@@ -27616,7 +27612,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -28734,7 +28730,7 @@
                     },
                     {
                         "name": "NormalStyle#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "name#get",
@@ -31144,7 +31140,7 @@
                     },
                     {
                         "name": "Complete",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Flip",
@@ -31386,7 +31382,7 @@
                     },
                     {
                         "name": "ToAlpha",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Punch",
@@ -31846,7 +31842,7 @@
                     },
                     {
                         "name": "DOPunchPosition",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DOPunchScale",
@@ -32454,7 +32450,7 @@
                     },
                     {
                         "name": "SetOptions$4",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetOptions$6",
@@ -34978,7 +34974,7 @@
                     },
                     {
                         "name": "DOFade$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DOFade$2",
@@ -35086,7 +35082,7 @@
                     },
                     {
                         "name": "DOShakeAnchorPos",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DOShakeAnchorPos$1",
@@ -43883,7 +43879,79 @@
                 ]
             },
             {
-                "className": "EpicToonFX.ETFXRotation",
+                "className": "Playable.CannonLaunch.BrickWall",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Collapsed#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "FrontCenter#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "WallBounds",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Collapse",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CannonLaunch.CannonCamera",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Camera#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Follow",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ReturnHome",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetFollowOffset",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Shake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ApplyFov",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CannonLaunch.CannonController",
                 "staticMethods": [],
                 "instanceMethods": [
                     {
@@ -43891,11 +43959,227 @@
                         "excluded": false
                     },
                     {
+                        "name": "Spawn",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Play",
+                        "excluded": false
+                    },
+                    {
                         "name": "Start",
                         "excluded": false
                     },
                     {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    },
+                    {
+                        "name": "OnDownload",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnGameEnded",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Cost",
+                        "excluded": false
+                    },
+                    {
+                        "name": "RefreshCards",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnCard",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateHand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnFire",
+                        "excluded": false
+                    },
+                    {
                         "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Land",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Reward",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Reload",
+                        "excluded": false
+                    },
+                    {
+                        "name": "HitWall",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowEndCard",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CannonLaunch.CannonHud",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FireButton#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetMoney",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetFireEnabled",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetCardsVisible",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetCard",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PunchCard",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShakeCard",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PointHand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Card",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowPopup",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ShowEndCard",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AnimateHand",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CannonLaunch.OrientationLayout",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnEnable",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LateUpdate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Apply",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Write",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Read",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "Playable.CannonLaunch.OrientationLayout.Slot",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "DG.Tweening.Plugins.ColorPlugin",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Reset",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetFrom$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetFrom",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ConvertToStartValue",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetRelativeEndValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetChangeValue",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetSpeedBasedDuration",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EvaluateAndApply",
                         "excluded": false
                     }
                 ]
